@@ -1,0 +1,102 @@
+/* =====================================================================
+   wedding-request.css
+   Page-specific styles for wedding-request.php. The form-field kit
+   (.ps-field, .ps-radio-row, .ps-form-row-*, etc.) lives in style.css
+   since every future request form will reuse it -- this file is just
+   the step bar and this page's own spacing/layout.
+   ===================================================================== */
+
+/* ---- step bar (1 The Couple > 2 Requirements > 3 Review & Send) -------- */
+.wr-stepbar {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 22px;
+}
+
+.wr-step { display: flex; align-items: center; gap: 14px; flex: 1; min-width: 0; }
+
+.wr-step-num {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: var(--cream-deep);
+    color: var(--maroon-700);
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 18px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+}
+.wr-step.is-current .wr-step-num {
+    background: var(--maroon-700);
+    color: #fff;
+    box-shadow: 0 4px 10px rgba(92, 27, 46, 0.3);
+}
+
+.wr-step-text { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.wr-step-text strong { font-size: 14px; color: var(--text-body); font-weight: 600; }
+.wr-step.is-current .wr-step-text strong { color: var(--maroon-700); }
+.wr-step-text small { font-size: 12px; color: var(--text-body); }
+
+.wr-step-sep { width: 16px; height: 16px; stroke: #c9bdb4; flex-shrink: 0; }
+
+/* ---- the form card itself ------------------------------------------------ */
+.wr-form h2 { font-size: 22px; }
+.wr-form-sub { font-size: 13.5px; color: var(--text-body); margin: 6px 0 24px; }
+
+.wr-field-group { display: flex; flex-direction: column; gap: 12px; margin-bottom: 26px; }
+.wr-field-group .ps-form-row-4 { margin-bottom: 0; }
+
+/* every field-group except the last keeps its bottom margin; the last
+   one before the date/mobile row shouldn't double up on spacing */
+.wr-form > .ps-form-row-2 { margin-bottom: 22px; }
+.wr-form > .ps-field { margin-bottom: 8px; }
+
+/* ---- action row ------------------------------------------------------ */
+.wr-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 18px;
+    padding-top: 24px;
+    border-top: 1px solid var(--card-border);
+}
+.wr-cancel {
+    flex: 0 0 200px;
+    justify-content: center;
+    background: var(--cream-deep);
+    color: var(--text-dark);
+}
+.wr-cancel:hover { background: #efe2c8; }
+.wr-submit { flex: 1; justify-content: center; }
+
+/* ---- inline "not built yet" notice, shown by main.js on submit -------- */
+.wr-next-step-notice {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-top: 18px;
+    padding: 14px 16px;
+    border-radius: var(--radius-md);
+    background: var(--status-pending-bg);
+    color: var(--status-pending-text);
+    font-size: 13px;
+    line-height: 1.5;
+}
+.wr-next-step-notice svg { width: 16px; height: 16px; stroke: currentColor; flex-shrink: 0; margin-top: 2px; }
+.wr-next-step-notice[hidden] { display: none; }
+
+/* ---- responsive ------------------------------------------------------ */
+@media (max-width: 1100px) {
+    .ps-form-row-4 { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 900px) {
+    .wr-stepbar { flex-direction: column; align-items: stretch; gap: 14px; }
+    .wr-step-sep { display: none; }
+}
+
+@media (max-width: 640px) {
+    .ps-form-row-4, .ps-form-row-2 { grid-template-columns: 1fr; }
+    .wr-actions { flex-direction: column-reverse; }
+    .wr-cancel, .wr-submit { width: 100%; flex: none; }
+}

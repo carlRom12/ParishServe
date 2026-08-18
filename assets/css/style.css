@@ -1,0 +1,841 @@
+/* =====================================================================
+   ParishServe - style.css
+   SHARED base stylesheet. Every page in the system links this file
+   first, then its own page-specific stylesheet after it (see
+   dashboard.css for an example). Keep anything here that's reused
+   across pages: colors, fonts, the sidebar/layout shell, buttons,
+   status pills, card look. Page-only stuff (like the stat card grid
+   on the dashboard) belongs in that page's own CSS file instead, or
+   this file turns into a 2000-line junk drawer.
+   ===================================================================== */
+
+/* ---- Google Fonts -----------------------------------------------------
+   Playfair Display = the elegant serif used for the sidebar logo, page
+   greetings, and card titles (matches the "ParishServe" wordmark style
+   in the reference image). Poppins = body text / nav labels / buttons.
+   ------------------------------------------------------------------- */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,600&family=Poppins:wght@400;500;600;700&display=swap');
+
+/* ---- Design tokens ------------------------------------------------
+   Centralizing colors as CSS variables means if the group decides the
+   maroon is "too dark" after seeing it on a projector, we change it in
+   ONE place instead of hunting through every page's CSS.
+   ------------------------------------------------------------------- */
+:root {
+    /* core palette, read off the reference dashboard image */
+    --maroon-900: #3d0f1f;
+    --maroon-800: #4c1526;
+    --maroon-700: #5c1b2e;   /* main sidebar background */
+    --maroon-600: #6d2238;
+    --gold: #c9a24a;         /* accent / active states / logo text */
+    --gold-light: #e6cf94;
+    --gold-dark: #a3812f;
+
+    --cream: #faf5ea;        /* main content background */
+    --cream-deep: #f3ead8;
+    --card-bg: #ffffff;
+    --card-border: #eee2cf;
+
+    --text-dark: #3d1220;    /* headings on light background */
+    --text-body: #6b5b56;    /* paragraph / muted text */
+    --text-on-dark: #f3e9da; /* sidebar link text */
+    --text-on-dark-muted: #cfa9ad;
+
+    /* status pill colors, used by both dashboard + future request pages */
+    --status-pending-bg: #fdecd2;
+    --status-pending-text: #a8631a;
+    --status-approved-bg: #dcf0e1;
+    --status-approved-text: #2f7a43;
+    --status-scheduled-bg: #dfeaf8;
+    --status-scheduled-text: #2b5f96;
+    --status-completed-bg: #e6e1f5;
+    --status-completed-text: #5b3fa0;
+    --status-rejected-bg: #fbdede;
+    --status-rejected-text: #b23636;
+
+    --radius-lg: 20px;
+    --radius-md: 14px;
+    --radius-sm: 10px;
+    --shadow-card: 0 4px 18px rgba(61, 15, 31, 0.07);
+    --shadow-card-hover: 0 8px 24px rgba(61, 15, 31, 0.12);
+
+    --sidebar-width: 268px;
+}
+
+/* ---- Reset ---------------------------------------------------------- */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--cream);
+    color: var(--text-body);
+    font-size: 15px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+}
+
+a { text-decoration: none; color: inherit; }
+ul { list-style: none; }
+img { max-width: 100%; display: block; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; }
+input, select, textarea { font-family: inherit; font-size: inherit; }
+
+h1, h2, h3, h4 {
+    font-family: 'Playfair Display', serif;
+    color: var(--text-dark);
+    font-weight: 600;
+}
+
+/* ---- Page shell -------------------------------------------------------
+   Every logged-in page follows the same skeleton:
+     <div class="ps-shell">
+        <?php include sidebar.php ?>
+        <main class="ps-main"> ...page content... </main>
+     </div>
+   header.php opens .ps-shell, footer.php closes it. This is what makes
+   the sidebar "sticky" down the left side while the main area scrolls.
+   ------------------------------------------------------------------- */
+.ps-shell {
+    display: flex;
+    min-height: 100vh;
+    align-items: flex-start;
+}
+
+.ps-main {
+    flex: 1;
+    min-width: 0; /* prevents flex children from blowing out card grids */
+    padding: 32px 40px 56px;
+}
+
+/* =====================================================================
+   SIDEBAR
+   ===================================================================== */
+.ps-sidebar {
+    width: var(--sidebar-width);
+    flex-shrink: 0;
+    min-height: 100vh;
+    background: linear-gradient(180deg, var(--maroon-700) 0%, var(--maroon-900) 100%);
+    color: var(--text-on-dark);
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    top: 0;
+    padding: 28px 20px 24px;
+    overflow: hidden; /* keeps the decorative church art from spilling out */
+}
+
+/* -- logo block -- */
+.ps-logo {
+    text-align: center;
+    padding-bottom: 22px;
+    margin-bottom: 18px;
+    border-bottom: 1px solid rgba(230, 207, 148, 0.18);
+}
+
+.ps-logo-crest {
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 10px;
+    color: var(--gold);
+}
+
+.ps-logo-eyebrow {
+    font-size: 11px;
+    letter-spacing: 2px;
+    font-weight: 600;
+    color: var(--text-on-dark);
+    text-transform: uppercase;
+}
+
+.ps-logo-name {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 24px;
+    color: var(--gold);
+    margin-top: 2px;
+}
+
+.ps-logo-sub {
+    font-size: 11px;
+    color: var(--text-on-dark-muted);
+    margin-top: 4px;
+    letter-spacing: 0.3px;
+}
+
+/* -- nav -- */
+.ps-nav {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.ps-nav-section {
+    display: block;
+    font-size: 10.5px;
+    letter-spacing: 1.6px;
+    font-weight: 700;
+    color: var(--text-on-dark-muted);
+    text-transform: uppercase;
+    margin: 18px 12px 8px;
+}
+
+.ps-nav-list { display: flex; flex-direction: column; gap: 3px; }
+
+.ps-nav-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-on-dark);
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.ps-nav-link svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    stroke: currentColor;
+}
+
+.ps-nav-link:hover {
+    background: rgba(230, 207, 148, 0.12);
+}
+
+.ps-nav-link.active {
+    background: var(--gold);
+    color: var(--maroon-900);
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+}
+
+/* -- decorative church silhouette behind logout button -- */
+.ps-sidebar-art {
+    position: relative;
+    height: 120px;
+    margin: 0 -20px -24px;
+    color: rgba(230, 207, 148, 0.10);
+    pointer-events: none;
+}
+.ps-sidebar-art svg { width: 100%; height: 100%; }
+
+.ps-logout-wrap { margin-top: 14px; position: relative; z-index: 1; }
+
+.ps-logout-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 11px;
+    border: 1px solid rgba(230, 207, 148, 0.35);
+    border-radius: var(--radius-sm);
+    color: var(--text-on-dark);
+    font-size: 14px;
+    font-weight: 500;
+    background: rgba(0, 0, 0, 0.12);
+    transition: background 0.15s ease, border-color 0.15s ease;
+}
+.ps-logout-btn:hover {
+    background: rgba(0, 0, 0, 0.22);
+    border-color: var(--gold);
+}
+.ps-logout-btn svg { width: 17px; height: 17px; stroke: currentColor; }
+
+/* =====================================================================
+   Reusable pieces other pages will want too
+   ===================================================================== */
+
+/* generic card look, used everywhere (dashboard panels, future forms) */
+.ps-card {
+    background: var(--card-bg);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--card-border);
+    box-shadow: var(--shadow-card);
+    padding: 22px 24px;
+}
+
+.ps-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.ps-card-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--text-dark);
+}
+.ps-card-title svg { width: 19px; height: 19px; stroke: var(--gold-dark); }
+
+.ps-link-more {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--maroon-700);
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+.ps-link-more svg { width: 13px; height: 13px; stroke: currentColor; }
+
+/* status pill, shared by dashboard + every request-tracking page later */
+.ps-status {
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+.ps-status.is-submitted,
+.ps-status.is-under_review { background: var(--status-pending-bg); color: var(--status-pending-text); }
+.ps-status.is-approved     { background: var(--status-approved-bg); color: var(--status-approved-text); }
+.ps-status.is-scheduled    { background: var(--status-scheduled-bg); color: var(--status-scheduled-text); }
+.ps-status.is-completed    { background: var(--status-completed-bg); color: var(--status-completed-text); }
+.ps-status.is-rejected     { background: var(--status-rejected-bg); color: var(--status-rejected-text); }
+
+/* =====================================================================
+   TOPBAR (notification bell + user chip)
+   Sits absolutely-positioned inside whatever hero/banner container the
+   calling page provides -- see includes/topbar.php for the markup and
+   why positioning isn't baked in here.
+   ===================================================================== */
+.ps-topbar {
+    position: absolute;
+    top: 22px;
+    right: 28px;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.ps-notif-btn {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.92);
+    box-shadow: 0 4px 14px rgba(61, 15, 31, 0.16);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--maroon-700);
+}
+.ps-notif-btn svg { width: 19px; height: 19px; stroke: currentColor; }
+
+.ps-notif-badge {
+    position: absolute;
+    top: -3px;
+    right: -3px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 4px;
+    border-radius: 999px;
+    background: var(--status-rejected-text);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--cream);
+}
+
+.ps-user-chip {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.92);
+    padding: 6px 14px 6px 6px;
+    border-radius: 999px;
+    box-shadow: 0 4px 14px rgba(61, 15, 31, 0.16);
+    cursor: pointer;
+}
+.ps-user-avatar {
+    width: 34px; height: 34px; border-radius: 50%;
+    background: var(--maroon-700); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Playfair Display', serif; font-weight: 700; font-size: 14px;
+    flex-shrink: 0;
+}
+.ps-user-info { display: flex; flex-direction: column; line-height: 1.2; }
+.ps-user-info strong { font-size: 13px; color: var(--text-dark); }
+.ps-user-info small { font-size: 11px; color: var(--text-body); }
+.ps-user-chevron { width: 13px; height: 13px; stroke: var(--text-body); }
+
+/* =====================================================================
+   Buttons, tabs, search, filter, tags, dots -- shared UI atoms that
+   show up on the Announcements page first but will get reused on
+   every listing-style page after it (calendar, my-requests, etc.)
+   ===================================================================== */
+
+.ps-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 20px;
+    border-radius: 999px;
+    font-size: 13.5px;
+    font-weight: 600;
+    transition: background 0.15s ease, transform 0.15s ease;
+}
+.ps-btn svg { width: 15px; height: 15px; stroke: currentColor; }
+.ps-btn-primary { background: var(--maroon-700); color: #fff; box-shadow: 0 4px 12px rgba(92, 27, 46, 0.25); }
+.ps-btn-primary:hover { background: var(--maroon-800); transform: translateY(-1px); }
+
+.ps-btn-outline { background: var(--card-bg); color: var(--maroon-700); border: 1.5px solid var(--maroon-700); }
+.ps-btn-outline:hover { background: var(--cream-deep); transform: translateY(-1px); }
+
+.ps-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
+
+/* checkmark checklist -- first built for wedding.php's Reminders card,
+   reused as-is by wedding-request-step3.php's Important Reminders */
+.wed-reminder-list { display: flex; flex-direction: column; gap: 12px; margin-top: 14px; }
+.wed-reminder-list li { display: flex; align-items: flex-start; gap: 10px; font-size: 13px; color: var(--text-dark); line-height: 1.45; }
+.wed-reminder-list li svg { width: 15px; height: 15px; stroke: var(--gold-dark); flex-shrink: 0; margin-top: 2px; }
+
+/* toggle switch -- native checkbox visually hidden, track+thumb driven
+   by :checked. Used by the "I confirm" gate on wedding-request-step3;
+   generic enough for any future yes/no settings toggle too. */
+.ps-toggle { display: inline-flex; align-items: center; gap: 10px; cursor: pointer; }
+.ps-toggle input[type="checkbox"] {
+    position: absolute;
+    width: 1px; height: 1px;
+    opacity: 0;
+    pointer-events: none;
+}
+.ps-toggle-track {
+    width: 42px; height: 24px;
+    border-radius: 999px;
+    background: #d8cfc4;
+    position: relative;
+    flex-shrink: 0;
+    transition: background 0.2s ease;
+}
+.ps-toggle-thumb {
+    position: absolute;
+    top: 3px; left: 3px;
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease;
+}
+.ps-toggle input:checked ~ .ps-toggle-track { background: var(--status-approved-text); }
+.ps-toggle input:checked ~ .ps-toggle-track .ps-toggle-thumb { transform: translateX(18px); }
+.ps-toggle input:focus-visible ~ .ps-toggle-track { outline: 2px solid var(--gold); outline-offset: 2px; }
+.ps-toggle-label { font-size: 13px; font-weight: 600; color: var(--text-dark); }
+
+/* "informational tip" color variant for .ps-info-banner -- the default
+   is a neutral cream tone; this is for a more pointed "heads up" note
+   (e.g. "the parish will confirm the final schedule") */
+.ps-info-banner.is-tip {
+    background: var(--status-scheduled-bg);
+    border-color: transparent;
+    color: var(--status-scheduled-text);
+}
+.ps-info-banner.is-tip svg { stroke: currentColor; }
+
+.ps-round-btn {
+    width: 34px; height: 34px; border-radius: 50%;
+    background: var(--card-bg); border: 1px solid var(--card-border);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text-dark);
+    transition: border-color 0.15s ease, color 0.15s ease;
+    flex-shrink: 0;
+}
+.ps-round-btn svg { width: 15px; height: 15px; stroke: currentColor; }
+.ps-round-btn:hover:not(:disabled) { border-color: var(--gold); color: var(--maroon-700); }
+.ps-round-btn:disabled { opacity: 0.35; cursor: default; }
+
+.ps-tabs { display: flex; flex-wrap: wrap; gap: 8px; }
+.ps-tab {
+    padding: 9px 18px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    color: var(--text-body);
+    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+.ps-tab:hover { border-color: var(--gold); color: var(--text-dark); }
+.ps-tab.active {
+    background: var(--maroon-700);
+    border-color: var(--maroon-700);
+    color: #fff;
+    box-shadow: 0 4px 10px rgba(92, 27, 46, 0.25);
+}
+
+.ps-search { position: relative; display: flex; align-items: center; }
+.ps-search svg { position: absolute; left: 14px; width: 16px; height: 16px; stroke: #b5a89f; pointer-events: none; }
+.ps-search input {
+    padding: 10px 16px 10px 38px;
+    border-radius: 999px;
+    border: 1px solid var(--card-border);
+    background: var(--card-bg);
+    font-size: 13px;
+    color: var(--text-dark);
+    min-width: 220px;
+}
+.ps-search input::placeholder { color: #b5a89f; }
+.ps-search input:focus { outline: none; border-color: var(--gold); }
+
+.ps-filter-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border-radius: 999px;
+    border: 1px solid var(--card-border);
+    background: var(--card-bg);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-dark);
+}
+.ps-filter-btn svg { width: 14px; height: 14px; stroke: currentColor; }
+.ps-filter-btn .ps-chev-sm { width: 11px; height: 11px; }
+
+/* generic category/type tag -- same shape as .ps-status but a
+   separate class since "category" and "workflow status" are different
+   concepts that just happen to look alike */
+.ps-tag {
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 999px;
+    font-size: 11.5px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+.ps-tag.cat-liturgical { background: #ece3f7; color: #6b46a8; }
+.ps-tag.cat-reminders  { background: var(--status-scheduled-bg); color: var(--status-scheduled-text); }
+.ps-tag.cat-events     { background: var(--status-approved-bg);  color: var(--status-approved-text); }
+.ps-tag.cat-notices    { background: var(--status-pending-bg);   color: var(--status-pending-text); }
+.ps-tag.cat-news       { background: #fbe3d4; color: #c05621; }
+
+.ps-bookmark-btn {
+    width: 34px; height: 34px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    color: #b5a89f;
+    transition: color 0.15s ease, background 0.15s ease;
+    flex-shrink: 0;
+}
+.ps-bookmark-btn svg { width: 17px; height: 17px; stroke: currentColor; fill: none; }
+.ps-bookmark-btn:hover { background: var(--cream-deep); color: var(--maroon-700); }
+.ps-bookmark-btn.is-saved { color: var(--gold-dark); }
+.ps-bookmark-btn.is-saved svg { fill: var(--gold); stroke: var(--gold-dark); }
+
+/* small gold divider + cross, used under page <h1>s (first seen under
+   "Announcements", will get reused on every other page's heading) */
+.ps-heading-ornament { display: flex; align-items: center; gap: 10px; margin: 10px 0 14px; }
+.ps-heading-ornament span { width: 40px; height: 1px; background: var(--gold); }
+.ps-heading-ornament svg { width: 13px; height: 13px; stroke: var(--gold-dark); }
+
+/* small colored dot for the parish-wide event CATEGORY system:
+   Mass / Sacrament / Event / Reminder / Other. First shown as a
+   legend on calendar.php, but also used by any "upcoming events"
+   list elsewhere (e.g. dashboard.php, announcements.php) so an event
+   tagged "mass" always reads as the same color everywhere. */
+.ps-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+.ps-dot.cat-mass      { background: var(--maroon-700); }
+.ps-dot.cat-sacrament { background: var(--status-scheduled-text); }
+.ps-dot.cat-event     { background: var(--status-approved-text); }
+.ps-dot.cat-reminder  { background: #e07a2c; }
+.ps-dot.cat-other     { background: #9a8b83; }
+
+/* legend row pairing a .ps-dot with its label (calendar toolbar) */
+.ps-legend { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+.ps-legend-item { display: flex; align-items: center; gap: 7px; font-size: 12.5px; color: var(--text-body); font-weight: 500; }
+
+/* segmented control, e.g. Month / Week / Day view switch */
+.ps-segmented { display: inline-flex; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: var(--radius-sm); padding: 3px; gap: 2px; }
+.ps-segmented button {
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-body);
+    transition: background 0.15s ease, color 0.15s ease;
+}
+.ps-segmented button.active { background: var(--maroon-700); color: #fff; }
+
+/* plain select dropdown, styled to match the rest of the toolbar controls */
+.ps-select {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--card-border);
+    background: var(--card-bg);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-dark);
+}
+.ps-select select {
+    border: none;
+    background: transparent;
+    font: inherit;
+    color: inherit;
+    appearance: none;
+    -webkit-appearance: none;
+    padding-right: 4px;
+    cursor: pointer;
+}
+.ps-select select:focus { outline: none; }
+.ps-select svg { width: 12px; height: 12px; stroke: var(--text-body); flex-shrink: 0; }
+
+/* soft cream/gold info banner, e.g. calendar.php's "events subject to
+   change" footnote -- generic enough other pages will want it too */
+.ps-info-banner {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 18px;
+    border-radius: var(--radius-md);
+    background: var(--cream-deep);
+    border: 1px solid var(--card-border);
+    color: var(--text-body);
+    font-size: 13px;
+}
+.ps-info-banner svg { width: 16px; height: 16px; stroke: var(--gold-dark); flex-shrink: 0; }
+
+/* =====================================================================
+   Plain page header + breadcrumb
+   First used by wedding-request.php -- unlike dashboard/announcements/
+   calendar/wedding, a multi-step FORM page doesn't want the big photo
+   banner (too much visual noise around something someone's trying to
+   fill out), just a heading + "where am I" breadcrumb. Every future
+   request-flow page (baptism-request.php, funeral-request.php, etc.)
+   will likely reuse this same shell.
+   ===================================================================== */
+.ps-plain-header { position: relative; padding: 6px 0 26px; }
+.ps-plain-header h1 { font-size: 30px; }
+
+.ps-breadcrumb { display: flex; align-items: center; gap: 8px; margin-top: 8px; font-size: 13px; color: var(--text-body); }
+.ps-breadcrumb a { color: var(--text-body); font-weight: 500; }
+.ps-breadcrumb a:hover { color: var(--maroon-700); text-decoration: underline; }
+.ps-breadcrumb svg { width: 12px; height: 12px; stroke: #c9bdb4; }
+.ps-breadcrumb span { color: var(--text-dark); font-weight: 600; }
+
+/* =====================================================================
+   Form kit -- labeled fields, hints, radios, multi-column rows. First
+   built for wedding-request.php's "The Couple" step, but every
+   service-request form after it (baptism, funeral, counseling, mass
+   intention, facility reservation...) will want the exact same input
+   look, so it lives here instead of in that page's own stylesheet.
+   ===================================================================== */
+input[type="radio"], input[type="checkbox"] { accent-color: var(--maroon-700); }
+
+.ps-field { display: flex; flex-direction: column; gap: 6px; }
+.ps-field-label { font-size: 13px; font-weight: 600; color: var(--text-dark); }
+
+.ps-field input[type="text"],
+.ps-field input[type="email"],
+.ps-field input[type="tel"],
+.ps-field input[type="date"],
+.ps-field input[type="number"],
+.ps-field select,
+.ps-field textarea {
+    padding: 12px 14px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--card-border);
+    background: var(--card-bg);
+    font: inherit;
+    font-size: 14px;
+    color: var(--text-dark);
+    width: 100%;
+}
+.ps-field input:focus, .ps-field select:focus, .ps-field textarea:focus {
+    outline: none;
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(201, 162, 74, 0.15);
+}
+
+.ps-form-hint { font-size: 11.5px; color: var(--text-body); }
+
+.ps-radio-row { display: flex; align-items: center; gap: 28px; flex-wrap: wrap; }
+.ps-radio { display: flex; align-items: center; gap: 9px; font-size: 14px; color: var(--text-dark); cursor: pointer; }
+.ps-radio input[type="radio"] { width: 18px; height: 18px; }
+
+.ps-form-row-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+.ps-form-row-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+
+/* a select wrapped the same way as calendar.php's toolbar dropdown,
+   just stretched to fill a form field's full width */
+.ps-select.is-block { width: 100%; justify-content: space-between; }
+.ps-select.is-block select { flex: 1; }
+
+/* an <input> with a trailing icon (e.g. the calendar glyph on a date
+   field) -- the input keeps its normal .ps-field styling, this just
+   wraps it so the icon can sit inside the right edge */
+.ps-input-icon { position: relative; }
+.ps-input-icon input { padding-right: 40px; }
+.ps-input-icon svg { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; stroke: var(--text-body); pointer-events: none; }
+
+/* =====================================================================
+   Intro banner (art + heading + paragraph, optional button)
+   First built for wedding.php's "A Sacred Covenant of Love", reused
+   as-is by wedding-guidelines.php's "Welcome!" banner -- promoted here
+   once a second page needed the same shape.
+   ===================================================================== */
+.wed-banner {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    background: linear-gradient(135deg, var(--cream-deep), #f7ecd6);
+    margin-bottom: 22px;
+}
+.wed-banner-art { width: 130px; flex-shrink: 0; }
+.wed-banner-art img { width: 100%; height: auto; }
+.wed-banner-text { flex: 1; min-width: 0; }
+.wed-banner-text h2 { font-size: 25px; margin-bottom: 8px; }
+.wed-banner-text p { font-size: 13.5px; color: var(--text-body); line-height: 1.6; max-width: 62ch; }
+
+/* =====================================================================
+   Guideline-page building blocks: a numbered "steps" list with a
+   connecting line, an icon+text "documents" list, a small fee table,
+   a plain numbered notes list, a pull-quote card, and a "need help?"
+   footer bar. Built for wedding-guidelines.php but written generically
+   (ps- prefixed) since baptism/funeral/confirmation guidelines pages
+   will almost certainly want the exact same pieces later.
+   ===================================================================== */
+
+/* vertical numbered list connected by a line -- "Steps to be Taken" */
+.ps-steps-list { display: flex; flex-direction: column; gap: 26px; }
+.ps-steps-list-item { display: flex; gap: 16px; position: relative; }
+.ps-steps-list-item:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: 17px;
+    top: 34px;
+    bottom: -26px;
+    width: 2px;
+    background: var(--card-border);
+}
+.ps-steps-list-num {
+    width: 34px; height: 34px; border-radius: 50%;
+    background: var(--maroon-700); color: #fff;
+    font-family: 'Playfair Display', serif; font-weight: 700; font-size: 14px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; position: relative; z-index: 1;
+}
+.ps-steps-list-text { font-size: 13.5px; color: var(--text-body); line-height: 1.6; padding-top: 6px; }
+
+/* icon + numbered text list -- "Documents Needed" */
+.ps-icon-list { display: flex; flex-direction: column; gap: 19px; }
+.ps-icon-list-item { display: flex; align-items: flex-start; gap: 14px; }
+.ps-icon-list-icon {
+    width: 34px; height: 34px; border-radius: 9px;
+    background: var(--cream-deep); color: var(--maroon-700);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+}
+.ps-icon-list-icon svg { width: 16px; height: 16px; }
+.ps-icon-list-text { font-size: 13.5px; color: var(--text-dark); line-height: 1.55; padding-top: 6px; }
+.ps-icon-list-text .ps-icon-list-num { font-weight: 700; color: var(--maroon-700); margin-right: 3px; }
+
+/* small fee/price table -- label left, amount right */
+.ps-fee-table { border: 1px solid var(--card-border); border-radius: var(--radius-md); overflow: hidden; }
+.ps-fee-table-head { padding: 14px 18px; background: var(--cream-deep); font-weight: 700; font-size: 14px; color: var(--text-dark); }
+.ps-fee-row { display: flex; align-items: center; gap: 14px; padding: 14px 18px; border-top: 1px solid var(--card-border); }
+.ps-fee-num {
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--cream-deep); color: var(--maroon-700);
+    font-size: 12px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+}
+.ps-fee-label { flex: 1; font-size: 13px; color: var(--text-dark); }
+.ps-fee-amount { font-size: 13.5px; font-weight: 700; color: var(--maroon-700); white-space: nowrap; }
+
+/* plain numbered notes -- policy fine print, no icon/line/circle */
+.ps-note-list { display: flex; flex-direction: column; gap: 14px; }
+.ps-note-list-item { display: flex; gap: 10px; font-size: 13px; color: var(--text-body); line-height: 1.6; }
+.ps-note-list-num { flex-shrink: 0; font-weight: 700; color: var(--maroon-700); min-width: 16px; }
+
+/* pull-quote card */
+.ps-quote-card { background: linear-gradient(135deg, var(--cream-deep), #f7ecd6); border-radius: var(--radius-lg); padding: 26px; position: relative; overflow: hidden; }
+.ps-quote-mark { font-family: 'Playfair Display', serif; font-size: 46px; color: var(--gold); line-height: 1; margin-bottom: 4px; }
+.ps-quote-card p { font-family: 'Playfair Display', serif; font-style: italic; font-size: 16px; color: var(--text-dark); line-height: 1.5; position: relative; z-index: 1; }
+.ps-quote-card cite { display: block; margin-top: 10px; font-size: 12.5px; font-style: normal; font-weight: 600; color: var(--gold-dark); position: relative; z-index: 1; }
+.ps-quote-art { position: absolute; right: -10px; bottom: -10px; width: 74px; height: 74px; color: var(--gold); opacity: 0.35; }
+.ps-quote-art svg { width: 100%; height: 100%; }
+
+/* "Need help? Contact our parish office..." footer bar */
+.ps-help-footer { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.ps-help-footer-text { display: flex; align-items: center; gap: 14px; }
+.ps-help-footer-icon {
+    width: 42px; height: 42px; border-radius: 50%;
+    background: var(--cream-deep); color: var(--maroon-700);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+}
+.ps-help-footer-icon svg { width: 20px; height: 20px; }
+.ps-help-footer-text strong { display: block; font-size: 14.5px; color: var(--text-dark); }
+.ps-help-footer-text small { font-size: 12.5px; color: var(--text-body); }
+
+/* =====================================================================
+   Shared page layout + "Upcoming Events" widget
+   First built for announcements.php, reused as-is by calendar.php --
+   promoted here once a second page needed the identical grid/widget.
+   ===================================================================== */
+
+/* main-content + right-sidebar 2-column layout, used by any page with
+   a "big content area + widgets column" shape (Announcements, Parish
+   Calendar, and probably every listing page after them) */
+.ann-grid {
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: 22px;
+    align-items: start;
+}
+.ann-main { display: flex; flex-direction: column; gap: 22px; min-width: 0; }
+.ann-side { display: flex; flex-direction: column; gap: 22px; }
+
+/* "Upcoming Events" widget: a date badge, title+meta, and a category
+   dot -- identical on announcements.php and calendar.php */
+.ann-event-list { display: flex; flex-direction: column; gap: 16px; }
+.ann-event-list li { display: flex; align-items: center; gap: 12px; }
+
+.ann-event-date {
+    width: 46px; flex-shrink: 0;
+    display: flex; flex-direction: column; align-items: center;
+    background: var(--cream-deep);
+    border-radius: var(--radius-sm);
+    padding: 5px 0;
+}
+.ann-event-date small { font-size: 9.5px; font-weight: 700; letter-spacing: 0.5px; color: var(--maroon-700); text-transform: uppercase; }
+.ann-event-date strong { font-family: 'Playfair Display', serif; font-size: 17px; color: var(--text-dark); }
+
+.ann-event-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.ann-event-body strong { font-size: 13.5px; color: var(--text-dark); font-weight: 600; }
+.ann-event-body small { font-size: 11.5px; color: var(--text-body); }
+
+@media (max-width: 1200px) {
+    .ann-grid { grid-template-columns: 1fr; }
+}
+
+/* =====================================================================
+   Responsive: collapse sidebar to icons-only on small screens.
+   Full mobile off-canvas nav is a nice-to-have for later -- right now
+   this just keeps the layout from breaking on a laptop-sized screen.
+   ===================================================================== */
+@media (max-width: 1024px) {
+    :root { --sidebar-width: 84px; }
+    .ps-logo-eyebrow, .ps-logo-name, .ps-logo-sub,
+    .ps-nav-section, .ps-nav-link span, .ps-logout-btn span {
+        display: none;
+    }
+    .ps-nav-link, .ps-logout-btn { justify-content: center; }
+    .ps-main { padding: 24px 20px 40px; }
+}

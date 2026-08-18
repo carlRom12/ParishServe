@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Placeholder thumbnail for the "Confirmation Registration Ongoing" announcement row (Holy Spirit / dove imagery, fits Confirmation). -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 200" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <radialGradient id="dvGrad" cx="50%" cy="35%" r="75%">
+      <stop offset="0%" stop-color="#fff6df"/>
+      <stop offset="100%" stop-color="#c9a24a"/>
+    </radialGradient>
+  </defs>
+  <rect width="300" height="200" fill="url(#dvGrad)"/>
+  <!-- radiant light rays -->
+  <g stroke="#ffffff" stroke-width="2" opacity="0.55">
+    <line x1="150" y1="90" x2="150" y2="40"/>
+    <line x1="150" y1="90" x2="110" y2="55"/>
+    <line x1="150" y1="90" x2="190" y2="55"/>
+    <line x1="150" y1="90" x2="80" y2="90"/>
+    <line x1="150" y1="90" x2="220" y2="90"/>
+  </g>
+  <!-- dove -->
+  <g fill="#fffaf0" stroke="#5c1b2e" stroke-width="1.5">
+    <path d="M150 82 C140 78 128 80 122 90 C132 90 138 94 142 100 C130 100 120 108 116 120 C132 118 142 112 150 100 C158 112 168 118 184 120 C180 108 170 100 158 100 C162 94 168 90 178 90 C172 80 160 78 150 82 Z"/>
+  </g>
+  <circle cx="150" cy="88" r="3.5" fill="#5c1b2e" stroke="none"/>
+</svg>

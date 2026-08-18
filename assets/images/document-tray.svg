@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Decorative art for wedding-request-step2.php's "Need help?" sidebar card: an inbox tray with a document, gold line-art matching wedding-rings.svg's style. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 150" fill="none" stroke="#c9a24a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+  <!-- document sticking up out of the tray -->
+  <rect x="52" y="14" width="46" height="60" rx="3"/>
+  <path d="M62 30h26M62 40h26M62 50h18"/>
+  <!-- tray -->
+  <path d="M20 90h30l10 14h40l10-14h30"/>
+  <path d="M20 90l6 38a4 4 0 0 0 4 4h100a4 4 0 0 0 4-4l6-38"/>
+  <!-- small accent dots -->
+  <circle cx="36" cy="118" r="2.4" fill="#c9a24a" stroke="none"/>
+  <circle cx="124" cy="118" r="2.4" fill="#c9a24a" stroke="none"/>
+</svg>

@@ -1,0 +1,229 @@
+/* =====================================================================
+   announcements.css
+   Page-specific styles for announcements.php. Shared atoms (tabs,
+   search box, filter button, tags, dots, buttons, topbar) live in
+   style.css -- this file is just the layout + the pieces that only
+   exist on this one page (the featured carousel, the row list, the
+   sidebar widgets).
+   ===================================================================== */
+
+/* ---- page hero: full-width banner photo behind the title ------------- */
+.ann-hero {
+    position: relative;
+    min-height: 190px;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+}
+
+.ann-hero-image { position: absolute; inset: 0; }
+.ann-hero-image img { width: 100%; height: 100%; object-fit: cover; }
+.ann-hero-image::after {
+    /* fades the photo into cream on the left so the title stays
+       readable, same trick as the dashboard's hero banner */
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, var(--cream) 0%, rgba(250,245,234,0.88) 30%, rgba(250,245,234,0.15) 62%, rgba(250,245,234,0) 85%);
+}
+
+.ann-hero-text { position: relative; z-index: 2; padding: 28px 32px; max-width: 560px; }
+.ann-hero-text h1 { font-size: 32px; font-weight: 700; }
+.ann-hero-text p { font-size: 14.5px; color: var(--text-body); }
+
+/* ---- toolbar: filter tabs + search + filter button --------------------- */
+.ann-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 22px;
+}
+.ann-toolbar-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+
+/* NOTE: the 2-column grid (.ann-grid/.ann-main/.ann-side) and the
+   "upcoming events" list (.ann-event-list and friends) used to live
+   here, but calendar.php needs the exact same layout/widget now too --
+   moved both into style.css so neither page keeps its own copy. The
+   "ann-" prefix is a little stale now (it's not announcements-only
+   anymore) but renaming across two PHP files + two stylesheets for a
+   pure naming nitpick wasn't worth the churn. */
+
+/* ---- Featured Announcement carousel ------------------------------------- */
+.ann-carousel { position: relative; }
+
+.ann-slide {
+    display: none;
+    grid-template-columns: 260px 1fr;
+    gap: 24px;
+    background: linear-gradient(135deg, var(--cream-deep), #f7ecd6);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--card-border);
+    overflow: hidden;
+    padding-right: 90px; /* room for the nav controls, bottom-right */
+}
+.ann-slide.is-active { display: grid; }
+
+.ann-slide-image { height: 100%; min-height: 220px; }
+.ann-slide-image img { width: 100%; height: 100%; object-fit: cover; }
+
+.ann-slide-body { padding: 22px 0 22px; display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
+.ann-slide-body h3 { font-size: 24px; font-weight: 700; color: var(--text-dark); }
+.ann-slide-body p { font-size: 14px; color: var(--text-body); line-height: 1.6; max-width: 46ch; }
+
+.ann-featured-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.7);
+    border: 1px solid var(--gold);
+    color: var(--gold-dark);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+}
+
+.ann-slide-actions { display: flex; align-items: center; gap: 18px; margin-top: 6px; flex-wrap: wrap; }
+.ann-slide-date { display: flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--text-body); }
+.ann-slide-date svg { width: 14px; height: 14px; stroke: currentColor; }
+
+.ann-carousel-nav {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    gap: 8px;
+    z-index: 2;
+}
+.ann-carousel-dots {
+    position: absolute;
+    bottom: 18px;
+    right: 20px;
+    display: flex;
+    gap: 6px;
+    z-index: 2;
+}
+.ann-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--card-border);
+    transition: background 0.15s ease, transform 0.15s ease;
+}
+.ann-dot.is-active { background: var(--maroon-700); transform: scale(1.2); }
+
+/* ---- All Announcements list --------------------------------------------- */
+.ann-table-head {
+    display: grid;
+    grid-template-columns: 1fr 160px 110px 40px;
+    gap: 12px;
+    padding: 0 4px 10px;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: #b5a89f;
+    border-bottom: 1px solid var(--card-border);
+}
+
+.ann-row {
+    display: grid;
+    grid-template-columns: 1fr 160px 110px 40px;
+    gap: 12px;
+    align-items: center;
+    padding: 14px 4px;
+    border-bottom: 1px solid var(--card-border);
+}
+.ann-row.is-hidden { display: none; }
+.ann-row:last-of-type { border-bottom: none; }
+
+.ann-row-main { display: flex; align-items: center; gap: 14px; min-width: 0; }
+.ann-row-main img { width: 56px; height: 56px; border-radius: var(--radius-sm); object-fit: cover; flex-shrink: 0; }
+.ann-row-text { min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.ann-row-text strong { font-size: 14px; color: var(--text-dark); font-weight: 600; }
+.ann-row-text small { font-size: 12px; color: var(--text-body); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.ann-row-date { font-size: 12.5px; color: var(--text-body); }
+
+.ann-empty {
+    display: none;
+    padding: 30px 4px;
+    text-align: center;
+    font-size: 13.5px;
+    color: var(--text-body);
+}
+.ann-empty.is-visible { display: block; }
+
+.ann-load-more {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: 100%;
+    padding: 12px;
+    margin-top: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--maroon-700);
+    border-top: 1px solid var(--card-border);
+}
+.ann-load-more svg { width: 14px; height: 14px; stroke: currentColor; transition: transform 0.15s ease; }
+.ann-load-more:hover svg { transform: translateY(2px); }
+.ann-load-more:disabled { color: #b5a89f; cursor: default; }
+.ann-load-more:disabled svg { display: none; }
+
+/* ---- Important Notices (sidebar) ----------------------------------------- */
+.ann-notice-list { display: flex; flex-direction: column; gap: 14px; }
+.ann-notice-list li { display: flex; align-items: center; gap: 12px; }
+
+.ann-notice-icon {
+    width: 34px; height: 34px; border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+}
+.ann-notice-icon svg { width: 16px; height: 16px; }
+.ann-notice-icon.tint-blue  { background: var(--status-scheduled-bg); color: var(--status-scheduled-text); }
+.ann-notice-icon.tint-amber { background: var(--status-pending-bg);   color: var(--status-pending-text); }
+
+.ann-notice-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.ann-notice-body strong { font-size: 13px; color: var(--text-dark); font-weight: 600; }
+.ann-notice-body small { font-size: 11.5px; color: var(--text-body); }
+
+.ann-notice-chevron { width: 14px; height: 14px; stroke: #c9bdb4; flex-shrink: 0; }
+
+/* ---- "Have questions?" contact box --------------------------------------- */
+.ann-contact-box {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, var(--cream-deep), #f7ecd6);
+}
+.ann-contact-box h3 { font-size: 17px; margin-bottom: 6px; }
+.ann-contact-box p { font-size: 13px; color: var(--text-body); margin-bottom: 16px; max-width: 30ch; }
+.ann-contact-art {
+    position: absolute;
+    right: -14px;
+    bottom: -14px;
+    width: 90px;
+    height: 90px;
+    color: var(--gold);
+    opacity: 0.18;
+}
+.ann-contact-art svg { width: 100%; height: 100%; }
+
+/* ---- responsive ----------------------------------------------------------- */
+@media (max-width: 1200px) {
+    /* .ann-grid's own responsive collapse lives in style.css now, next
+       to the shared rule it belongs to */
+    .ann-slide { grid-template-columns: 1fr; padding-right: 20px; }
+    .ann-slide-image { min-height: 160px; }
+    .ann-carousel-nav, .ann-carousel-dots { position: static; margin: 10px 0 0 0; }
+    .ann-carousel-dots { margin-top: 4px; padding: 0 0 16px 0; }
+}
+
+@media (max-width: 720px) {
+    .ann-table-head { display: none; }
+    .ann-row { grid-template-columns: 1fr auto; grid-template-areas: "main main" "tag date" "tag save"; row-gap: 8px; }
+    .ann-row-main { grid-area: main; }
+    .ann-hero-text { padding: 20px; }
+}

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Placeholder thumbnail for the "Adoration Every Friday" announcement card. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 200" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="adGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#3d0f1f"/>
+      <stop offset="100%" stop-color="#5c1b2e"/>
+    </linearGradient>
+  </defs>
+  <rect width="300" height="200" fill="url(#adGrad)"/>
+  <g>
+    <rect x="110" y="120" width="14" height="50" rx="3" fill="#f3ead8"/>
+    <ellipse cx="117" cy="112" rx="7" ry="11" fill="#e6a13a"/>
+    <rect x="143" y="100" width="16" height="70" rx="3" fill="#f3ead8"/>
+    <ellipse cx="151" cy="90" rx="8" ry="13" fill="#f0b23f"/>
+    <rect x="178" y="128" width="14" height="42" rx="3" fill="#f3ead8"/>
+    <ellipse cx="185" cy="120" rx="7" ry="11" fill="#e6a13a"/>
+  </g>
+  <ellipse cx="150" cy="176" rx="90" ry="10" fill="#000000" opacity="0.2"/>
+</svg>

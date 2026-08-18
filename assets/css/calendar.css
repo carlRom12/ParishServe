@@ -1,0 +1,150 @@
+/* =====================================================================
+   calendar.css
+   Page-specific styles for calendar.php. The 2-column page layout and
+   the "Upcoming Events" widget are shared with announcements.php and
+   live in style.css now -- this file is just the month grid, mini
+   calendar, and the "sync your calendar" promo box.
+   ===================================================================== */
+
+/* ---- toolbar: view switch, category filter, today/prev/next, legend --- */
+.cal-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 22px;
+}
+.cal-toolbar-left { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+/* ---- main month grid card ---------------------------------------------- */
+.cal-grid-card { padding-bottom: 18px; }
+
+.cal-month-label {
+    text-align: center;
+    font-size: 22px;
+    margin-bottom: 18px;
+}
+
+.cal-weekday-row {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: var(--text-body);
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--card-border);
+    margin-bottom: 1px;
+}
+.cal-weekday-row .is-sunday { color: var(--maroon-700); }
+
+.cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    grid-auto-rows: minmax(92px, auto);
+    gap: 1px;
+    background: var(--card-border);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    margin-bottom: 18px;
+}
+
+.cal-cell {
+    background: var(--card-bg);
+    padding: 7px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+.cal-cell.is-muted { background: #faf7f0; }
+.cal-cell.is-muted .cal-cell-day { color: #c9bdb4; }
+
+.cal-cell-day {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-dark);
+    width: 22px; height: 22px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+.cal-cell-day.is-today { background: var(--maroon-700); color: #fff; }
+
+.cal-event { display: flex; align-items: flex-start; gap: 5px; font-size: 10.5px; color: var(--text-body); line-height: 1.3; }
+.cal-event.is-filtered-out { display: none; }
+.cal-event .ps-dot { margin-top: 3px; }
+.cal-event-text {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+.cal-event-more { font-size: 10px; color: var(--maroon-700); font-weight: 600; padding-left: 14px; }
+
+/* small round-button variant for the mini calendar's prev/next arrows */
+.ps-round-btn-sm { width: 26px; height: 26px; }
+.ps-round-btn-sm svg { width: 12px; height: 12px; }
+
+/* ---- Mini Calendar (sidebar) --------------------------------------------- */
+.cal-mini-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.cal-mini-head strong { font-size: 13px; color: var(--text-dark); font-family: 'Playfair Display', serif; }
+
+.cal-mini-weekday-row {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    font-size: 10.5px;
+    font-weight: 700;
+    color: var(--text-body);
+    margin-bottom: 6px;
+}
+
+.cal-mini-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+.cal-mini-cell {
+    display: flex; align-items: center; justify-content: center;
+    height: 28px;
+    font-size: 12px;
+    color: var(--text-dark);
+    border-radius: 50%;
+}
+.cal-mini-cell.is-muted { color: #c9bdb4; }
+.cal-mini-cell.is-today { background: var(--maroon-700); color: #fff; font-weight: 700; }
+
+.cal-view-full {
+    display: flex;
+    justify-content: center;
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid var(--card-border);
+}
+
+/* ---- "Add to your calendar" promo box ------------------------------------ */
+.cal-sync-box { position: relative; overflow: hidden; background: linear-gradient(135deg, var(--cream-deep), #f7ecd6); }
+.cal-sync-icon {
+    width: 38px; height: 38px; border-radius: 10px;
+    background: rgba(255,255,255,0.7);
+    color: var(--gold-dark);
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 12px;
+}
+.cal-sync-icon svg { width: 18px; height: 18px; }
+.cal-sync-box h3 { font-size: 16px; margin-bottom: 6px; }
+.cal-sync-box p { font-size: 12.5px; color: var(--text-body); margin-bottom: 14px; }
+
+/* ---- responsive ------------------------------------------------------ */
+@media (max-width: 900px) {
+    .cal-toolbar { flex-direction: column; align-items: flex-start; }
+    .cal-grid { grid-auto-rows: minmax(72px, auto); }
+    .cal-event-text { -webkit-line-clamp: 1; }
+}
+
+@media (max-width: 640px) {
+    .cal-weekday-row span:not(.is-sunday) { font-size: 10px; }
+    .cal-cell { padding: 5px; }
+    .cal-event { display: none; } /* too tight for event text at this width -- day numbers + today ring still show */
+    .cal-event-more { padding-left: 0; }
+}

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Placeholder thumbnail for the "Marriage Preparation Seminar" announcement row. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 200" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="smGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f3ead8"/>
+      <stop offset="100%" stop-color="#e6cf94"/>
+    </linearGradient>
+  </defs>
+  <rect width="300" height="200" fill="url(#smGrad)"/>
+  <!-- open book -->
+  <path d="M60 120 C90 108 120 108 150 120 V70 C120 58 90 58 60 70 Z" fill="#fffaf0"/>
+  <path d="M240 120 C210 108 180 108 150 120 V70 C180 58 210 58 240 70 Z" fill="#f3ead8"/>
+  <path d="M150 70 V120" stroke="#5c1b2e" stroke-width="2"/>
+  <g stroke="#6d2238" stroke-width="2" opacity="0.65">
+    <line x1="72" y1="82" x2="138" y2="76"/>
+    <line x1="72" y1="96" x2="138" y2="90"/>
+    <line x1="162" y1="76" x2="228" y2="82"/>
+    <line x1="162" y1="90" x2="228" y2="96"/>
+  </g>
+  <!-- two praying/joined hands silhouette above the book -->
+  <path d="M120 140 q30 -26 60 0 q-6 14 -30 14 q-24 0 -30 -14 Z" fill="#5c1b2e" opacity="0.85"/>
+</svg>

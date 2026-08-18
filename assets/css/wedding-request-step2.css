@@ -1,0 +1,178 @@
+/* =====================================================================
+   wedding-request-step2.css
+   Page-specific styles for wedding-request-step2.php. The step bar
+   (.wr-stepbar/.wr-step) and form action row (.wr-actions/.wr-cancel/
+   .wr-submit) are already shared via wedding-request.css since this
+   page loads that stylesheet's classes by name -- wait, no it
+   doesn't; see note below. This file owns the requirement rows, the
+   file inputs, and the "Need help?" sidebar card.
+   ===================================================================== */
+
+/* NOTE: .wr-stepbar/.wr-step/.wr-actions/.wr-cancel/.wr-submit/
+   .wr-next-step-notice are duplicated from wedding-request.css rather
+   than shared, because at the time wedding-request.css was written
+   there was only one page using them. Now that a second wizard step
+   needs the identical step bar and action row, these are prime
+   candidates to promote into style.css next time either page gets
+   touched -- flagging here rather than doing a bigger refactor in the
+   middle of building Step 2. */
+.wr-stepbar {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 22px;
+}
+.wr-step { display: flex; align-items: center; gap: 14px; flex: 1; min-width: 0; }
+.wr-step-num {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: var(--cream-deep);
+    color: var(--maroon-700);
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 18px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+}
+.wr-step.is-current .wr-step-num {
+    background: var(--maroon-700);
+    color: #fff;
+    box-shadow: 0 4px 10px rgba(92, 27, 46, 0.3);
+}
+.wr-step-text { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.wr-step-text strong { font-size: 14px; color: var(--text-body); font-weight: 600; }
+.wr-step.is-current .wr-step-text strong { color: var(--maroon-700); }
+.wr-step-text small { font-size: 12px; color: var(--text-body); }
+.wr-step-sep { width: 16px; height: 16px; stroke: #c9bdb4; flex-shrink: 0; }
+
+.wr-form h2 { font-size: 22px; }
+.wr-form-sub { font-size: 13.5px; color: var(--text-body); margin: 6px 0 22px; }
+
+.wr-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 18px;
+    padding-top: 24px;
+    border-top: 1px solid var(--card-border);
+}
+.wr-cancel {
+    flex: 0 0 200px;
+    justify-content: center;
+    background: var(--cream-deep);
+    color: var(--text-dark);
+}
+.wr-cancel:hover { background: #efe2c8; }
+.wr-submit { flex: 1; justify-content: center; }
+
+.wr-next-step-notice {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-top: 18px;
+    padding: 14px 16px;
+    border-radius: var(--radius-md);
+    background: var(--status-pending-bg);
+    color: var(--status-pending-text);
+    font-size: 13px;
+    line-height: 1.5;
+}
+.wr-next-step-notice svg { width: 16px; height: 16px; flex-shrink: 0; margin-top: 2px; }
+.wr-next-step-notice[hidden] { display: none; }
+
+/* ---- requirement rows -------------------------------------------------- */
+.wr-req-list { display: flex; flex-direction: column; }
+
+.wr-req-row {
+    display: grid;
+    grid-template-columns: 34px 1fr 260px;
+    gap: 16px;
+    align-items: start;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--card-border);
+}
+.wr-req-row:first-child { padding-top: 4px; }
+.wr-req-row:last-child { border-bottom: none; }
+
+.wr-req-num {
+    width: 34px; height: 34px; border-radius: 50%;
+    background: var(--cream-deep);
+    color: var(--maroon-700);
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 14px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+}
+
+.wr-req-text { display: flex; flex-direction: column; gap: 3px; padding-top: 6px; }
+.wr-req-text strong { font-size: 14px; color: var(--text-dark); font-weight: 600; line-height: 1.4; }
+.wr-req-text small { font-size: 12px; color: var(--text-body); }
+
+.wr-req-upload { display: flex; flex-direction: column; gap: 5px; align-items: flex-end; text-align: right; }
+
+.wr-req-upload input[type="file"] {
+    font: inherit;
+    font-size: 12.5px;
+    color: var(--text-body);
+    max-width: 260px;
+}
+.wr-req-upload input[type="file"]::file-selector-button {
+    padding: 8px 14px;
+    margin-right: 10px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--card-border);
+    background: var(--card-bg);
+    color: var(--text-dark);
+    font: inherit;
+    font-weight: 600;
+    font-size: 12.5px;
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease;
+}
+.wr-req-upload input[type="file"]::file-selector-button:hover {
+    background: var(--cream-deep);
+    border-color: var(--gold);
+}
+.wr-req-upload input[type="file"]:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 2px;
+}
+
+.wr-file-error {
+    color: var(--status-rejected-text);
+    font-weight: 600;
+}
+.wr-file-error[hidden] { display: none; }
+
+/* ---- notes field + optional label tag ---------------------------------- */
+.wr-notes-field { margin-top: 22px; }
+.wr-optional { font-weight: 400; color: var(--text-body); }
+
+/* ---- "Need help?" sidebar card ------------------------------------------ */
+.wr-help-card h3 { font-size: 17px; margin-bottom: 6px; }
+.wr-help-card > p { font-size: 13px; color: var(--text-body); margin-bottom: 18px; }
+.wr-help-card h4 { font-size: 13px; color: var(--maroon-700); margin-bottom: 10px; }
+
+.wr-help-links { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+.wr-help-link { justify-content: space-between; width: 100%; }
+
+.wr-help-divider { height: 1px; background: var(--card-border); margin: 4px 0 18px; }
+
+.wr-file-reminders { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+.wr-file-reminders li { font-size: 12.5px; color: var(--text-body); line-height: 1.5; }
+
+.wr-help-art { max-width: 150px; margin: 0 auto; opacity: 0.9; }
+.wr-help-art img { width: 100%; height: auto; }
+
+/* ---- responsive ------------------------------------------------------ */
+@media (max-width: 900px) {
+    .wr-stepbar { flex-direction: column; align-items: stretch; gap: 14px; }
+    .wr-step-sep { display: none; }
+    .wr-req-row { grid-template-columns: 34px 1fr; }
+    .wr-req-upload { grid-column: 1 / -1; align-items: flex-start; text-align: left; margin-top: 6px; }
+}
+
+@media (max-width: 640px) {
+    .wr-actions { flex-direction: column-reverse; }
+    .wr-cancel, .wr-submit { width: 100%; flex: none; }
+}

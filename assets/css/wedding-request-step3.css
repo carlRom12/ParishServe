@@ -1,0 +1,184 @@
+/* =====================================================================
+   wedding-request-step3.css
+   Page-specific styles for wedding-request-step3.php. Step bar and
+   form action row are duplicated from wedding-request-step2.css (same
+   "not shared yet" note applies -- three pages now want the identical
+   step bar, worth promoting to style.css next time any of these three
+   files gets touched again).
+   ===================================================================== */
+
+.wr-stepbar {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 22px;
+}
+.wr-step { display: flex; align-items: center; gap: 14px; flex: 1; min-width: 0; }
+.wr-step-num {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: var(--cream-deep);
+    color: var(--maroon-700);
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 18px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+}
+.wr-step.is-current .wr-step-num {
+    background: var(--maroon-700);
+    color: #fff;
+    box-shadow: 0 4px 10px rgba(92, 27, 46, 0.3);
+}
+.wr-step-text { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.wr-step-text strong { font-size: 14px; color: var(--text-body); font-weight: 600; }
+.wr-step.is-current .wr-step-text strong { color: var(--maroon-700); }
+.wr-step-text small { font-size: 12px; color: var(--text-body); }
+.wr-step-sep { width: 16px; height: 16px; stroke: #c9bdb4; flex-shrink: 0; }
+
+.wr-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 20px;
+    padding-top: 24px;
+    border-top: 1px solid var(--card-border);
+}
+.wr-cancel {
+    flex: 0 0 200px;
+    justify-content: center;
+    background: var(--cream-deep);
+    color: var(--text-dark);
+}
+.wr-cancel:hover { background: #efe2c8; }
+.wr-submit { flex: 1; justify-content: center; }
+
+.wr-next-step-notice {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-top: 18px;
+    padding: 14px 16px;
+    border-radius: var(--radius-md);
+    background: var(--status-pending-bg);
+    color: var(--status-pending-text);
+    font-size: 13px;
+    line-height: 1.5;
+}
+.wr-next-step-notice svg { width: 16px; height: 16px; flex-shrink: 0; margin-top: 2px; }
+.wr-next-step-notice[hidden] { display: none; }
+.wr-next-step-notice code { background: rgba(0,0,0,0.06); padding: 1px 5px; border-radius: 4px; font-size: 12px; }
+
+/* ---- intro + review grid ------------------------------------------------ */
+.wr3-intro { margin-bottom: 18px; }
+.wr3-intro h2 { font-size: 22px; }
+.wr3-intro p { font-size: 13.5px; color: var(--text-body); margin-top: 6px; }
+
+.wr3-review-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    align-items: start;
+}
+
+.wr3-card-sub { font-size: 13px; color: var(--text-body); margin: 6px 0 14px; }
+
+/* ---- "The Couple" review rows -------------------------------------------- */
+.wr3-section-label {
+    display: block;
+    font-size: 11.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--maroon-700);
+    margin: 16px 0 2px;
+}
+.wr3-review-card > .wr3-section-label:first-of-type { margin-top: 14px; }
+
+.wr3-review-rows { display: flex; flex-direction: column; }
+.wr3-review-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--card-border);
+    font-size: 13px;
+}
+.wr3-review-row:last-child { border-bottom: none; }
+.wr3-review-row span { color: var(--text-body); flex-shrink: 0; }
+.wr3-review-row strong { color: var(--text-dark); font-weight: 600; text-align: right; }
+.wr3-review-row-wrap strong { text-align: left; font-weight: 500; }
+
+/* ---- "Uploaded Documents" list ------------------------------------------- */
+.wr3-doc-list { display: flex; flex-direction: column; }
+.wr3-doc-list li { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--card-border); }
+.wr3-doc-list li:last-child { border-bottom: none; }
+.wr3-doc-check {
+    width: 20px; height: 20px; border-radius: 50%;
+    background: var(--status-approved-bg); color: var(--status-approved-text);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+}
+.wr3-doc-check svg { width: 11px; height: 11px; stroke-width: 3; }
+.wr3-doc-name { flex: 1; min-width: 0; font-size: 13px; color: var(--text-dark); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.wr3-doc-view { font-size: 12px; font-weight: 600; color: #b5a89f; cursor: not-allowed; flex-shrink: 0; }
+
+/* ---- Seminar Schedule ----------------------------------------------------- */
+.wr3-seminar-note { margin-bottom: 18px; }
+.wr3-seminar-fields { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+
+/* ---- Important Reminders (full width) ------------------------------------- */
+.wr3-reminders-card { margin-top: 20px; }
+.wr3-reminders-list { grid-template-columns: 1fr 1fr; display: grid; gap: 10px 24px; }
+
+/* ---- Confirm bar ----------------------------------------------------------- */
+.wr3-confirm-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+    background: var(--status-approved-bg);
+    border-color: transparent;
+}
+.wr3-confirm-text { display: flex; align-items: center; gap: 14px; }
+.wr3-confirm-icon {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--status-approved-text); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+}
+.wr3-confirm-icon svg { width: 18px; height: 18px; stroke-width: 2.4; }
+.wr3-confirm-text strong { display: block; font-size: 14.5px; color: var(--text-dark); }
+.wr3-confirm-text small { font-size: 12.5px; color: var(--text-body); }
+
+/* ---- right sidebar: "What happens next?" --------------------------------- */
+.wr3-next-card { background: linear-gradient(135deg, var(--cream-deep), #f7ecd6); text-align: center; }
+.wr3-next-art { width: 110px; margin: 0 auto 16px; }
+.wr3-next-art img { width: 100%; height: auto; }
+.wr3-next-card h3 { font-size: 16px; margin-bottom: 8px; }
+.wr3-next-card h4 { font-size: 14px; color: var(--maroon-700); margin-bottom: 8px; }
+.wr3-next-card p { font-size: 12.5px; color: var(--text-body); line-height: 1.55; margin-bottom: 8px; text-align: left; }
+.wr3-next-card p:last-of-type { margin-bottom: 0; }
+.wr3-muted { color: #9a8b83 !important; font-style: italic; }
+.wr3-help-btn { width: 100%; justify-content: center; margin-top: 6px; }
+.wr3-divider { height: 1px; background: var(--card-border); margin: 18px 0; }
+
+/* ---- responsive ------------------------------------------------------ */
+@media (max-width: 1100px) {
+    .wr3-review-grid { grid-template-columns: 1fr; }
+    .wr3-reminders-list { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 900px) {
+    .wr-stepbar { flex-direction: column; align-items: stretch; gap: 14px; }
+    .wr-step-sep { display: none; }
+    .wr3-seminar-fields { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 640px) {
+    .wr-actions { flex-direction: column-reverse; }
+    .wr-cancel, .wr-submit { width: 100%; flex: none; }
+    .wr3-confirm-bar { flex-direction: column; align-items: flex-start; }
+}

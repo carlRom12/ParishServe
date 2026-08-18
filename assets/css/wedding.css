@@ -1,0 +1,165 @@
+/* =====================================================================
+   wedding.css
+   Page-specific styles for wedding.php. Hero banner is the shared
+   .ann-hero from style.css; everything below is unique to this page's
+   layout (intro banner, quick-link cards, 3-step process, reminders,
+   about/quote card).
+   ===================================================================== */
+
+/* NOTE: the "art + heading + paragraph" intro banner (.wed-banner and
+   friends) moved to style.css -- wedding-guidelines.php needed the
+   identical "Welcome!" banner pattern, just without the button. Kept
+   the same class names there (not renamed to something more generic)
+   for the same reason .ann- stuck around on shared pieces: renaming
+   across pages wasn't worth the churn. */
+.wed-start-btn { flex-shrink: 0; white-space: nowrap; }
+
+/* ---- quick-link cards row ------------------------------------------------ */
+.wed-quicklinks {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+    margin-bottom: 22px;
+}
+
+.wed-quicklink-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+    padding: 18px;
+    transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+.wed-quicklink-card:hover { box-shadow: var(--shadow-card-hover); transform: translateY(-2px); }
+
+.wed-quicklink-icon {
+    width: 44px; height: 44px; border-radius: 12px;
+    background: var(--cream-deep);
+    color: var(--maroon-700);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+}
+.wed-quicklink-icon svg { width: 20px; height: 20px; }
+
+.wed-quicklink-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.wed-quicklink-text strong { font-size: 14px; color: var(--maroon-700); font-weight: 700; }
+.wed-quicklink-text small { font-size: 12px; color: var(--text-body); line-height: 1.35; }
+
+.wed-quicklink-chevron { width: 15px; height: 15px; stroke: #c9bdb4; flex-shrink: 0; }
+
+/* ---- overview row: process / reminders / schedule ------------------------ */
+.wed-overview-grid {
+    display: grid;
+    grid-template-columns: 1.8fr 1fr 1fr;
+    gap: 20px;
+    align-items: stretch;
+    margin-bottom: 22px;
+}
+
+.wed-process-card p,
+.wed-schedule-card p { font-size: 13px; color: var(--text-body); margin: 8px 0 0; line-height: 1.55; }
+
+.wed-reminders-card,
+.wed-schedule-card { display: flex; flex-direction: column; }
+.wed-reminders-card { background: linear-gradient(135deg, var(--cream-deep), #f7ecd6); }
+.wed-schedule-card .ps-btn { margin-top: 16px; align-self: flex-start; }
+
+/* 3-step process indicator */
+.wed-steps {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    position: relative;
+    margin-top: 26px;
+    padding: 0 10px;
+}
+.wed-steps::before {
+    content: '';
+    position: absolute;
+    top: 22px;
+    left: 54px;
+    right: 54px;
+    height: 2px;
+    background: var(--card-border);
+    z-index: 0;
+}
+.wed-step {
+    position: relative;
+    z-index: 1;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    text-align: center;
+}
+.wed-step-num {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: var(--cream-deep);
+    border: 2px solid var(--card-border);
+    color: var(--maroon-700);
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 18px;
+    display: flex; align-items: center; justify-content: center;
+}
+.wed-step.is-current .wed-step-num {
+    background: var(--maroon-700);
+    border-color: var(--maroon-700);
+    color: #fff;
+    box-shadow: 0 4px 10px rgba(92, 27, 46, 0.3);
+}
+.wed-step strong { font-size: 13.5px; color: var(--text-dark); }
+.wed-step small { font-size: 11px; color: var(--text-body); }
+
+/* .wed-reminder-list (checkmark checklist) moved to style.css --
+   wedding-request-step3.php's "Important Reminders" card needed the
+   identical look. */
+
+/* ---- About Church Wedding + scripture quote ------------------------------ */
+.wed-about-card {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+}
+.wed-about-text { flex: 1.4; min-width: 0; }
+.wed-about-text p { font-size: 13.5px; color: var(--text-body); line-height: 1.6; margin-top: 8px; max-width: 62ch; }
+
+.wed-quote {
+    flex: 1;
+    text-align: right;
+    border-left: 1px solid var(--card-border);
+    padding-left: 28px;
+}
+.wed-quote p {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 16px;
+    color: var(--text-dark);
+    line-height: 1.5;
+}
+.wed-quote cite {
+    display: block;
+    margin-top: 8px;
+    font-size: 12.5px;
+    font-style: normal;
+    color: var(--text-body);
+}
+
+/* ---- responsive ------------------------------------------------------ */
+@media (max-width: 1200px) {
+    .wed-quicklinks { grid-template-columns: repeat(2, 1fr); }
+    .wed-overview-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 800px) {
+    .wed-banner { flex-direction: column; align-items: flex-start; text-align: left; }
+    .wed-banner-art { width: 90px; }
+    .wed-start-btn { width: 100%; justify-content: center; }
+    .wed-quicklinks { grid-template-columns: 1fr; }
+    .wed-about-card { flex-direction: column; align-items: flex-start; }
+    .wed-quote { text-align: left; border-left: none; border-top: 1px solid var(--card-border); padding-left: 0; padding-top: 16px; width: 100%; }
+}

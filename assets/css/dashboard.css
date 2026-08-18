@@ -1,0 +1,305 @@
+/* =====================================================================
+   dashboard.css
+   Page-specific styles for dashboard.php ONLY. Shared stuff (sidebar,
+   cards, status pills, colors) lives in style.css and is loaded before
+   this file, so we don't repeat any of that here -- just the layout
+   and pieces that are unique to this one page (stat cards, timeline,
+   request progress stepper, announcement grid).
+   ===================================================================== */
+
+/* ---- greeting / hero banner ---------------------------------------- */
+.db-hero {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: 150px;
+    margin-bottom: 26px;
+}
+
+.db-hero-text { max-width: 560px; position: relative; z-index: 2; }
+
+.db-greeting {
+    font-size: 30px;
+    font-weight: 700;
+    color: var(--text-dark);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.db-wave { font-size: 26px; }
+
+.db-subtitle {
+    margin-top: 8px;
+    color: var(--text-body);
+    font-size: 14.5px;
+}
+
+.db-hero-image {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 56%;
+    max-width: 520px;
+    height: 165px;
+    border-radius: 24px;
+    overflow: hidden;
+}
+.db-hero-image img { width: 100%; height: 100%; object-fit: cover; }
+.db-hero-image::after {
+    /* fades the photo into the page background on its left edge so it
+       reads as a banner rather than a hard-edged rectangle, matching
+       the reference image's soft blend */
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, var(--cream) 0%, rgba(250,245,234,0.75) 18%, rgba(250,245,234,0) 55%);
+}
+
+/* ---- stat cards ------------------------------------------------------ */
+.db-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin-bottom: 26px;
+}
+
+.stat-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+    padding: 20px 22px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.stat-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.stat-icon svg { width: 23px; height: 23px; }
+
+.stat-icon.tint-amber  { background: var(--status-pending-bg);   color: var(--status-pending-text); }
+.stat-icon.tint-green  { background: var(--status-approved-bg);  color: var(--status-approved-text); }
+.stat-icon.tint-maroon { background: var(--status-rejected-bg);  color: #8a2b3f; }
+.stat-icon.tint-blue   { background: var(--status-scheduled-bg); color: var(--status-scheduled-text); }
+
+.stat-body { display: flex; flex-direction: column; line-height: 1.3; }
+.stat-count { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 700; color: var(--text-dark); }
+.stat-label { font-size: 13.5px; font-weight: 600; color: var(--text-dark); }
+.stat-sub   { font-size: 11.5px; color: var(--text-body); }
+
+/* ---- main 3-column grid ---------------------------------------------- */
+.db-grid {
+    display: grid;
+    grid-template-columns: 0.95fr 1.35fr 1fr;
+    gap: 20px;
+    align-items: start;
+    margin-bottom: 26px;
+}
+
+.db-side { display: flex; flex-direction: column; gap: 20px; }
+
+/* ---- "Today" timeline -------------------------------------------------- */
+.db-timeline { display: flex; flex-direction: column; margin-bottom: 6px; }
+
+.db-timeline-item {
+    display: grid;
+    grid-template-columns: 62px 14px 1fr;
+    align-items: start;
+    gap: 10px;
+    padding: 9px 0;
+    position: relative;
+}
+.db-timeline-item:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: 67px;
+    top: 24px;
+    bottom: -3px;
+    width: 2px;
+    background: var(--card-border);
+}
+
+.db-timeline-time { font-size: 12px; font-weight: 600; color: var(--text-body); padding-top: 2px; }
+
+.db-timeline-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-top: 4px;
+    position: relative;
+    z-index: 1;
+    box-shadow: 0 0 0 3px var(--card-bg);
+}
+.db-timeline-dot.dot-blue { background: var(--status-scheduled-text); }
+.db-timeline-dot.dot-red  { background: var(--status-rejected-text); }
+.db-timeline-dot.dot-gold { background: var(--gold); }
+
+.db-timeline-body strong { display: block; font-size: 13.5px; font-weight: 600; color: var(--text-dark); }
+.db-timeline-body small {
+    display: flex; align-items: center; gap: 5px;
+    font-size: 11.5px; color: var(--text-body); margin-top: 2px;
+}
+.db-timeline-body small svg { width: 11px; height: 11px; stroke: currentColor; }
+
+/* set by main.js: whichever schedule slot is currently happening,
+   based on the visitor's own clock */
+.db-timeline-item.is-now .db-timeline-body strong { color: var(--maroon-700); }
+.db-timeline-item.is-now .db-timeline-dot { box-shadow: 0 0 0 4px var(--gold-light); }
+.db-timeline-item.is-now .db-timeline-time { color: var(--maroon-700); }
+
+/* ---- "My Requests" list ------------------------------------------------ */
+.db-request-list { display: flex; flex-direction: column; }
+
+.db-request-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--card-border);
+}
+.db-request-item:last-child { border-bottom: none; }
+
+.db-request-icon {
+    width: 42px; height: 42px; border-radius: 50%;
+    background: var(--cream-deep);
+    color: var(--maroon-700);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+}
+.db-request-icon svg { width: 19px; height: 19px; }
+
+.db-request-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.db-request-body strong { font-size: 14px; color: var(--text-dark); font-weight: 600; }
+.db-request-body small { font-size: 12px; color: var(--text-body); }
+.db-request-extra {
+    display: flex; align-items: center; gap: 4px;
+    color: var(--maroon-700) !important; font-weight: 600 !important;
+}
+.db-request-extra svg { width: 12px; height: 12px; stroke: currentColor; }
+
+/* ---- request progress stepper ------------------------------------------ */
+.db-progress { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--card-border); }
+
+.db-progress-label {
+    display: block;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: var(--text-body);
+    margin-bottom: 16px;
+}
+
+.db-progress-track { display: flex; justify-content: space-between; position: relative; }
+.db-progress-track::before {
+    content: '';
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    right: 16px;
+    height: 2px;
+    background-image: linear-gradient(to right, var(--card-border) 55%, transparent 0%);
+    background-size: 9px 2px;
+    background-repeat: repeat-x;
+    z-index: 0;
+}
+
+.db-progress-step {
+    position: relative;
+    z-index: 1;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 7px;
+}
+
+.db-progress-node {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--card-bg);
+    border: 2px solid var(--card-border);
+    color: var(--text-body);
+    display: flex; align-items: center; justify-content: center;
+}
+.db-progress-node svg { width: 15px; height: 15px; }
+
+.db-progress-step.is-current .db-progress-node {
+    background: var(--maroon-700);
+    border-color: var(--maroon-700);
+    color: #fff;
+    box-shadow: 0 4px 10px rgba(92, 27, 46, 0.35);
+}
+
+.db-progress-name { font-size: 10.5px; font-weight: 500; color: var(--text-body); text-align: center; }
+.db-progress-step.is-current .db-progress-name { color: var(--maroon-700); font-weight: 700; }
+
+/* ---- Parish Updates featured card --------------------------------------- */
+.db-update-feature {
+    background: linear-gradient(135deg, var(--cream-deep), #f7ecd6);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+}
+.db-update-feature img { width: 100%; height: 108px; object-fit: cover; }
+.db-update-feature-text { padding: 14px 16px 16px; }
+.db-update-feature-text strong { display: block; font-size: 14.5px; color: var(--text-dark); margin-bottom: 6px; }
+.db-update-feature-text p { font-size: 12.5px; color: var(--text-body); line-height: 1.55; margin-bottom: 10px; }
+
+/* ---- Parish Contacts card ------------------------------------------------ */
+.db-contact-list { display: flex; flex-direction: column; gap: 14px; margin-bottom: 14px; }
+.db-contact-list li { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.db-contact-text { display: flex; flex-direction: column; }
+.db-contact-text strong { font-size: 13.5px; color: var(--text-dark); font-weight: 600; }
+.db-contact-text small { font-size: 12px; color: var(--text-body); }
+.db-contact-phone {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 12.5px; font-weight: 600; color: var(--maroon-700);
+    white-space: nowrap;
+}
+.db-contact-phone svg { width: 13px; height: 13px; stroke: currentColor; }
+
+/* ---- Recent Announcements strip ------------------------------------------ */
+.db-announcement-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-top: 4px;
+}
+
+.db-announcement-card {
+    display: block;
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    background: var(--card-bg);
+    transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+.db-announcement-card:hover { box-shadow: var(--shadow-card-hover); transform: translateY(-2px); }
+.db-announcement-card img { width: 100%; height: 130px; object-fit: cover; }
+.db-announcement-text { padding: 14px 16px; }
+.db-announcement-text strong { display: block; font-size: 14px; color: var(--text-dark); margin-bottom: 4px; }
+.db-announcement-text p { font-size: 12.5px; color: var(--text-body); line-height: 1.5; margin-bottom: 8px; }
+.db-announcement-text small { font-size: 11px; color: #9a8b83; }
+
+/* ---- responsive ------------------------------------------------------ */
+@media (max-width: 1200px) {
+    .db-grid { grid-template-columns: 1fr 1.3fr; }
+    .db-side { grid-column: 1 / -1; flex-direction: row; }
+    .db-side .ps-card { flex: 1; }
+}
+
+@media (max-width: 900px) {
+    .db-stats { grid-template-columns: repeat(2, 1fr); }
+    .db-grid { grid-template-columns: 1fr; }
+    .db-side { flex-direction: column; }
+    .db-announcement-grid { grid-template-columns: 1fr; }
+    .db-hero-image { display: none; }
+}
