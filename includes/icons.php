@@ -71,6 +71,25 @@ $GLOBALS['PS_ICONS'] = [
     /* added for the Wedding Request Step 3 (Review & Send) page */
     'message'      => '<path d="M4 5h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H9l-5 4v-4H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z"/>',
     'send'         => '<path d="M4 12 20 4l-6 16-3-7-7-3z"/>',
+
+    /* added for the public landing page (index.php) */
+    'praying-hands' => '<path d="M12 3c0 4-1 6-3 8-1.5 1.5-2 3-1 5 .8 1.6 2.5 2.5 4 2 .7-.2 1-.6 1-1"/><path d="M12 3c0 4 1 6 3 8 1.5 1.5 2 3 1 5-.8 1.6-2.5 2.5-4 2-.7-.2-1-.6-1-1"/><path d="M12 3v14"/>',
+    'heart-cross'   => '<path d="M12 20s-7-4.4-9.5-9C1 8 2.5 4.5 6 4.5c2 0 3.5 1.2 4 2.5.5-1.3 2-2.5 4-2.5 3.5 0 5 3.5 3.5 6.5C19 15.6 12 20 12 20z"/><path d="M12 8.5v6M9 11.5h6"/>',
+    'bible'         => '<path d="M4 4.5A1.5 1.5 0 0 1 5.5 3H19v17H5.5A1.5 1.5 0 0 0 4 21.5z"/><path d="M4 4.5v17"/><path d="M12 7v7M8.5 10.5h7"/>',
+    'heart-hand'    => '<path d="M4 14c0-1 .8-2 2-2h2.5l3 1h5c1 0 1.5.6 1.5 1.3 0 .8-.6 1.4-1.4 1.4H12"/><path d="M4 14v5.5c0 .8.7 1.5 1.5 1.5H14c2.5 0 5-1.5 6.5-3.5"/><path d="M12 4.5c-2-2-5.5-.5-5.5 2 0 2 2.5 3.7 5.5 5.5 3-1.8 5.5-3.5 5.5-5.5 0-2.5-3.5-4-5.5-2z"/>',
+    'menu'          => '<path d="M4 6h16M4 12h16M4 18h16"/>',
+    'close'         => '<path d="M6 6l12 12M18 6L6 18"/>',
+
+    /* added for the login page (index.php's auth flow) */
+    'mail'          => '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>',
+    'lock'          => '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
+    'eye'           => '<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/>',
+    'eye-off'       => '<path d="M3 3l18 18"/><path d="M10.6 5.2A10.6 10.6 0 0 1 12 5c6.5 0 10 7 10 7a17.7 17.7 0 0 1-3.2 4.1M6.5 6.5C3.9 8.2 2 12 2 12s3.5 7 10 7c1.4 0 2.7-.3 3.8-.8"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/>',
+    'log-in'        => '<path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="M10 17l5-5-5-5"/><path d="M15 12H3"/>',
+
+    /* added for the registration page */
+    'user-plus'     => '<circle cx="10" cy="8" r="3.5"/><path d="M3 20c0-3.9 3.1-7 7-7s7 3.1 7 7"/><path d="M18 8h4M20 6v4"/>',
+    'shield-check'  => '<path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/><path d="M9 12l2 2 4-4"/>',
 ];
 
 /**

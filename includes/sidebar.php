@@ -98,9 +98,13 @@ $psNavGroups = [
     <div class="ps-sidebar-art"><?php ps_icon('church'); ?></div>
 
     <div class="ps-logout-wrap">
-        <!-- logout.php isn't built yet (no backend this session), but
-             the button/link is wired to where it will live -->
-        <a href="logout.php" class="ps-logout-btn">
+        <!-- there's no real session to destroy yet (no backend this
+             session), so "logging out" just returns to the public
+             landing page rather than pointing at a logout.php that
+             doesn't exist. Once auth is real, this becomes a POST to
+             a logout endpoint that clears the session and THEN
+             redirects here. -->
+        <a href="index.php" class="ps-logout-btn">
             <?php ps_icon('logout'); ?>
             <span>Log out</span>
         </a>

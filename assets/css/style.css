@@ -65,7 +65,14 @@
 /* ---- Reset ---------------------------------------------------------- */
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
+/* smooth anchor scrolling site-wide, but not for anyone who's told
+   their OS they don't want motion -- this rule was here before the
+   public landing page needed real anchor-nav (#home/#about/etc.), it
+   just never had a reduced-motion guard until now */
 html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+}
 
 body {
     font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -569,30 +576,63 @@ h1, h2, h3, h4 {
 .ps-segmented button.active { background: var(--maroon-700); color: #fff; }
 
 /* plain select dropdown, styled to match the rest of the toolbar controls */
+/* IMPORTANT: the select spans the FULL box (border/background/padding
+   all live on the <select> itself now, not the wrapper) and the
+   chevron is a decorative, pointer-events:none overlay on top of it.
+   This used to be an inline-flex row of [select, separate icon]
+   sitting side by side -- which meant a click landing exactly on the
+   visual arrow hit the icon, not the select, and the dropdown didn't
+   open. Overlaying instead (same pattern as .ps-input-icon/
+   .ps-field-icon) means every pixel in the box is really the select,
+   so the arrow is always clickable. font-size/line-height are set
+   explicitly and match .ps-field's inputs exactly -- they used to
+   differ (13px here vs 14px on text inputs), which is why this box
+   came out a couple pixels shorter than a date/text field next to it
+   in the same row. */
 .ps-select {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 14px;
+    position: relative;
+    display: inline-block;
+    width: auto;
+}
+/* .ps-select.ps-select (repeating the class) isn't a typo -- it's the
+   same specificity fix applied to .ps-field-icon/.ps-input-icon
+   earlier. A <select> wrapped in .ps-select often ALSO sits inside a
+   .ps-field (register.php's Suffix/Gender do), and ".ps-field select"
+   in the form-kit block below ties this rule's specificity exactly
+   (1 class + 1 type each) -- a tie that ".ps-field select" would win
+   purely because it's declared later in the file, silently stripping
+   the padding-right this select needs to clear the chevron. Repeating
+   the class pushes this to 2 classes + 1 type, which wins outright
+   regardless of where either rule sits in the file. */
+.ps-select.ps-select select {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 100%;
+    padding: 12px 34px 12px 14px;
     border-radius: var(--radius-sm);
     border: 1px solid var(--card-border);
     background: var(--card-bg);
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text-dark);
-}
-.ps-select select {
-    border: none;
-    background: transparent;
     font: inherit;
-    color: inherit;
-    appearance: none;
-    -webkit-appearance: none;
-    padding-right: 4px;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 20px;
+    color: var(--text-dark);
     cursor: pointer;
 }
-.ps-select select:focus { outline: none; }
-.ps-select svg { width: 12px; height: 12px; stroke: var(--text-body); flex-shrink: 0; }
+.ps-select.ps-select select:focus {
+    outline: none;
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(201, 162, 74, 0.15);
+}
+.ps-select svg {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 14px; height: 14px;
+    stroke: var(--text-body);
+    pointer-events: none;
+}
 
 /* soft cream/gold info banner, e.g. calendar.php's "events subject to
    change" footnote -- generic enough other pages will want it too */
@@ -644,6 +684,7 @@ input[type="radio"], input[type="checkbox"] { accent-color: var(--maroon-700); }
 .ps-field input[type="tel"],
 .ps-field input[type="date"],
 .ps-field input[type="number"],
+.ps-field input[type="password"],
 .ps-field select,
 .ps-field textarea {
     padding: 12px 14px;
@@ -652,9 +693,33 @@ input[type="radio"], input[type="checkbox"] { accent-color: var(--maroon-700); }
     background: var(--card-bg);
     font: inherit;
     font-size: 14px;
+    line-height: 20px; /* explicit, matches .ps-select select exactly --
+        different form control types (text input vs date input vs
+        select) can compute slightly different natural line-heights at
+        the same font-size, which is what made a date field come out a
+        few px taller than a <select> sitting right next to it in the
+        same row. Pinning both to the same literal value removes the
+        ambiguity instead of hoping the browser's defaults happen to
+        agree. */
     color: var(--text-dark);
     width: 100%;
 }
+.ps-field input::placeholder, .ps-field textarea::placeholder { color: #b5a89f; }
+
+/* a <select> has no "placeholder" concept -- its hint option (e.g.
+   "Select suffix") renders in the exact same dark color a real answer
+   would, which reads as already-filled-in and inconsistent next to
+   real placeholder text next to it. main.js toggles this class based
+   on whether the current value is the empty hint option, so an
+   unanswered dropdown visually matches an empty text field. */
+/* .is-placeholder repeated: same reasoning as .ps-select.ps-select
+   above -- ".ps-select.ps-select select" (2 classes + 1 type) would
+   tie this rule's specificity exactly, and a tie is fragile (only
+   wins by luck of file order). The repeat pushes this to 3 classes,
+   an unambiguous win regardless of where either rule lives. */
+.ps-field select.is-placeholder.is-placeholder { color: #b5a89f; }
+.ps-field select option { color: var(--text-dark); } /* the dropdown's own option list stays normal weight regardless */
+
 .ps-field input:focus, .ps-field select:focus, .ps-field textarea:focus {
     outline: none;
     border-color: var(--gold);
@@ -668,19 +733,64 @@ input[type="radio"], input[type="checkbox"] { accent-color: var(--maroon-700); }
 .ps-radio input[type="radio"] { width: 18px; height: 18px; }
 
 .ps-form-row-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+.ps-form-row-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
 .ps-form-row-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
 
 /* a select wrapped the same way as calendar.php's toolbar dropdown,
-   just stretched to fill a form field's full width */
-.ps-select.is-block { width: 100%; justify-content: space-between; }
-.ps-select.is-block select { flex: 1; }
+   just stretched to fill a form field's full width. The select inside
+   already fills .ps-select at 100% regardless (see the base rule
+   above) -- this modifier only needs to stretch the WRAPPER itself,
+   since plain .ps-select is inline-block and shrinks to content by
+   default (fine for a compact toolbar filter like calendar.php's; not
+   fine inside a full-width form field). */
+.ps-select.is-block { display: block; width: 100%; }
 
 /* an <input> with a trailing icon (e.g. the calendar glyph on a date
    field) -- the input keeps its normal .ps-field styling, this just
    wraps it so the icon can sit inside the right edge */
 .ps-input-icon { position: relative; }
-.ps-input-icon input { padding-right: 40px; }
+/* NOTE the [type] on the end isn't decorative -- it's load-bearing.
+   .ps-field input[type="date"] (etc.) sets padding via a selector
+   worth (2 classes/attributes, 1 type). ".ps-field .ps-input-icon
+   input" alone TIES that exactly (2 classes, 1 type) and would only
+   win by virtue of appearing later in the file -- fragile, and
+   exactly the kind of thing that silently breaks if this block ever
+   gets moved. Adding a bare [type] attribute selector (every input
+   has one) pushes this to (3, 1), so it wins outright regardless of
+   source order. Found this the hard way: without it, the icon
+   overlapped the input's placeholder text because the padding never
+   actually applied. */
+.ps-field .ps-input-icon input[type] { padding-right: 40px; }
 .ps-input-icon svg { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; stroke: var(--text-body); pointer-events: none; }
+
+/* type="date" inputs draw their OWN calendar icon natively in
+   Chrome/Edge/Safari, right on top of the custom one .ps-input-icon
+   already draws -- looked like two calendar icons side by side.
+   Just dim it to invisible rather than repositioning it (that pseudo-
+   element lives in the browser's internal shadow DOM for the input;
+   fighting its layout with position/width/height is fragile and
+   varies by browser version). Opacity alone still leaves it clickable
+   in its own default spot, which is enough to keep the native picker
+   reachable while removing the visual duplicate. Firefox has no
+   equivalent pseudo-element to target, so this is a Chromium/WebKit-
+   specific fix -- acceptable since that covers the primary
+   dev/testing browsers here. */
+.ps-input-icon input[type="date"]::-webkit-calendar-picker-indicator {
+    opacity: 0;
+    cursor: pointer;
+}
+
+/* mirror of .ps-input-icon, LEADING icon instead of trailing -- first
+   built for login.php's email/password fields, generic enough any
+   future field (search-style inputs aside, which already have their
+   own .ps-search) can reuse it. `.has-trailing` adds room on the
+   right too, for a field that also has a trailing control like the
+   password show/hide button. Same specificity note as .ps-input-icon
+   above applies here (the [type] is load-bearing, not decorative). */
+.ps-field-icon { position: relative; }
+.ps-field .ps-field-icon input[type] { padding-left: 42px; }
+.ps-field .ps-field-icon.has-trailing input[type] { padding-right: 42px; }
+.ps-field-icon > svg { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); width: 17px; height: 17px; stroke: var(--text-body); pointer-events: none; }
 
 /* =====================================================================
    Intro banner (art + heading + paragraph, optional button)

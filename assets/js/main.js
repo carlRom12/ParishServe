@@ -290,3 +290,327 @@
     toggle.addEventListener('change', sync);
     sync();
 })();
+
+
+/**
+ * index.php's public navbar mobile menu. Toggle button flips the
+ * panel's `hidden` attribute and keeps aria-expanded in sync (screen
+ * readers rely on that, not just the visual state) -- landing.css
+ * uses that same aria-expanded value to swap which of the two icons
+ * (menu/close) is visible inside the button, so this never touches
+ * icon markup directly and can't drift out of sync with icons.php.
+ * Also closes on Escape and whenever a link inside the menu is
+ * actually clicked -- without that second bit, tapping "Services"
+ * would leave the mobile menu open, hovering over the newly-scrolled-
+ * to content underneath.
+ */
+(function initMobileMenu() {
+    const toggle = document.querySelector('[data-mobile-menu-toggle]');
+    const menu = document.querySelector('[data-mobile-menu]');
+    if (!toggle || !menu) return;
+
+    function setOpen(isOpen) {
+        menu.hidden = !isOpen;
+        toggle.setAttribute('aria-expanded', String(isOpen));
+    }
+
+    toggle.addEventListener('click', () => setOpen(menu.hidden));
+    menu.addEventListener('click', (e) => {
+        if (e.target.closest('a')) setOpen(false);
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !menu.hidden) setOpen(false);
+    });
+})();
+
+
+/**
+ * Password show/hide toggle. Generic on [data-password-toggle] sitting
+ * next to a <input type="password">, so login.php today and
+ * register.php later both get this for free. Icon swap is CSS-driven
+ * off the button's own aria-pressed state (see login.css) -- same
+ * "don't rebuild icon markup in JS" approach as the mobile menu toggle.
+ */
+(function initPasswordToggles() {
+    document.querySelectorAll('[data-password-toggle]').forEach((btn) => {
+        const input = btn.closest('.ps-field-icon')?.querySelector('input[type="password"], input[type="text"]');
+        if (!input) return;
+
+        btn.addEventListener('click', () => {
+            const showing = input.type === 'text';
+            input.type = showing ? 'password' : 'text';
+            btn.setAttribute('aria-pressed', String(!showing));
+            btn.setAttribute('aria-label', showing ? 'Show password' : 'Hide password');
+        });
+    });
+})();
+
+
+/**
+ * Shared by login.php AND register.php's validation (below). Finds
+ * each field's error <small> by ID convention -- an input with
+ * id="foo" pairs with an error element id="fooError" (every auth field
+ * in both forms follows this, including the register page's checkbox)
+ * -- so this doesn't care whether the input sits inside a .auth-field
+ * wrapper or not, unlike an earlier version that used .closest() and
+ * would've silently done nothing for the checkbox row.
+ */
+function setAuthFieldError(input, message) {
+    const errorEl = document.getElementById(input.id + 'Error');
+    const wrap = input.closest('.auth-field');
+
+    if (errorEl) {
+        errorEl.textContent = message || '';
+        errorEl.hidden = !message;
+    }
+    if (wrap) wrap.classList.toggle('has-error', Boolean(message));
+
+    if (message) input.setAttribute('aria-invalid', 'true');
+    else input.removeAttribute('aria-invalid');
+}
+
+/**
+ * login.php's form. There's no backend to authenticate against (see
+ * that file's header comment) so this validates for real -- exact
+ * wording the group specified, shown next to the relevant field, focus
+ * moved to the first invalid field -- and only once both fields pass
+ * does it reveal the "not wired up yet" notice, rather than faking a
+ * success or failure. Written generically enough (matching on
+ * data-login-form / data-field-error="email|password") that swapping
+ * in a real fetch()-based submit later is a contained change inside
+ * this one function, not a rewrite of the validation itself.
+ */
+(function initLoginForm() {
+    const form = document.querySelector('[data-login-form]');
+    if (!form) return;
+
+    const emailInput = document.getElementById('loginEmail');
+    const passwordInput = document.getElementById('loginPassword');
+    const alertBox = document.querySelector('[data-auth-alert]');
+    const submitBtn = document.querySelector('[data-login-submit]');
+    const submitLabel = submitBtn ? submitBtn.querySelector('[data-submit-label]') : null;
+    if (!emailInput || !passwordInput) return;
+
+    function validateEmail() {
+        const value = emailInput.value.trim();
+        if (!value) { setAuthFieldError(emailInput, 'Please enter your email address.'); return false; }
+        // permissive shape check matching what type="email" already
+        // constrains natively -- not exhaustive RFC 5322, doesn't need
+        // to be for a client-side "did you typo this" hint
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+            setAuthFieldError(emailInput, 'Please enter a valid email address.');
+            return false;
+        }
+        setAuthFieldError(emailInput, null);
+        return true;
+    }
+
+    function validatePassword() {
+        if (!passwordInput.value) { setAuthFieldError(passwordInput, 'Please enter your password.'); return false; }
+        setAuthFieldError(passwordInput, null);
+        return true;
+    }
+
+    // re-validate as they type, but only once a field has already
+    // shown an error -- don't nag someone who hasn't finished typing
+    // their first pass through the form
+    emailInput.addEventListener('blur', validateEmail);
+    passwordInput.addEventListener('blur', validatePassword);
+    emailInput.addEventListener('input', () => {
+        if (emailInput.closest('.auth-field').classList.contains('has-error')) validateEmail();
+    });
+    passwordInput.addEventListener('input', () => {
+        if (passwordInput.closest('.auth-field').classList.contains('has-error')) validatePassword();
+    });
+
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        if (alertBox) alertBox.hidden = true;
+
+        const emailOk = validateEmail();
+        const passwordOk = validatePassword();
+
+        if (!emailOk) { emailInput.focus(); return; }
+        if (!passwordOk) { passwordInput.focus(); return; }
+
+        // both fields pass -- disable + show a loading state so a
+        // double-click can't submit twice, same as a real network
+        // request would need
+        if (submitBtn) { submitBtn.disabled = true; submitBtn.classList.add('is-loading'); }
+        if (submitLabel) submitLabel.textContent = 'Logging in…';
+
+        window.setTimeout(() => {
+            if (submitBtn) { submitBtn.disabled = false; submitBtn.classList.remove('is-loading'); }
+            if (submitLabel) submitLabel.textContent = 'Log In';
+
+            // never re-populate a password field after an attempt;
+            // email is left alone on purpose so the user doesn't have
+            // to retype it
+            passwordInput.value = '';
+
+            // focus goes to the alert (not back into the password
+            // field) so screen readers land on the notice that just
+            // appeared, per "return focus appropriately"
+            if (alertBox) {
+                alertBox.hidden = false;
+                alertBox.focus();
+            }
+        }, 650);
+    });
+})();
+
+
+/**
+ * register.php's form. Same "real validation, honest not-wired-up
+ * notice" approach as login (see initLoginForm above, and
+ * setAuthFieldError). A few differences specific to registration:
+ * Confirm Password re-validates whenever Password changes (so a
+ * mismatch error updates live instead of going stale), and the "I
+ * confirm..." checkbox gets the exact same field-error treatment as
+ * every text input via setAuthFieldError's id+'Error' lookup -- no
+ * special-casing needed since it already has agreeTruthfulError in
+ * the markup.
+ */
+(function initRegisterForm() {
+    const form = document.querySelector('[data-register-form]');
+    if (!form) return;
+
+    const fields = {
+        firstName: document.getElementById('firstName'),
+        lastName: document.getElementById('lastName'),
+        dateOfBirth: document.getElementById('dateOfBirth'),
+        gender: document.getElementById('gender'),
+        email: document.getElementById('registerEmail'),
+        mobileNumber: document.getElementById('mobileNumber'),
+        password: document.getElementById('registerPassword'),
+        confirmPassword: document.getElementById('confirmPassword'),
+        agreeTruthful: document.getElementById('agreeTruthful'),
+    };
+    if (Object.values(fields).some((el) => !el)) return;
+
+    const alertBox = document.querySelector('[data-auth-alert]');
+    const submitBtn = document.querySelector('[data-register-submit]');
+    const submitLabel = submitBtn ? submitBtn.querySelector('[data-submit-label]') : null;
+
+    const validators = {
+        firstName: () => {
+            if (!fields.firstName.value.trim()) { setAuthFieldError(fields.firstName, 'Please enter your first name.'); return false; }
+            setAuthFieldError(fields.firstName, null); return true;
+        },
+        lastName: () => {
+            if (!fields.lastName.value.trim()) { setAuthFieldError(fields.lastName, 'Please enter your last name.'); return false; }
+            setAuthFieldError(fields.lastName, null); return true;
+        },
+        dateOfBirth: () => {
+            if (!fields.dateOfBirth.value) { setAuthFieldError(fields.dateOfBirth, 'Please enter your date of birth.'); return false; }
+            setAuthFieldError(fields.dateOfBirth, null); return true;
+        },
+        gender: () => {
+            if (!fields.gender.value) { setAuthFieldError(fields.gender, 'Please select your gender.'); return false; }
+            setAuthFieldError(fields.gender, null); return true;
+        },
+        email: () => {
+            const value = fields.email.value.trim();
+            if (!value) { setAuthFieldError(fields.email, 'Please enter your email address.'); return false; }
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) { setAuthFieldError(fields.email, 'Please enter a valid email address.'); return false; }
+            setAuthFieldError(fields.email, null); return true;
+        },
+        mobileNumber: () => {
+            const value = fields.mobileNumber.value.trim();
+            if (!value) { setAuthFieldError(fields.mobileNumber, 'Please enter your mobile number.'); return false; }
+            if (!/^09\d{9}$/.test(value)) { setAuthFieldError(fields.mobileNumber, 'Please enter a valid 11-digit mobile number (e.g. 09XXXXXXXXX).'); return false; }
+            setAuthFieldError(fields.mobileNumber, null); return true;
+        },
+        password: () => {
+            if (!fields.password.value) { setAuthFieldError(fields.password, 'Please create a password.'); return false; }
+            if (fields.password.value.length < 8) { setAuthFieldError(fields.password, 'Password must be at least 8 characters.'); return false; }
+            setAuthFieldError(fields.password, null); return true;
+        },
+        confirmPassword: () => {
+            if (!fields.confirmPassword.value) { setAuthFieldError(fields.confirmPassword, 'Please confirm your password.'); return false; }
+            if (fields.confirmPassword.value !== fields.password.value) { setAuthFieldError(fields.confirmPassword, 'Passwords do not match.'); return false; }
+            setAuthFieldError(fields.confirmPassword, null); return true;
+        },
+        agreeTruthful: () => {
+            if (!fields.agreeTruthful.checked) { setAuthFieldError(fields.agreeTruthful, 'Please confirm that the information provided is true and correct.'); return false; }
+            setAuthFieldError(fields.agreeTruthful, null); return true;
+        },
+    };
+
+    const order = ['firstName', 'lastName', 'dateOfBirth', 'gender', 'email', 'mobileNumber', 'password', 'confirmPassword', 'agreeTruthful'];
+
+    order.forEach((key) => {
+        const el = fields[key];
+        const evt = el.type === 'checkbox' ? 'change' : (el.tagName === 'SELECT' ? 'change' : 'blur');
+        el.addEventListener(evt, validators[key]);
+
+        if (el.tagName !== 'SELECT' && el.type !== 'checkbox') {
+            el.addEventListener('input', () => {
+                if (el.closest('.auth-field')?.classList.contains('has-error')) validators[key]();
+            });
+        }
+    });
+
+    // Confirm Password depends on Password -- keep it live once it's
+    // been filled in, so fixing the password also clears a stale
+    // "Passwords do not match" instead of leaving it hanging
+    fields.password.addEventListener('input', () => {
+        if (fields.confirmPassword.value) validators.confirmPassword();
+    });
+
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        if (alertBox) alertBox.hidden = true;
+
+        let firstInvalid = null;
+        order.forEach((key) => {
+            const ok = validators[key]();
+            if (!ok && !firstInvalid) firstInvalid = fields[key];
+        });
+
+        if (firstInvalid) { firstInvalid.focus(); return; }
+
+        if (submitBtn) { submitBtn.disabled = true; submitBtn.classList.add('is-loading'); }
+        if (submitLabel) submitLabel.textContent = 'Creating account…';
+
+        window.setTimeout(() => {
+            if (submitBtn) { submitBtn.disabled = false; submitBtn.classList.remove('is-loading'); }
+            if (submitLabel) submitLabel.textContent = 'Create Account';
+
+            // clear both password fields after the attempt, same
+            // reasoning as login: never leave sensitive input sitting
+            // in the DOM after a submit that didn't go anywhere real
+            fields.password.value = '';
+            fields.confirmPassword.value = '';
+
+            if (alertBox) {
+                alertBox.hidden = false;
+                alertBox.focus();
+            }
+        }, 650);
+    });
+})();
+
+
+/**
+ * A <select> has no native "placeholder" concept the way a text input
+ * does -- its hint option ("Select suffix", "Select gender") renders
+ * in the exact same color a real chosen answer would, which reads as
+ * already-filled-in and looks inconsistent next to an actual empty
+ * text field's lighter placeholder text right beside it. This just
+ * toggles .is-placeholder while the current value is the empty hint
+ * option; style.css dims the text for exactly that state (see
+ * ".ps-field select.is-placeholder"). Runs on every <select> on the
+ * page, not just form ones -- harmless where no matching CSS rule
+ * exists (e.g. calendar.php's toolbar filter), so it doesn't need to
+ * know which selects "count".
+ */
+(function initSelectPlaceholderStyling() {
+    function sync(select) {
+        select.classList.toggle('is-placeholder', select.value === '');
+    }
+    document.querySelectorAll('select').forEach((select) => {
+        sync(select);
+        select.addEventListener('change', () => sync(select));
+    });
+})();
