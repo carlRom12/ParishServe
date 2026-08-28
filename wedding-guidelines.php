@@ -1,27 +1,4 @@
 <?php
-/**
- * wedding-guidelines.php
- * ---------------------------------------------------------------------
- * ONE page covering everything the reference image showed: Steps to
- * be Taken, Documents Needed, Fees/Decorations/Cancellations, and
- * Sponsors -- as sections A/B/C/D on this single page, not four
- * separate files. wedding.php's "Documents Needed" and "Steps to Be
- * Taken" quick-link cards jump here with #documents / #steps anchors
- * instead of linking to their own pages (see wedding.php's
- * $quickLinks array). Discussed with the group first: this avoids
- * duplicating the same requirements/fees content across multiple
- * files that could drift out of sync when the parish updates a
- * policy. "Frequently Asked Questions" still gets its own separate
- * page later since Q&A content isn't part of this image at all.
- *
- * Like wedding.php, this is almost entirely static parish copy (not
- * per-user data), so it's plain PHP arrays feeding the markup rather
- * than a "TODO: replace with a query" situation -- the realistic path
- * to making this editable later is a small admin CMS content table,
- * not a per-request database table.
- * ---------------------------------------------------------------------
- */
-
 $steps = [
     'Couples have to present themselves personally for interview by a priest, at least one month before the scheduled wedding. Earlier than one month is preferred.',
     "Attend the Pre-Marriage seminar in the parish or in a parish convenient for them. If they decide to attend the pre-marriage seminar in another parish they will have to present a Certificate of Attendance duly signed by a priest from that parish.",

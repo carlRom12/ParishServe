@@ -1,28 +1,5 @@
 <?php
-/**
- * announcements.php
- * ---------------------------------------------------------------------
- * Same deal as dashboard.php: FRONTEND ONLY this session, hardcoded
- * data shaped like what the real queries will return later. See the
- * TODO comments next to each array for what replaces it once
- * database/schema.sql's `announcements` table is actually wired up.
- *
- * Interactive bits that work RIGHT NOW with zero backend (all in
- * assets/js/main.js):
- *   - the Featured Announcement carousel (prev/next + dot nav)
- *   - category filter tabs + the search box (filters the row list
- *     that's already in the DOM -- no page reload)
- *   - "Load more" reveals 2 more hardcoded rows
- *   - bookmark icon toggles a saved/unsaved look (not persisted --
- *     there's no database yet to persist it TO)
- * ---------------------------------------------------------------------
- */
 
-// TODO: SELECT * FROM announcements WHERE is_featured = 1 ORDER BY posted_date DESC
-// (multiple featured slides -> a real carousel instead of the single
-// featured card the dashboard shows). Reused the same placeholder SVGs
-// as the dashboard's Recent Announcements strip for slides 2 and 3
-// since we don't have real parish photos yet.
 $featuredSlides = [
     [
         'title' => 'Feast Day Celebration this Sunday!',
@@ -43,12 +20,7 @@ $featuredSlides = [
         'date'  => 'May 22, 2026',
     ],
 ];
-
-// TODO: SELECT * FROM announcements ORDER BY posted_date DESC
-// `category` here isn't a real column on the announcements table in
-// schema.sql yet -- that table only has is_featured right now. Adding
-// a `category` VARCHAR/ENUM column is a small migration for whoever
-// wires this page up to MySQL next.
+    
 $allAnnouncements = [
     ['title' => 'Adoration Every Friday', 'excerpt' => 'Eucharistic Adoration is held every Friday after the 6:00 PM Mass.', 'image' => 'assets/images/announcements/adoration.svg', 'category' => 'Mass & Liturgical', 'catClass' => 'cat-liturgical', 'date' => 'May 10, 2026'],
     ['title' => 'Mass Intentions Now Open', 'excerpt' => 'You can now submit your Mass intention requests for June.', 'image' => 'assets/images/announcements/mass-intentions.svg', 'category' => 'Reminders', 'catClass' => 'cat-reminders', 'date' => 'May 9, 2026'],

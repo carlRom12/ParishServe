@@ -1,35 +1,4 @@
 <?php
-/**
- * index.php
- * ---------------------------------------------------------------------
- * The PUBLIC landing page -- what a visitor sees before logging in.
- * This is a different "mode" from every other page in this project:
- * those are all the logged-in parishioner app (sidebar + topbar
- * shell, includes/header.php). This page has no sidebar, no session
- * check, and isn't wrapped in includes/header.php/footer.php at all --
- * it's a normal public marketing page with its own top navbar, so it
- * gets its own minimal <head>/<body> instead of forcing the internal
- * app's shell onto it.
- *
- * SCOPE THIS SESSION: Home section only, per instruction. The nav
- * links to #about/#services/#announcements/#calendar/#contact are
- * real anchors, ready for those sections to be added to this same
- * page later -- clicking them right now just won't scroll anywhere
- * yet since the target IDs don't exist in the DOM. Same "link to
- * where it will live" pattern used everywhere else in this app.
- *
- * "Log In" -> login.php and "Get Started" -> register.php: neither
- * file exists in this project yet (verified before starting; there
- * was no pre-existing login route to preserve). Linked to where they
- * will live, consistent with how every other not-yet-built page in
- * this app is referenced.
- *
- * HERO IMAGE: assets/images/parish-hero.svg is a stylized placeholder
- * (see that file's own header comment for why an SVG illustration
- * instead of a real photo). Swapping in a real photo later is a
- * one-line change to the <img src> below.
- * ---------------------------------------------------------------------
- */
 require __DIR__ . '/includes/icons.php';
 
 $navLinks = [
@@ -142,11 +111,6 @@ $features = [
             <?php endforeach; ?>
         </div>
     </div>
-
-    <!-- About Us, Services, Announcements, Calendar, and Contact sections
-         get added here in later sessions -- their nav anchors above are
-         already wired up and waiting (#about, #services, #announcements,
-         #calendar, #contact). -->
 
 </main>
 

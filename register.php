@@ -1,45 +1,9 @@
 <?php
-/**
- * register.php
- * ---------------------------------------------------------------------
- * The public "Create an Account" page, linked from login.php's
- * "Create an Account" button and index.php's "Get Started". Same
- * frontend-only rule as login.php (see that file's header comment for
- * the full reasoning): no backend exists yet, so this is a real form
- * with real client-side validation that shows an honest "not wired up
- * yet" notice on submit instead of faking account creation.
- *
- * TERMS OF SERVICE / PRIVACY POLICY: removed entirely at the group's
- * request (not just left as dead links) -- the reference mockup had a
- * "I agree to the Privacy Notice and Terms of Service" checkbox, but
- * neither page exists for Login OR Register, so it was dropped rather
- * than teased. Only the "I confirm the information provided is true
- * and correct" checkbox remains, which doesn't depend on a page that
- * doesn't exist.
- *
- * FIELD MISMATCH WITH database/schema.sql (same category of flag as
- * wedding-request.php's): the `users` table has a single `full_name`
- * VARCHAR column and no date_of_birth/gender columns at all, but this
- * form collects first/middle/last/suffix separately plus DOB and
- * gender. Whoever wires this up will need to either concatenate the
- * name parts before INSERT and add two new columns, or migrate the
- * table to match the form's granularity. Not fixing schema.sql this
- * session -- flagging so it isn't a surprise.
- *
- * PASSWORD MINIMUM LENGTH: the group's spec didn't set a password
- * policy for registration (only login's empty/format checks were
- * specified). Added an 8-character minimum as a reasonable default
- * for a "create account" flow -- flag if a different policy is
- * wanted once the real backend enforces this server-side too.
- *
- * Reuses login.css's auth-shell/auth-visual/auth-card/.ps-field-icon/
- * password-toggle/.auth-alert wholesale (see that file's updated
- * header) -- register.css is only the pieces unique to this page: the
- * wider card, section headers, checkbox rows, and the footer bar.
- * ---------------------------------------------------------------------
- */
+session_start();
 require __DIR__ . '/includes/icons.php';
 $currentYear = date('Y');
+$old = $_SESSION['old_input'] ?? [];
+unset($_SESSION['old_input']);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -55,13 +19,10 @@ $currentYear = date('Y');
 <body>
 
 <div class="auth-shell">
-
-    <!-- ============================ LEFT: VISUAL ============================ -->
     <div class="auth-visual">
         <div class="auth-visual-media">
             <img src="assets/images/parish-login.svg" alt="Our Lady of the Gate Parish church at golden hour">
         </div>
-
         <div class="auth-brand">
             <span class="auth-brand-crest"><?php ps_icon('crest'); ?></span>
             <span class="auth-brand-text">
@@ -76,37 +37,38 @@ $currentYear = date('Y');
             <p>Join ParishServe to submit requests, manage your parish services, and stay connected with our parish community.</p>
         </div>
     </div>
-
-    <!-- ============================ RIGHT: FORM ============================= -->
     <div class="auth-panel">
         <div class="auth-card auth-card-wide">
 
             <div class="ps-heading-ornament auth-card-ornament"><span></span><?php ps_icon('cross'); ?><span></span></div>
             <h1>Create an Account</h1>
             <p class="auth-sub">Fill in the details below to create your ParishServe account.</p>
-
-            <div class="auth-alert" data-auth-alert role="alert" tabindex="-1" hidden>
-                <?php ps_icon('info'); ?>
-                <span>There's no backend wired up yet to actually create an account. Once it exists, this is where you'd see either a successful registration or a specific error, such as an email already being in use.</span>
-            </div>
-
-            <form action="register.php" method="post" data-register-form novalidate>
+             <?php if (isset($_SESSION['register_error'])): ?>
+                <div class="auth-alert" role="alert">
+                    <?php ps_icon('info'); ?>
+                    <span><?php echo htmlspecialchars($_SESSION['register_error']); ?></span>
+                </div>
+                <?php unset($_SESSION['register_error']); ?>
+            <?php endif; ?>
+            <form action="login_register.php" method="post" data-register-form novalidate>
 
                 <h2 class="auth-section-title"><?php ps_icon('user'); ?> Personal Information</h2>
 
                 <div class="ps-form-row-3 auth-row">
                     <div class="ps-field auth-field">
                         <label for="firstName">First Name <span class="auth-required">*</span></label>
-                        <input type="text" id="firstName" name="firstName" placeholder="First name" autocomplete="given-name" required>
-                        <small class="auth-field-error" id="firstNameError" data-field-error="firstName" hidden></small>
+                        <input type="text" id="firstName" name="firstName" value="<?php echo htmlspecialchars($old['firstName'] ?? ''); ?>"
+                                    placeholder="First name" autocomplete="given-name" required>
                     </div>
                     <div class="ps-field auth-field">
                         <label for="middleName">Middle Name</label>
-                        <input type="text" id="middleName" name="middleName" placeholder="Middle name (optional)" autocomplete="additional-name">
+                        <input type="text" id="middleName" name="middleName" value="<?php echo htmlspecialchars($old['middleName'] ?? ''); ?>"
+                                     placeholder="Middle name (optional)" autocomplete="additional-name">
                     </div>
                     <div class="ps-field auth-field">
                         <label for="lastName">Last Name <span class="auth-required">*</span></label>
-                        <input type="text" id="lastName" name="lastName" placeholder="Last name" autocomplete="family-name" required>
+                        <input type="text" id="lastName" name="lastName" value="<?php echo htmlspecialchars($old['lastName'] ?? ''); ?>"
+                                     placeholder="Last name" autocomplete="family-name" required>
                         <small class="auth-field-error" id="lastNameError" data-field-error="lastName" hidden></small>
                     </div>
                 </div>
@@ -116,11 +78,11 @@ $currentYear = date('Y');
                         <label for="suffix">Suffix (Optional)</label>
                         <span class="ps-select is-block">
                             <select id="suffix" name="suffix">
-                                <option value="" selected>Select suffix</option>
-                                <option value="Jr.">Jr.</option>
-                                <option value="Sr.">Sr.</option>
-                                <option value="II">II</option>
-                                <option value="III">III</option>
+                                <option value=""<?php echo (($old['suffix'] ?? '') === '') ? 'selected' : ''; ?>>   Select suffix</option>
+                                <option value="Jr."<?php echo (($old['suffix'] ?? '') === 'Jr.') ? 'selected' : ''; ?>>Jr.</option>
+                                <option value="Sr."<?php echo (($old['suffix'] ?? '') === 'Sr.') ? 'selected' : ''; ?>>Sr.</option>
+                                <option value="II"<?php echo (($old['suffix'] ?? '') === 'II') ? 'selected' : ''; ?>>II</option>
+                                <option value="III"<?php echo (($old['suffix'] ?? '') === 'III') ? 'selected' : ''; ?>>III</option>
                             </select>
                             <?php ps_icon('chevron-down'); ?>
                         </span>
@@ -128,7 +90,8 @@ $currentYear = date('Y');
                     <div class="ps-field auth-field">
                         <label for="dateOfBirth">Date of Birth <span class="auth-required">*</span></label>
                         <span class="ps-input-icon">
-                            <input type="date" id="dateOfBirth" name="dateOfBirth" max="<?php echo htmlspecialchars(date('Y-m-d')); ?>" required>
+                            <input type="date" id="dateOfBirth" name="dateOfBirth" value="<?php echo htmlspecialchars($old['dateOfBirth'] ?? ''); ?>"
+                                         max="<?php echo htmlspecialchars(date('Y-m-d')); ?>" required>
                             <?php ps_icon('calendar'); ?>
                         </span>
                         <small class="auth-field-error" id="dateOfBirthError" data-field-error="dateOfBirth" hidden></small>
@@ -137,10 +100,10 @@ $currentYear = date('Y');
                         <label for="gender">Gender <span class="auth-required">*</span></label>
                         <span class="ps-select is-block">
                             <select id="gender" name="gender" required>
-                                <option value="" selected>Select gender</option>
-                                <option value="Female">Female</option>
-                                <option value="Male">Male</option>
-                                <option value="Prefer not to say">Prefer not to say</option>
+                                <option value=""<?php echo (($old['gender'] ?? '') === '') ? 'selected' : ''; ?>>Select gender</option>
+                                <option value="Female"<?php echo (($old['gender'] ?? '') === 'Female') ? 'selected' : ''; ?>>Female</option>
+                                <option value="Male"<?php echo (($old['gender'] ?? '') === 'Male') ? 'selected' : ''; ?>>Male</option>
+                                <option value="Prefer not to say"<?php echo (($old['gender'] ?? '') === 'Prefer not to say') ? 'selected' : ''; ?>>Prefer not to say</option>
                             </select>
                             <?php ps_icon('chevron-down'); ?>
                         </span>
@@ -153,13 +116,15 @@ $currentYear = date('Y');
                         <label for="registerEmail">Email Address <span class="auth-required">*</span></label>
                         <span class="ps-field-icon">
                             <?php ps_icon('mail'); ?>
-                            <input type="email" id="registerEmail" name="email" placeholder="name@example.com" autocomplete="email" required>
+                            <input type="email" id="registerEmail" name="email" value="<?php echo htmlspecialchars($old['email'] ?? ''); ?>"
+                                         placeholder="name@example.com" autocomplete="email" required>
                         </span>
                         <small class="auth-field-error" id="registerEmailError" data-field-error="email" hidden></small>
                     </div>
                     <div class="ps-field auth-field">
                         <label for="mobileNumber">Mobile Number <span class="auth-required">*</span></label>
-                        <input type="tel" id="mobileNumber" name="mobileNumber" placeholder="09XXXXXXXXX" pattern="^09[0-9]{9}$" maxlength="11" inputmode="numeric" autocomplete="tel" required>
+                        <input type="tel" id="mobileNumber" name="mobileNumber" value="<?php echo htmlspecialchars($old['mobileNumber'] ?? ''); ?>"
+                                     placeholder="09XXXXXXXXX" pattern="^09[0-9]{9}$" maxlength="11" inputmode="numeric" autocomplete="tel" required>
                         <small class="auth-field-error" id="mobileNumberError" data-field-error="mobileNumber" hidden></small>
                     </div>
                 </div>
@@ -199,7 +164,7 @@ $currentYear = date('Y');
                 </label>
                 <small class="auth-field-error auth-checkbox-error" id="agreeTruthfulError" data-field-error="agreeTruthful" hidden></small>
 
-                <button type="submit" class="ps-btn ps-btn-primary auth-submit" data-register-submit>
+                <button type="submit" name="register" class="ps-btn ps-btn-primary auth-submit" data-register-submit>
                     <?php ps_icon('user-plus'); ?> <span data-submit-label>Create Account</span>
                 </button>
 

@@ -1,56 +1,4 @@
 <?php
-/**
- * login.php
- * ---------------------------------------------------------------------
- * The public authentication page. Per the group's decision this
- * session (see conversation): there is NO existing auth backend
- * anywhere in this project yet -- no config.php, no session handling,
- * no login route, nothing wired to database/schema.sql's `users`
- * table. So this is built the same way as every other page this
- * session: a REAL form with REAL client-side validation, but
- * submitting it shows an honest "not wired up yet" notice instead of
- * faking a successful or failed login.
- *
- * WHAT'S ACTUALLY REAL HERE:
- *   - Required-field + email-format validation, with the EXACT
- *     wording the group specified ("Please enter your email
- *     address.", "Please enter a valid email address.", "Please
- *     enter your password."), shown next to the relevant field.
- *   - Show/hide password toggle.
- *   - Submit disables the button, shows a loading state, then reveals
- *     a form-level notice -- never a browser alert() box.
- *   - Email is preserved after the notice appears; password is
- *     cleared (standard practice -- never re-populate a password
- *     field after a failed/incomplete attempt, real backend or not).
- *   - Focus moves to the first invalid field on validation failure,
- *     and to the form-level alert once the "not wired up" notice
- *     appears, so screen reader users aren't left stranded.
- *
- * WHAT'S NOT REAL (clearly labeled, not faked):
- *   - "The email or password you entered is incorrect." -- this is
- *     the message a REAL backend should show (deliberately generic,
- *     never revealing whether the email exists), but nothing here can
- *     actually check credentials. It's quoted inside the "not wired
- *     up yet" notice as a preview of what happens once the backend
- *     exists, not fired as if it were a genuine failed login.
- *   - "Forgot Password?" and "Create an Account" link to pages that
- *     don't exist yet (forgot-password.php, register.php) -- same
- *     "link to where it will live" pattern as everywhere else in this
- *     app. Terms of Service / Privacy Policy were removed entirely
- *     (not just left as dead links) at the group's request, since
- *     those pages don't exist for either Login or Register yet --
- *     see register.php for the same call.
- *
- * WHEN THE REAL BACKEND GETS BUILT: this form already posts to
- * itself (action="login.php" method="post") with name="email" and
- * name="password" -- a real handler just needs to check
- * $_SERVER['REQUEST_METHOD'] === 'POST' at the top of this file,
- * validate, query `users` WHERE email = ?, password_verify(), start
- * a session, and redirect by role. The schema's `email` column (no
- * username field) already matches this form, so no backend/DB
- * mismatch to resolve there.
- * ---------------------------------------------------------------------
- */
 require __DIR__ . '/includes/icons.php';
 ?>
 <!DOCTYPE html>
@@ -66,8 +14,6 @@ require __DIR__ . '/includes/icons.php';
 <body>
 
 <div class="auth-shell">
-
-    <!-- ============================ LEFT: VISUAL ============================ -->
     <div class="auth-visual">
         <div class="auth-visual-media">
             <img src="assets/images/parish-login.svg" alt="Our Lady of the Gate Parish church at golden hour">
@@ -95,18 +41,6 @@ require __DIR__ . '/includes/icons.php';
             <div class="ps-heading-ornament auth-card-ornament"><span></span><?php ps_icon('cross'); ?><span></span></div>
             <h1>Log In</h1>
             <p class="auth-sub">Enter your credentials to access your account.</p>
-
-            <!-- form-level status: the "not wired up yet" notice lands
-                 here once client-side validation passes. role="alert"
-                 so screen readers announce it the moment it's shown;
-                 tabindex="-1" lets main.js move keyboard focus onto it
-                 without adding it to the normal tab order. Icon is
-                 rendered server-side (not built via JS innerHTML) so
-                 it can never drift out of sync with icons.php. -->
-            <div class="auth-alert" data-auth-alert role="alert" tabindex="-1" hidden>
-                <?php ps_icon('info'); ?>
-                <span>There's no backend wired up yet to verify this against real accounts. Once it exists, this is where you'd see either a successful login or &ldquo;The email or password you entered is incorrect.&rdquo; if the credentials didn't match.</span>
-            </div>
 
             <form action="login.php" method="post" data-login-form novalidate>
 
