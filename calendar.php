@@ -1,31 +1,5 @@
 <?php
-/**
- * calendar.php
- * ---------------------------------------------------------------------
- * FRONTEND ONLY, same rules as dashboard.php / announcements.php: real
- * PHP logic where it's genuinely just logic (the month-grid math lives
- * in includes/calendar-helpers.php and works for any month/year), but
- * the EVENT CONTENT is still a hardcoded array until there's a
- * database to query.
- *
- * MONTH NAVIGATION IS REAL, THOUGH:
- * Prev/Next/Today are plain links with ?month=&year= query params --
- * no JS, no AJAX, just PHP re-rendering the grid for whatever month
- * was asked for. That part will keep working unchanged once real
- * event data replaces $monthEvents below.
- *
- * WHY EVENTS DON'T ALWAYS LAND ON THE "RIGHT" WEEKDAY:
- * The reference image is a May 2025 mockup where e.g. "Sunday Mass"
- * entries happen to fall on Sundays. We generate the ACTUAL calendar
- * grid for whatever year is requested (default: our May 2026 demo
- * month, chosen to match the dates already used on dashboard.php /
- * announcements.php), and May 2026's weekdays don't line up with
- * May 2025's. So $monthEvents below is keyed by DATE NUMBER only
- * (matching the image's content) -- once this becomes a real query
- * against actual scheduled services, recurring-event logic (e.g. "every
- * Sunday") would replace this flat list entirely.
- * ---------------------------------------------------------------------
- */
+
 require __DIR__ . '/includes/calendar-helpers.php';
 
 // TODO: once real event data exists, default month/year to the actual
