@@ -19,8 +19,24 @@
  * than a "TODO: replace with a query" situation -- the realistic path
  * to making this editable later is a small admin CMS content table,
  * not a per-request database table.
+ *
+ * SECTION TAB BAR added after the fact -- baptism-guidelines.php built
+ * one first (with real scroll-spy, see main.js's
+ * initSectionTabScrollSpy()), and the group flagged that its absence
+ * here was an inconsistency between two pages that are conceptually
+ * the same "sacrament guidelines" page type. Retrofitted the same
+ * .ps-anchor-tabs bar here, which meant giving sections C and D real
+ * #fees / #sponsors ids for the first time (they only existed as
+ * scroll targets in spirit before; nothing linked to them directly).
  * ---------------------------------------------------------------------
  */
+
+$tabs = [
+    ['icon' => 'footprints', 'label' => 'Steps to be Taken', 'href' => '#steps'],
+    ['icon' => 'document',   'label' => 'Documents Needed',  'href' => '#documents'],
+    ['icon' => 'tag',        'label' => 'Fees & Decorations','href' => '#fees'],
+    ['icon' => 'people',     'label' => 'Sponsors',          'href' => '#sponsors'],
+];
 
 $steps = [
     'Couples have to present themselves personally for interview by a priest, at least one month before the scheduled wedding. Earlier than one month is preferred.',
@@ -89,6 +105,15 @@ require __DIR__ . '/includes/sidebar.php';
         </nav>
     </section>
 
+    <!-- ============================ SECTION TABS ========================== -->
+    <nav class="ps-card ps-anchor-tabs" aria-label="Wedding guideline sections" data-scroll-spy-tabs>
+        <?php foreach ($tabs as $i => $tab): ?>
+            <a href="<?php echo htmlspecialchars($tab['href']); ?>" class="ps-anchor-tab<?php echo $i === 0 ? ' active' : ''; ?>" data-scroll-spy-tab="<?php echo htmlspecialchars(ltrim($tab['href'], '#')); ?>">
+                <?php ps_icon($tab['icon']); ?> <?php echo htmlspecialchars($tab['label']); ?>
+            </a>
+        <?php endforeach; ?>
+    </nav>
+
     <!-- ============================ WELCOME BANNER ======================== -->
     <div class="ps-card wed-banner">
         <div class="wed-banner-art"><img src="assets/images/wedding-rings.svg" alt=""></div>
@@ -101,7 +126,7 @@ require __DIR__ . '/includes/sidebar.php';
     <!-- ============================ A + B ROW ============================= -->
     <div class="wg-row-2">
 
-        <div class="ps-card" id="steps">
+        <div class="ps-card" id="steps" data-scroll-spy-section="steps">
             <h3 class="ps-card-title">A. Steps to be Taken</h3>
             <div class="ps-steps-list">
                 <?php foreach ($steps as $i => $step): ?>
@@ -113,7 +138,7 @@ require __DIR__ . '/includes/sidebar.php';
             </div>
         </div>
 
-        <div class="ps-card" id="documents">
+        <div class="ps-card" id="documents" data-scroll-spy-section="documents">
             <h3 class="ps-card-title">B. Documents Needed</h3>
             <div class="ps-icon-list">
                 <?php foreach ($documents as $i => $doc): ?>
@@ -128,7 +153,7 @@ require __DIR__ . '/includes/sidebar.php';
     </div>
 
     <!-- ============================ C: FEES =============================== -->
-    <div class="ps-card wg-section-card">
+    <div class="ps-card wg-section-card" id="fees" data-scroll-spy-section="fees">
         <h3 class="ps-card-title">C. Fees / Decorations / Cancellations</h3>
         <div class="wg-fees-grid">
 
@@ -156,7 +181,7 @@ require __DIR__ . '/includes/sidebar.php';
     </div>
 
     <!-- ============================ D: SPONSORS =========================== -->
-    <div class="ps-card wg-section-card">
+    <div class="ps-card wg-section-card" id="sponsors" data-scroll-spy-section="sponsors">
         <h3 class="ps-card-title">D. Primary / Secondary Sponsors, Ring Bearers, Flower Girls, Guest Priests</h3>
         <div class="wg-sponsors-grid">
 

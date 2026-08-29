@@ -252,10 +252,24 @@
  * the same behavior for free just by adding the attribute.
  */
 (function initFileUploadValidation() {
+    // id-based lookup first (an input id="foo" pairs with an error
+    // element id="fooError", same convention setAuthFieldError uses),
+    // falling back to the structural search wedding-request-step2.php's
+    // rows still rely on (no matching id on those error spans) --
+    // works for both without every existing file input needing an
+    // id+"Error" pair retrofitted.
+    function findFileErrorElement(input) {
+        if (input.id) {
+            const byId = document.getElementById(input.id + 'Error');
+            if (byId) return byId;
+        }
+        return input.closest('.wr-req-upload, .ps-field')?.querySelector('[data-file-error]') || null;
+    }
+
     document.querySelectorAll('input[type="file"][data-max-size-mb]').forEach((input) => {
         input.addEventListener('change', () => {
             const maxMb = parseFloat(input.dataset.maxSizeMb);
-            const errorEl = input.closest('.wr-req-upload')?.querySelector('[data-file-error]');
+            const errorEl = findFileErrorElement(input);
             const file = input.files && input.files[0];
             if (!file) return;
 
@@ -269,6 +283,478 @@
             if (tooBig) input.value = '';
         });
     });
+})();
+
+
+/**
+ * Drag-and-drop upload zones (.ps-dropzone), first used on baptism-
+ * request-step2.php. The native file input already covers the whole
+ * box (see style.css), so clicking anywhere just works natively --
+ * this only adds what native <input type="file"> can't do on its own:
+ * drag-enter/over/leave visual feedback, accepting a dropped file by
+ * assigning it to the real input (so form submission and the file-
+ * size validator above both still see it), and keeping the "No file
+ * chosen" text in sync however a file arrives.
+ */
+(function initDropzones() {
+    document.querySelectorAll('[data-dropzone]').forEach((zone) => {
+        const input = zone.querySelector('[data-dropzone-input]');
+        const filenameEl = zone.querySelector('[data-dropzone-filename]');
+        if (!input) return;
+
+        function updateFilename() {
+            if (!filenameEl) return;
+            const file = input.files && input.files[0];
+            filenameEl.textContent = file ? file.name : 'No file chosen';
+        }
+        input.addEventListener('change', updateFilename);
+
+        ['dragenter', 'dragover'].forEach((evt) => {
+            zone.addEventListener(evt, (e) => {
+                e.preventDefault();
+                zone.classList.add('is-dragover');
+            });
+        });
+        ['dragleave', 'dragend'].forEach((evt) => {
+            zone.addEventListener(evt, () => zone.classList.remove('is-dragover'));
+        });
+        zone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            zone.classList.remove('is-dragover');
+            const files = e.dataTransfer && e.dataTransfer.files;
+            if (files && files.length) {
+                input.files = files;
+                // let the file-size validator and the filename label
+                // both react the same way a real picker selection would
+                input.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+        });
+    });
+})();
+
+
+/**
+ * Live "N / max" character counters for any <textarea> that has one.
+ * Pairs by id convention (textarea id="foo" -> counter id="fooCount"),
+ * same pattern used elsewhere in this file. Generic, so any future
+ * textarea gets a working counter just by adding the matching span.
+ */
+(function initCharacterCounters() {
+    document.querySelectorAll('textarea[maxlength]').forEach((textarea) => {
+        const counter = document.getElementById(textarea.id + 'Count');
+        if (!counter) return;
+        const max = textarea.getAttribute('maxlength');
+
+        function update() {
+            counter.textContent = `${textarea.value.length} / ${max}`;
+        }
+        textarea.addEventListener('input', update);
+        update();
+    });
+})();
+
+
+/**
+ * Custom popup-calendar date picker. First built for baptism-request.
+ * php's "Preferred Regular Baptism Date" field, which needs future
+ * Saturdays ONLY selectable -- a native <input type="date"> can't have
+ * its own browser-drawn calendar popup styled to grey out arbitrary
+ * weekdays (that popup lives in a closed shadow DOM), so this renders
+ * a real month grid into a plain <div> instead.
+ *
+ * Markup contract, driven entirely by data attributes so any future
+ * field can reuse this with different rules:
+ *   <div class="ps-datepicker" data-datepicker data-weekday="6">
+ *     <input data-datepicker-input id="foo" ...>
+ *     <button data-datepicker-toggle>...</button>
+ *     <div data-datepicker-panel hidden></div>
+ *   </div>
+ *   data-weekday: JS Date#getDay() value (0=Sun...6=Sat) that's the
+ *     ONLY allowed weekday, e.g. "6" for Saturday-only. Omit the
+ *     attribute entirely to allow any future date regardless of
+ *     weekday. Read fresh on every render (not cached at init) so
+ *     another script -- e.g. initBaptismTypeToggle() below -- can
+ *     flip it live when a Regular/Special radio changes.
+ * Past dates (today included) are always disabled; "future" always
+ * means strictly after today, computed from the browser's actual
+ * clock, never a hard-coded date.
+ *
+ * Typing a date manually is validated the same way clicking one is:
+ * on blur/change the typed text is parsed strictly (no lenient
+ * `new Date(str)` rollovers like "02/30" silently becoming March 2),
+ * and an invalid or disallowed date sets the input's native
+ * validationMessage via setCustomValidity() PLUS shows the matching
+ * id+"Error" element (same id-based convention as the file-upload and
+ * auth-field error helpers elsewhere in this file) -- so a bypass
+ * attempt (typing straight into the field, or a fully JS-disabled
+ * browser) still can't get an invalid value past the browser's own
+ * form submission, and the real backend re-checks it again regardless
+ * per baptism-request.php's PHP-side DateTime validation.
+ */
+(function initDatepickers() {
+    const roots = document.querySelectorAll('[data-datepicker]');
+    if (!roots.length) return;
+
+    const MONTH_NAMES = ['January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'];
+    const WEEKDAY_LABELS = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+
+    // same markup ps_icon() echoes server-side for 'chevron-left'/
+    // 'chevron-right' (includes/icons.php) -- kept as an exact copy
+    // here (not the raw "‹ ›" text glyphs the panel used at first)
+    // so the nav buttons render with the identical hand-drawn icon
+    // style as every other icon on the page, not a font-dependent
+    // punctuation character.
+    const ICON_SVG_OPEN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">';
+    const CHEVRON_LEFT = ICON_SVG_OPEN + '<path d="M15 6l-6 6 6 6"/></svg>';
+    const CHEVRON_RIGHT = ICON_SVG_OPEN + '<path d="M9 6l6 6-6 6"/></svg>';
+
+    function startOfDay(d) {
+        return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    }
+
+    function formatMDY(date) {
+        const mm = String(date.getMonth() + 1).padStart(2, '0');
+        const dd = String(date.getDate()).padStart(2, '0');
+        return `${mm}/${dd}/${date.getFullYear()}`;
+    }
+
+    // strict mm/dd/yyyy parse, rejecting rollovers (e.g. "02/30/2026")
+    // that `new Date("02/30/2026")` would silently accept as March 2
+    function parseMDY(str) {
+        const m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec((str || '').trim());
+        if (!m) return null;
+        const month = parseInt(m[1], 10);
+        const day = parseInt(m[2], 10);
+        const year = parseInt(m[3], 10);
+        const date = new Date(year, month - 1, day);
+        if (date.getFullYear() !== year || date.getMonth() !== month - 1 || date.getDate() !== day) return null;
+        return date;
+    }
+
+    roots.forEach((root) => {
+        const input = root.querySelector('[data-datepicker-input]');
+        const toggle = root.querySelector('[data-datepicker-toggle]');
+        const panel = root.querySelector('[data-datepicker-panel]');
+        if (!input || !panel) return;
+
+        const errorEl = input.id ? document.getElementById(input.id + 'Error') : null;
+        const today = startOfDay(new Date());
+        let viewDate = new Date(today.getFullYear(), today.getMonth(), 1);
+        let selected = null;
+
+        function requiredWeekday() {
+            return root.dataset.weekday !== undefined ? parseInt(root.dataset.weekday, 10) : null;
+        }
+
+        function isDisabled(date) {
+            if (date <= today) return true; // must be strictly future
+            const weekday = requiredWeekday();
+            if (weekday !== null && date.getDay() !== weekday) return true;
+            return false;
+        }
+
+        function setError(message) {
+            input.setCustomValidity(message || '');
+            if (errorEl) {
+                errorEl.textContent = message || '';
+                errorEl.hidden = !message;
+            }
+        }
+
+        function validateCurrentValue() {
+            const raw = input.value.trim();
+            if (!raw) { setError(''); selected = null; return; }
+            const parsed = parseMDY(raw);
+            if (!parsed) {
+                setError('Enter a valid date in mm/dd/yyyy format.');
+                selected = null;
+                return;
+            }
+            const date = startOfDay(parsed);
+            if (isDisabled(date)) {
+                setError(requiredWeekday() !== null
+                    ? 'Please choose a future Saturday. That date is not available.'
+                    : 'Please choose a future date.');
+                selected = null;
+                return;
+            }
+            setError('');
+            selected = date;
+            viewDate = new Date(date.getFullYear(), date.getMonth(), 1);
+        }
+
+        function closePanel() {
+            panel.hidden = true;
+            panel.classList.remove('is-flipped');
+        }
+
+        function openPanel() {
+            render();
+            panel.hidden = false;
+            panel.classList.remove('is-flipped');
+            // a field near the bottom of a long page would otherwise
+            // open this panel further down than the page itself,
+            // stretching the whole document taller than the sticky
+            // sidebar -- flip it above the input instead whenever
+            // there isn't enough room below (and there IS enough room
+            // above), same as most date-picker widgets do
+            const inputRect = input.getBoundingClientRect();
+            const spaceBelow = window.innerHeight - inputRect.bottom;
+            const spaceAbove = inputRect.top;
+            if (spaceBelow < panel.offsetHeight + 16 && spaceAbove > spaceBelow) {
+                panel.classList.add('is-flipped');
+            }
+        }
+
+        function render() {
+            const year = viewDate.getFullYear();
+            const month = viewDate.getMonth();
+            const firstWeekday = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const prevDisabled = year === today.getFullYear() && month === today.getMonth();
+
+            let html = '';
+            html += '<div class="ps-datepicker-head">'
+                + `<button type="button" class="ps-datepicker-nav" data-dp-prev ${prevDisabled ? 'disabled' : ''} aria-label="Previous month">${CHEVRON_LEFT}</button>`
+                + `<strong>${MONTH_NAMES[month]} ${year}</strong>`
+                + `<button type="button" class="ps-datepicker-nav" data-dp-next aria-label="Next month">${CHEVRON_RIGHT}</button>`
+                + '</div>';
+            html += `<div class="ps-datepicker-weekdays">${WEEKDAY_LABELS.map((d) => `<span>${d}</span>`).join('')}</div>`;
+            html += '<div class="ps-datepicker-days">';
+            for (let i = 0; i < firstWeekday; i++) {
+                html += '<span class="ps-datepicker-day is-muted"></span>';
+            }
+            for (let d = 1; d <= daysInMonth; d++) {
+                const date = new Date(year, month, d);
+                const disabled = isDisabled(date);
+                const isSel = selected && date.getTime() === selected.getTime();
+                const isToday = date.getTime() === today.getTime();
+                const cls = ['ps-datepicker-day', disabled ? 'is-disabled' : 'is-selectable', isSel ? 'is-selected' : '', isToday ? 'is-today' : '']
+                    .filter(Boolean).join(' ');
+                html += `<button type="button" class="${cls}" ${disabled ? 'disabled' : ''} data-dp-day="${d}">${d}</button>`;
+            }
+            html += '</div>';
+            panel.innerHTML = html;
+
+            panel.querySelector('[data-dp-prev]')?.addEventListener('click', (e) => {
+                // render() below replaces panel.innerHTML, which detaches
+                // THIS button (the click's own target) from the DOM while
+                // the click is still bubbling up toward the document-level
+                // "click outside closes the panel" listener. Once detached,
+                // root.contains(e.target) reads false there and the whole
+                // panel would close itself right after switching months --
+                // stopping propagation here keeps that outside-click
+                // listener from ever seeing this click at all.
+                e.stopPropagation();
+                viewDate = new Date(year, month - 1, 1);
+                render();
+            });
+            panel.querySelector('[data-dp-next]')?.addEventListener('click', (e) => {
+                e.stopPropagation();
+                viewDate = new Date(year, month + 1, 1);
+                render();
+            });
+            panel.querySelectorAll('[data-dp-day]').forEach((btn) => {
+                btn.addEventListener('click', () => {
+                    selected = new Date(year, month, parseInt(btn.dataset.dpDay, 10));
+                    input.value = formatMDY(selected);
+                    setError('');
+                    input.dispatchEvent(new Event('change', { bubbles: true }));
+                    closePanel();
+                });
+            });
+        }
+
+        input.addEventListener('focus', openPanel);
+        input.addEventListener('click', openPanel);
+        toggle?.addEventListener('click', () => (panel.hidden ? openPanel() : closePanel()));
+        input.addEventListener('blur', validateCurrentValue);
+        input.addEventListener('change', validateCurrentValue);
+        document.addEventListener('click', (e) => {
+            if (!root.contains(e.target)) closePanel();
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !panel.hidden) closePanel();
+        });
+
+        validateCurrentValue();
+    });
+})();
+
+
+/**
+ * baptism-request.php's "1. Baptism Type" Regular/Special radio cards.
+ * Toggles the .is-checked highlight, and (since only Regular Baptism
+ * is Saturday-only) flips the shared date field between the two modes:
+ * swapping its label/hint text and turning the datepicker's
+ * Saturday-only restriction on or off via the same data-weekday
+ * attribute initDatepickers() reads. Generic enough for any future
+ * sacrament page with more than one request "type" to reuse.
+ */
+/**
+ * Generic radio-card highlight: any group of label-wrapped radio
+ * "cards" (baptism-request.php's Regular/Special Baptism type cards,
+ * mass-intention-request.php's 5-way Intent Type cards) gets an
+ * `.is-checked` class on whichever card's radio is currently selected.
+ * Markup contract: a container with `data-radio-cards` holding one or
+ * more `[data-radio-card]` elements, each wrapping exactly one
+ * `input[type="radio"]`. Page-specific behavior beyond the highlight
+ * itself (e.g. baptism's date-field toggling) stays in its own
+ * separate handler rather than growing this one.
+ */
+(function initRadioCardGroups() {
+    document.querySelectorAll('[data-radio-cards]').forEach((group) => {
+        function sync() {
+            group.querySelectorAll('[data-radio-card]').forEach((card) => {
+                card.classList.toggle('is-checked', card.querySelector('input[type="radio"]').checked);
+            });
+        }
+        group.querySelectorAll('input[type="radio"]').forEach((r) => r.addEventListener('change', sync));
+        sync();
+    });
+})();
+
+
+(function initTypeCardToggle() {
+    const radios = document.querySelectorAll('[data-type-toggle] input[type="radio"]');
+    if (!radios.length) return;
+
+    const group = document.querySelector('[data-type-toggle]');
+    const dateRoot = document.querySelector('[data-datepicker][data-regular-weekday]');
+    const dateTypeWord = document.getElementById('baptismDateTypeWord');
+    const dateLabel = document.getElementById('baptismDateLabel');
+    const dateHint = document.getElementById('baptismDateHint');
+    const dateInput = document.getElementById('baptismDate');
+    const banner = document.getElementById('baptismTypeBanner');
+    const dateTipBanner = document.getElementById('baptismDateTipBanner');
+
+    // card highlighting itself is handled by initRadioCardGroups() above
+    // (this container also carries data-radio-cards/data-radio-card) --
+    // this function only owns the date-field-specific side effects
+    function apply(resetValue) {
+        const checked = group.querySelector('input[type="radio"]:checked');
+        const isRegular = !checked || checked.value === 'regular';
+
+        if (dateRoot) {
+            if (isRegular) {
+                dateRoot.dataset.weekday = dateRoot.dataset.regularWeekday;
+            } else {
+                delete dateRoot.dataset.weekday;
+            }
+        }
+        if (dateTypeWord) dateTypeWord.textContent = isRegular ? 'Regular' : 'Special';
+        if (dateLabel) dateLabel.textContent = isRegular ? 'Select a future Saturday' : 'Select a preferred date';
+        if (dateHint) {
+            dateHint.textContent = isRegular
+                ? 'Regular Baptism is scheduled every Saturday.'
+                : 'Choose your preferred date. Final confirmation is subject to parish approval and availability.';
+        }
+        if (banner) banner.hidden = !isRegular;
+        // Special has only the one simple "must be a future date" rule,
+        // so a short standing note is proportionate there -- Regular's
+        // Saturday-only rule is already visible in the greyed-out
+        // calendar itself, so it stays without a persistent banner
+        if (dateTipBanner) dateTipBanner.hidden = isRegular;
+
+        // a date picked under one mode's rule (e.g. a Saturday) can be
+        // stale once the rule changes, so clear it rather than leaving
+        // a value on screen the current mode wouldn't have allowed
+        if (resetValue && dateInput) {
+            dateInput.value = '';
+            dateInput.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+    }
+
+    radios.forEach((r) => r.addEventListener('change', () => apply(true)));
+    apply(false); // reflect whichever radio is checked on load (incl. PHP-repopulated state) without wiping it
+})();
+
+
+/**
+ * donations.php's "Donation Purpose" fund picker -- a custom dropdown
+ * rather than a plain <select>, since its closed state needs to show
+ * an icon + title + description together (a native select's own
+ * closed-state rendering can't do that). Same open/close/outside-
+ * click/Escape mechanics as initDatepickers() above, just a plain
+ * option list instead of a calendar grid.
+ *
+ * Markup contract:
+ *   <div class="ps-fund-picker" data-fund-picker>
+ *     <button data-fund-trigger>
+ *       <span data-fund-icon>...</span>
+ *       <strong data-fund-label>...</strong>
+ *       <small data-fund-desc>...</small>
+ *     </button>
+ *     <input type="hidden" data-fund-input>
+ *     <div data-fund-panel hidden>
+ *       <button data-fund-option data-value="..." data-icon="<svg>...</svg>">...</button>
+ *       ...
+ *     </div>
+ *   </div>
+ * Each option's data-icon holds its own pre-rendered <svg> markup
+ * (echoed server-side by ps_icon() into the option button already, and
+ * just read back out of it here) so the trigger can swap icons without
+ * this file needing its own duplicate copy of every icon's path data.
+ */
+(function initFundPickers() {
+    document.querySelectorAll('[data-fund-picker]').forEach((root) => {
+        const trigger = root.querySelector('[data-fund-trigger]');
+        const panel = root.querySelector('[data-fund-panel]');
+        const input = root.querySelector('[data-fund-input]');
+        const iconEl = root.querySelector('[data-fund-icon]');
+        const labelEl = root.querySelector('[data-fund-label]');
+        const descEl = root.querySelector('[data-fund-desc]');
+        if (!trigger || !panel || !input) return;
+
+        function closePanel() { panel.hidden = true; }
+        function openPanel() { panel.hidden = false; }
+
+        function selectOption(option) {
+            input.value = option.dataset.value;
+            if (labelEl) labelEl.textContent = option.querySelector('strong')?.textContent || '';
+            if (descEl) descEl.textContent = option.dataset.desc || '';
+            if (iconEl) {
+                const optionIcon = option.querySelector('svg');
+                if (optionIcon) iconEl.innerHTML = optionIcon.outerHTML;
+            }
+            root.querySelectorAll('[data-fund-option]').forEach((o) => o.classList.toggle('is-selected', o === option));
+            input.dispatchEvent(new Event('change', { bubbles: true }));
+            closePanel();
+        }
+
+        trigger.addEventListener('click', () => (panel.hidden ? openPanel() : closePanel()));
+        root.querySelectorAll('[data-fund-option]').forEach((option) => {
+            option.addEventListener('click', () => selectOption(option));
+        });
+        document.addEventListener('click', (e) => {
+            if (!root.contains(e.target)) closePanel();
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !panel.hidden) closePanel();
+        });
+    });
+})();
+
+
+/**
+ * donations.php's "I would like to remain anonymous" checkbox --
+ * disables (and clears) the Full Name field while checked, since a
+ * name typed there wouldn't make sense to keep once anonymity is
+ * requested. Not shown in the reference image explicitly, but a
+ * natural, low-risk expectation for this exact combination of fields.
+ */
+(function initAnonymousDonationToggle() {
+    const checkbox = document.getElementById('isAnonymous');
+    const nameField = document.getElementById('donorName');
+    if (!checkbox || !nameField) return;
+
+    function sync() {
+        nameField.disabled = checkbox.checked;
+        if (checkbox.checked) nameField.value = '';
+    }
+    checkbox.addEventListener('change', sync);
+    sync();
 })();
 
 
@@ -613,4 +1099,38 @@ function setAuthFieldError(input, message) {
         sync(select);
         select.addEventListener('change', () => sync(select));
     });
+})();
+
+
+/**
+ * Section tab bar scroll-spy, first used on baptism-guidelines.php's
+ * Guidelines/Required Document/Types & Fees/FAQ tabs. Clicking a tab
+ * already jumps to its anchor for free (plain <a href="#id">, no JS
+ * needed for that part) -- this only handles the OTHER direction:
+ * keeping the correct tab marked .active as someone scrolls past each
+ * section on their own, using IntersectionObserver instead of a
+ * scroll-position math (simpler, and the browser does the work).
+ * rootMargin shrinks the "counts as visible" zone to roughly the top
+ * 40% of the viewport, so the active tab doesn't flicker between two
+ * sections while their shared boundary is mid-screen.
+ */
+(function initSectionTabScrollSpy() {
+    const tabsWrap = document.querySelector('[data-scroll-spy-tabs]');
+    const sections = document.querySelectorAll('[data-scroll-spy-section]');
+    if (!tabsWrap || !sections.length || typeof IntersectionObserver === 'undefined') return;
+
+    const tabs = tabsWrap.querySelectorAll('[data-scroll-spy-tab]');
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            const id = entry.target.dataset.scrollSpySection;
+            tabs.forEach((tab) => tab.classList.toggle('active', tab.dataset.scrollSpyTab === id));
+        });
+    }, {
+        rootMargin: '-96px 0px -60% 0px',
+        threshold: 0,
+    });
+
+    sections.forEach((section) => observer.observe(section));
 })();

@@ -1,0 +1,44 @@
+/* =====================================================================
+   baptism-guidelines.css
+   Page-specific styles for baptism-guidelines.php ONLY. The tab bar,
+   Welcome banner, steps list, document highlight box, info banner, FAQ
+   accordion, and help footer are all shared components from style.css
+   (see that file's "Guideline-page building blocks" and "Section tab
+   bar" sections). This file is just the two-column fee card grid,
+   which reads as too specific to promote before a second guidelines
+   page actually needs the exact same "Types & Fees" shape.
+   ===================================================================== */
+
+.bg-plain-note { font-size: 13px; color: var(--text-body); margin-bottom: 14px; }
+.bg-doc-tip { margin-bottom: 4px; }
+
+.bg-fee-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 16px 0 18px;
+}
+.bg-fee-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    background: var(--cream-deep);
+    border-radius: var(--radius-md);
+    padding: 18px;
+}
+.bg-fee-card-icon {
+    width: 40px; height: 40px; border-radius: 10px;
+    background: var(--card-bg);
+    color: var(--maroon-700);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+}
+.bg-fee-card-icon svg { width: 18px; height: 18px; }
+.bg-fee-card-text { display: flex; flex-direction: column; gap: 4px; }
+.bg-fee-card-text strong { font-size: 14px; color: var(--text-dark); }
+.bg-fee-card-text small { font-size: 12px; color: var(--text-body); }
+.bg-fee-card-amount { font-size: 13.5px; font-weight: 700; color: var(--maroon-700); margin-top: 2px; }
+
+@media (max-width: 640px) {
+    .bg-fee-grid { grid-template-columns: 1fr; }
+}

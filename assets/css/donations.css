@@ -1,0 +1,160 @@
+/* =====================================================================
+   donations.css
+   Page-specific styles for donations.php. Loads alongside style.css
+   ONLY (not wedding-request.css) -- this isn't part of any wizard, so
+   the numbered-section-heading/required-asterisk pieces it needs
+   (.wr-section*, .wr-required) live in style.css's shared form kit,
+   not the wizard stylesheet. The dropzone, info banner, and select
+   kit all come from style.css too. This file is just the handful of
+   things unique to a donation form: the top 2-column grid, the fund
+   picker, the currency input, the payment-method card's own layout,
+   and the bottom trust note.
+   ===================================================================== */
+
+/* ---- top row: Donation Details (wider) + Payment Method ---------------- */
+.don-top-grid {
+    display: grid;
+    grid-template-columns: 1.7fr 1fr;
+    gap: 20px;
+    align-items: start;
+    margin-bottom: 20px;
+}
+
+/* ---- fund picker: a custom dropdown (not a plain <select>) since the
+   closed state needs to show an icon + title + description together,
+   which a native select can't render. Same open/close/outside-click
+   mechanics as .ps-datepicker (main.js's initFundPickers()). --------- */
+.ps-fund-picker { position: relative; }
+.ps-fund-trigger {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-sm);
+    background: var(--card-bg);
+    text-align: left;
+    cursor: pointer;
+}
+.ps-fund-trigger:focus-visible { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px rgba(201, 162, 74, 0.15); }
+.ps-fund-icon {
+    width: 34px; height: 34px; border-radius: 9px;
+    background: var(--cream-deep);
+    color: var(--maroon-700);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+}
+.ps-fund-icon svg { width: 16px; height: 16px; }
+.ps-fund-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.ps-fund-text strong { font-size: 13.5px; color: var(--text-dark); }
+.ps-fund-text small { font-size: 11.5px; color: var(--text-body); line-height: 1.35; }
+.ps-fund-chevron { width: 15px; height: 15px; stroke: var(--text-body); flex-shrink: 0; }
+
+.ps-fund-panel {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    z-index: 30;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-card-hover);
+    padding: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.ps-fund-panel[hidden] { display: none; }
+.ps-fund-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 9px 8px;
+    border-radius: var(--radius-sm);
+    text-align: left;
+    color: inherit;
+}
+.ps-fund-option:hover, .ps-fund-option.is-selected { background: var(--cream-deep); }
+.ps-fund-option svg { width: 16px; height: 16px; color: var(--maroon-700); flex-shrink: 0; }
+/* the icon svg is a direct flex child of .ps-fund-option (row layout),
+   but the title needs to stack ABOVE the description -- wrapping both
+   in their own span (itself a column flex container) keeps that
+   independent of the option button's own row direction */
+.ps-fund-option-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.ps-fund-option strong { font-size: 13px; color: var(--text-dark); }
+.ps-fund-option small { font-size: 11px; color: var(--text-body); }
+
+/* ---- currency-prefixed amount input ------------------------------------ */
+.ps-currency-field { position: relative; }
+.ps-currency-symbol {
+    position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+    color: var(--text-body); font-weight: 600; font-size: 14px;
+    pointer-events: none;
+}
+/* same [type] specificity note as .ps-input-icon/.ps-field-icon above --
+   keeps this padding winning over .ps-field input[type="number"]'s own */
+.ps-field .ps-currency-field input[type] { padding-left: 34px; }
+
+/* ---- dropzone icon variant: an outlined ring instead of the plain bare
+   icon .ps-dropzone-icon normally is elsewhere (e.g. baptism-request-
+   step2.php) -- purely additive, doesn't touch that shared base rule */
+.ps-dropzone-icon.is-ringed {
+    width: 44px; height: 44px;
+    border: 2px solid var(--maroon-700);
+    border-radius: 50%;
+    color: var(--maroon-700);
+    display: flex; align-items: center; justify-content: center;
+}
+.ps-dropzone-icon.is-ringed svg { width: 18px; height: 18px; }
+
+/* ---- Payment Method card's own 2-column layout: QR + parish info on the
+   left, "How to donate"/"Important Reminders" stacked on the right ----- */
+.don-payment-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 14px; }
+.don-qr-block { text-align: center; }
+.don-qr-block img { width: 100%; max-width: 220px; height: auto; margin: 0 auto 12px; border: 1px solid var(--card-border); border-radius: var(--radius-md); }
+.don-qr-name { font-size: 14px; color: var(--text-dark); font-weight: 700; }
+.don-qr-number { font-size: 13px; color: var(--text-dark); margin-top: 4px; }
+.don-qr-account { font-size: 12px; color: var(--text-body); margin-top: 2px; }
+
+.don-howto, .don-reminders {
+    background: var(--cream-deep);
+    border-radius: var(--radius-md);
+    padding: 16px 18px;
+}
+.don-reminders { margin-top: 14px; }
+.don-howto h4, .don-reminders h4 {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 13.5px; color: var(--text-dark); margin-bottom: 10px;
+}
+.don-howto h4 svg, .don-reminders h4 svg { width: 15px; height: 15px; color: var(--gold-dark); flex-shrink: 0; }
+.don-howto-list { display: flex; flex-direction: column; gap: 9px; }
+.don-howto-item { display: flex; align-items: flex-start; gap: 10px; font-size: 12.5px; color: var(--text-body); line-height: 1.4; }
+.don-howto-num {
+    width: 20px; height: 20px; border-radius: 50%;
+    background: var(--card-bg); border: 1px solid var(--gold);
+    color: var(--gold-dark); font-size: 11px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: 1px;
+}
+
+/* ---- anonymous checkbox row --------------------------------------------- */
+.don-anon-row { display: flex; align-items: flex-start; gap: 10px; margin-top: 16px; }
+.don-anon-row input[type="checkbox"] { width: 17px; height: 17px; margin-top: 2px; flex-shrink: 0; }
+.don-anon-row label { font-size: 13.5px; color: var(--text-dark); font-weight: 600; cursor: pointer; }
+.don-anon-row small { display: block; font-size: 12px; color: var(--text-body); font-weight: 400; margin-top: 2px; }
+
+/* ---- bottom trust note under the action buttons ------------------------- */
+.don-trust-note { text-align: center; margin-top: 14px; font-size: 12.5px; color: var(--text-body); line-height: 1.6; }
+.don-trust-note svg { width: 13px; height: 13px; vertical-align: -2px; margin-right: 4px; color: var(--text-body); }
+
+/* ---- responsive ---------------------------------------------------------- */
+@media (max-width: 1000px) {
+    .don-top-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 640px) {
+    .don-payment-grid { grid-template-columns: 1fr; }
+}

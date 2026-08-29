@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- PLACEHOLDER graphic for donations.php's Payment Method card, NOT a real
+     scannable QR code: it reads visually as one (finder-pattern corner
+     squares plus a fine noise texture) but decodes to nothing. Swap for a
+     real generated QR code (or an uploaded image) once the parish's actual
+     GCash account is wired up. The center badge is a plain text placeholder
+     ("GCash" on a blue circle), not the real GCash logo. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <defs>
+    <pattern id="qrNoise" width="8" height="8" patternUnits="userSpaceOnUse">
+      <rect width="8" height="8" fill="#ffffff"/>
+      <rect x="0" y="0" width="4" height="4" fill="#1a1a1a"/>
+      <rect x="4" y="4" width="4" height="4" fill="#1a1a1a"/>
+    </pattern>
+  </defs>
+
+  <rect width="200" height="200" fill="#ffffff"/>
+  <rect x="8" y="8" width="184" height="184" fill="url(#qrNoise)"/>
+
+  <!-- finder pattern: top-left -->
+  <rect x="8" y="8" width="42" height="42" fill="#1a1a1a"/>
+  <rect x="14" y="14" width="30" height="30" fill="#ffffff"/>
+  <rect x="20" y="20" width="18" height="18" fill="#1a1a1a"/>
+
+  <!-- finder pattern: top-right -->
+  <rect x="150" y="8" width="42" height="42" fill="#1a1a1a"/>
+  <rect x="156" y="14" width="30" height="30" fill="#ffffff"/>
+  <rect x="162" y="20" width="18" height="18" fill="#1a1a1a"/>
+
+  <!-- finder pattern: bottom-left -->
+  <rect x="8" y="150" width="42" height="42" fill="#1a1a1a"/>
+  <rect x="14" y="156" width="30" height="30" fill="#ffffff"/>
+  <rect x="20" y="162" width="18" height="18" fill="#1a1a1a"/>
+
+  <!-- center logo cutout, standing in for a real GCash app logo -->
+  <circle cx="100" cy="100" r="32" fill="#ffffff" stroke="#e6e6e6" stroke-width="2"/>
+  <circle cx="100" cy="100" r="25" fill="#0179ff"/>
+  <text x="100" y="105" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="700" fill="#ffffff">GCash</text>
+</svg>

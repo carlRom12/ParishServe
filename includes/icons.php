@@ -50,6 +50,7 @@ $GLOBALS['PS_ICONS'] = [
     'filter'       => '<path d="M4 5h16M7 12h10M10 19h4"/>',
     'chevron-down' => '<path d="M6 9l6 6 6-6"/>',
     'chevron-right'=> '<path d="M9 6l6 6-6 6"/>',
+    'chevron-left' => '<path d="M15 6l-6 6 6 6"/>',
     'arrow-left'   => '<path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/>',
     'bookmark'     => '<path d="M7 4h10a1 1 0 0 1 1 1v15l-6-4-6 4V5a1 1 0 0 1 1-1z"/>',
 
@@ -90,6 +91,15 @@ $GLOBALS['PS_ICONS'] = [
     /* added for the registration page */
     'user-plus'     => '<circle cx="10" cy="8" r="3.5"/><path d="M3 20c0-3.9 3.1-7 7-7s7 3.1 7 7"/><path d="M18 8h4M20 6v4"/>',
     'shield-check'  => '<path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/><path d="M9 12l2 2 4-4"/>',
+
+    /* added for the Baptism page */
+    'tag'           => '<path d="M12 3h6a2 2 0 0 1 2 2v6a2 2 0 0 1-.6 1.4l-8 8a2 2 0 0 1-2.8 0l-6-6a2 2 0 0 1 0-2.8l8-8A2 2 0 0 1 12 3z"/><circle cx="16" cy="8" r="1.6"/>',
+
+    /* added for baptism-request-step2.php's drag-and-drop upload zone */
+    'upload'        => '<path d="M7 17a4.5 4.5 0 0 1-1-8.9A5.5 5.5 0 0 1 16.5 8H17a4 4 0 0 1 1 7.9"/><path d="M12 12v7"/><path d="M9 15l3-3 3 3"/>',
+
+    /* added for mass-intention-request.php's "Milestones & Celebrations" intent-type card */
+    'gift'          => '<rect x="4" y="9" width="16" height="11" rx="1.5"/><path d="M4 9h16M12 9v11"/><path d="M12 9c-1-3.2-3.2-5-5-4s-1 4 2 4zM12 9c1-3.2 3.2-5 5-4s1 4-2 4z"/>',
 ];
 
 /**

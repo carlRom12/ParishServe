@@ -1,72 +1,20 @@
 /* =====================================================================
    wedding-request-step3.css
-   Page-specific styles for wedding-request-step3.php. Step bar and
-   form action row are duplicated from wedding-request-step2.css (same
-   "not shared yet" note applies -- three pages now want the identical
-   step bar, worth promoting to style.css next time any of these three
-   files gets touched again).
+   Page-specific styles for wedding-request-step3.php AND (as of this
+   round) mass-intention-request-step3.php -- both now load this file
+   alongside wedding-request.css. The step bar / form action row /
+   "not built yet" notice USED to be duplicated here from wedding-
+   request-step2.css (this file's own earlier comment already flagged
+   it as "worth promoting next time any of these three files gets
+   touched again"). Promoted this round while building mass-intention's
+   Step 3, which needed the identical pieces -- turns out the duplicate
+   here was ALSO missing the newer .wr-step.is-done checkmark styling
+   entirely (added to wedding-request.css after this file was first
+   written), so wedding-request-step3.php's own step bar had been
+   silently rendering steps 1 & 2's checkmarks unstyled until this fix.
+   This file now holds ONLY the review-summary pieces (.wr3-*) that are
+   still genuinely specific to a Step 3 review page.
    ===================================================================== */
-
-.wr-stepbar {
-    display: flex;
-    align-items: center;
-    gap: 18px;
-    margin-bottom: 22px;
-}
-.wr-step { display: flex; align-items: center; gap: 14px; flex: 1; min-width: 0; }
-.wr-step-num {
-    width: 44px; height: 44px; border-radius: 50%;
-    background: var(--cream-deep);
-    color: var(--maroon-700);
-    font-family: 'Playfair Display', serif;
-    font-weight: 700;
-    font-size: 18px;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-}
-.wr-step.is-current .wr-step-num {
-    background: var(--maroon-700);
-    color: #fff;
-    box-shadow: 0 4px 10px rgba(92, 27, 46, 0.3);
-}
-.wr-step-text { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
-.wr-step-text strong { font-size: 14px; color: var(--text-body); font-weight: 600; }
-.wr-step.is-current .wr-step-text strong { color: var(--maroon-700); }
-.wr-step-text small { font-size: 12px; color: var(--text-body); }
-.wr-step-sep { width: 16px; height: 16px; stroke: #c9bdb4; flex-shrink: 0; }
-
-.wr-actions {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    margin-top: 20px;
-    padding-top: 24px;
-    border-top: 1px solid var(--card-border);
-}
-.wr-cancel {
-    flex: 0 0 200px;
-    justify-content: center;
-    background: var(--cream-deep);
-    color: var(--text-dark);
-}
-.wr-cancel:hover { background: #efe2c8; }
-.wr-submit { flex: 1; justify-content: center; }
-
-.wr-next-step-notice {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    margin-top: 18px;
-    padding: 14px 16px;
-    border-radius: var(--radius-md);
-    background: var(--status-pending-bg);
-    color: var(--status-pending-text);
-    font-size: 13px;
-    line-height: 1.5;
-}
-.wr-next-step-notice svg { width: 16px; height: 16px; flex-shrink: 0; margin-top: 2px; }
-.wr-next-step-notice[hidden] { display: none; }
-.wr-next-step-notice code { background: rgba(0,0,0,0.06); padding: 1px 5px; border-radius: 4px; font-size: 12px; }
 
 /* ---- intro + review grid ------------------------------------------------ */
 .wr3-intro { margin-bottom: 18px; }
@@ -81,6 +29,29 @@
 }
 
 .wr3-card-sub { font-size: 13px; color: var(--text-body); margin: 6px 0 14px; }
+
+/* ---- review-card header: circular icon badge + "N. Title", e.g.
+   mass-intention-request-step3.php's "1. Intent Details" -- bigger and
+   more prominent than the plain small-icon .ps-card-title used
+   elsewhere, matching that page's reference image. wedding-request-
+   step3.php's own review cards use plain .ps-card-title instead
+   (no numbering in that reference image), so this is additive, not a
+   replacement. ---------------------------------------------------------- */
+.wr3-review-card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+.wr3-review-card-icon {
+    width: 38px; height: 38px; border-radius: 50%;
+    background: var(--cream-deep);
+    color: var(--gold-dark);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+}
+.wr3-review-card-icon svg { width: 18px; height: 18px; }
+.wr3-review-card-header h3 { font-size: 16px; color: var(--text-dark); font-family: 'Playfair Display', serif; font-weight: 700; margin: 0; }
+
+/* full-width review card (e.g. "3. Preferred Schedule") sitting below
+   the 2-column .wr3-review-grid rather than inside it -- same visual
+   card, just not grid-constrained to half width */
+.wr3-review-card.wr3-review-card-full { margin-top: 20px; }
 
 /* ---- "The Couple" review rows -------------------------------------------- */
 .wr3-section-label {
@@ -151,7 +122,10 @@
 }
 .wr3-confirm-icon svg { width: 18px; height: 18px; stroke-width: 2.4; }
 .wr3-confirm-text strong { display: block; font-size: 14.5px; color: var(--text-dark); }
-.wr3-confirm-text small { font-size: 12.5px; color: var(--text-body); }
+/* display:block so mass-intention-request-step3.php's TWO <small> lines
+   in a row don't run together on one line the way inline default would
+   -- harmless for wedding-request-step3.php's single <small> too */
+.wr3-confirm-text small { display: block; font-size: 12.5px; color: var(--text-body); }
 
 /* ---- right sidebar: "What happens next?" --------------------------------- */
 .wr3-next-card { background: linear-gradient(135deg, var(--cream-deep), #f7ecd6); text-align: center; }
@@ -171,14 +145,14 @@
     .wr3-reminders-list { grid-template-columns: 1fr; }
 }
 
+/* .wr-stepbar/.wr-step-sep and .wr-actions/.wr-cancel/.wr-submit's own
+   responsive rules now come from wedding-request.css, loaded
+   alongside this file -- only the pieces still specific to this page
+   stay here. */
 @media (max-width: 900px) {
-    .wr-stepbar { flex-direction: column; align-items: stretch; gap: 14px; }
-    .wr-step-sep { display: none; }
     .wr3-seminar-fields { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 640px) {
-    .wr-actions { flex-direction: column-reverse; }
-    .wr-cancel, .wr-submit { width: 100%; flex: none; }
     .wr3-confirm-bar { flex-direction: column; align-items: flex-start; }
 }

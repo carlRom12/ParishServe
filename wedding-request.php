@@ -69,20 +69,7 @@ require __DIR__ . '/includes/sidebar.php';
     </section>
 
     <!-- ============================ STEP BAR ============================== -->
-    <div class="ps-card wr-stepbar">
-        <?php foreach ($steps as $i => $step): ?>
-            <div class="wr-step<?php echo $i === $currentStep ? ' is-current' : ''; ?>">
-                <span class="wr-step-num"><?php echo (int) $i + 1; ?></span>
-                <span class="wr-step-text">
-                    <strong><?php echo htmlspecialchars($step['title']); ?></strong>
-                    <small><?php echo htmlspecialchars($step['sub']); ?></small>
-                </span>
-            </div>
-            <?php if ($i < count($steps) - 1): ?>
-                <?php ps_icon('chevron-right', 'wr-step-sep'); ?>
-            <?php endif; ?>
-        <?php endforeach; ?>
-    </div>
+    <?php require __DIR__ . '/includes/step-bar.php'; ?>
 
     <!-- ============================ STEP 1 FORM =========================== -->
     <!-- Step 2 is a real page now, so this form genuinely submits (native

@@ -10,9 +10,14 @@
  * HOW A PAGE USES THIS FILE:
  *   Before requiring this file, a page can optionally set:
  *     $pageTitle  -> shows in the browser tab, e.g. "Dashboard"
- *     $pageCss    -> extra stylesheet filename inside assets/css/,
+ *     $pageCss    -> extra stylesheet filename(s) inside assets/css/,
  *                    e.g. "dashboard.css" (loaded AFTER style.css so
- *                    it can override shared rules if needed)
+ *                    it can override shared rules if needed). Can be a
+ *                    single string, OR an array of filenames when a
+ *                    page needs more than one (e.g. baptism-request-
+ *                    step2.php loads the shared wedding-request.css
+ *                    AND its own small baptism-request-step2.css) --
+ *                    each loads in array order, after style.css.
  *     $activeNav  -> which sidebar link should get the "active" gold
  *                    highlight (sidebar.php reads this). Matches the
  *                    'key' values used in the $navItems list below,
@@ -52,8 +57,11 @@ if (!isset($pageTitle)) {
 <link rel="stylesheet" href="assets/css/style.css">
 
 <?php if (!empty($pageCss)): ?>
-<!-- page-specific styles, loaded after style.css so it can extend it -->
-<link rel="stylesheet" href="assets/css/<?php echo htmlspecialchars($pageCss); ?>">
+<!-- page-specific styles, loaded after style.css so it can extend it --
+     $pageCss may be a single filename or an array of them -->
+<?php foreach ((array) $pageCss as $cssFile): ?>
+<link rel="stylesheet" href="assets/css/<?php echo htmlspecialchars($cssFile); ?>">
+<?php endforeach; ?>
 <?php endif; ?>
 </head>
 <body>

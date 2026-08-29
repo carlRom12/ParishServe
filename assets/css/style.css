@@ -648,6 +648,14 @@ h1, h2, h3, h4 {
     font-size: 13px;
 }
 .ps-info-banner svg { width: 16px; height: 16px; stroke: var(--gold-dark); flex-shrink: 0; }
+/* baptism-request.php toggles this banner via the plain `hidden`
+   attribute (initTypeCardToggle() in main.js) -- without this rule the
+   banner's own `display: flex` above wins the cascade over the
+   browser's built-in `[hidden] { display: none }` (author styles beat
+   the UA stylesheet even at equal specificity), so the "hidden"
+   banner would stay fully visible. Same class of bug the mobile menu
+   hit earlier this session. */
+.ps-info-banner[hidden] { display: none; }
 
 /* =====================================================================
    Plain page header + breadcrumb
@@ -660,6 +668,12 @@ h1, h2, h3, h4 {
    ===================================================================== */
 .ps-plain-header { position: relative; padding: 6px 0 26px; }
 .ps-plain-header h1 { font-size: 30px; }
+/* a plain intro paragraph under the heading, e.g. mass-intention.php's
+   "Offer a Mass for your loved ones and special intentions." -- the
+   wizard/guidelines pages using .ps-plain-header so far only ever
+   paired the heading with a breadcrumb, never both a breadcrumb AND a
+   subtitle, so this is a new (but very ordinary) addition. */
+.ps-plain-header p { font-size: 14.5px; color: var(--text-body); margin-top: 6px; }
 
 .ps-breadcrumb { display: flex; align-items: center; gap: 8px; margin-top: 8px; font-size: 13px; color: var(--text-body); }
 .ps-breadcrumb a { color: var(--text-body); font-weight: 500; }
@@ -675,6 +689,60 @@ h1, h2, h3, h4 {
    look, so it lives here instead of in that page's own stylesheet.
    ===================================================================== */
 input[type="radio"], input[type="checkbox"] { accent-color: var(--maroon-700); }
+
+/* ---- numbered section heading, e.g. baptism-request.php's "1. Baptism
+   Type" / "2. Child Information" or donations.php's "1. Donation
+   Details" -- each is its own .ps-card rather than one continuous form
+   card. Promoted here from wedding-request.css once donations.php (not
+   part of any wizard) needed the identical pattern. ------------------- */
+.wr-section { margin-bottom: 20px; }
+.wr-section-heading { font-size: 16px; color: var(--text-dark); margin-bottom: 4px; }
+/* a second numbered heading inside the same card (e.g. baptism-
+   request.php's "3. Parent/Guardian..." card also holding "4.
+   Preferred Baptism Date") needs breathing room from the row above it */
+.wr-section-heading:not(:first-child) { margin-top: 24px; }
+.wr-section-sub { font-size: 13px; color: var(--text-body); margin-bottom: 18px; }
+
+/* red required-asterisk, first shown in baptism-request.php's
+   reference image next to labels/section headings */
+.wr-required { color: var(--status-rejected-text); margin-left: 2px; }
+
+/* ---- form action row (Cancel + primary submit) and the inline "not
+   built yet" notice main.js shows on intercepted submits -- promoted
+   here from wedding-request.css once donations.php (not part of any
+   wizard) needed the identical pattern. ---------------------------------- */
+.wr-actions { display: flex; align-items: center; gap: 16px; margin-top: 4px; }
+/* wedding/baptism's Step 2+3 (and the old single-card baptism Step 1)
+   keep the actions row INSIDE the same .ps-card as the fields, where a
+   divider line reads as "end of this card's content". baptism-request.
+   php's rebuilt Step 1 and donations.php instead stack several
+   separate .ps-cards and put Cancel/Save below all of them as their
+   own row -- no divider line makes sense floating outside any card
+   there, so only add one when .wr-actions is actually inside .wr-form. */
+.wr-form .wr-actions { padding-top: 24px; border-top: 1px solid var(--card-border); }
+.wr-cancel { flex: 0 0 200px; justify-content: center; background: var(--cream-deep); color: var(--text-dark); }
+.wr-cancel:hover { background: #efe2c8; }
+.wr-submit { flex: 1; justify-content: center; }
+
+.wr-next-step-notice {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-top: 18px;
+    padding: 14px 16px;
+    border-radius: var(--radius-md);
+    background: var(--status-pending-bg);
+    color: var(--status-pending-text);
+    font-size: 13px;
+    line-height: 1.5;
+}
+.wr-next-step-notice svg { width: 16px; height: 16px; stroke: currentColor; flex-shrink: 0; margin-top: 2px; }
+.wr-next-step-notice[hidden] { display: none; }
+
+/* notes/details field + optional label tag -- promoted here (by way of
+   wedding-request.css) once donations.php needed .wr-optional too */
+.wr-notes-field { margin-top: 22px; }
+.wr-optional { font-weight: 400; color: var(--text-body); }
 
 .ps-field { display: flex; flex-direction: column; gap: 6px; }
 .ps-field-label { font-size: 13px; font-weight: 600; color: var(--text-dark); }
@@ -728,6 +796,16 @@ input[type="radio"], input[type="checkbox"] { accent-color: var(--maroon-700); }
 
 .ps-form-hint { font-size: 11.5px; color: var(--text-body); }
 
+/* inline field-level error text, e.g. baptism-request.php's date
+   picker or wedding-request-step2.php's file-size rejection -- shares
+   the same red/bold treatment either way, hidden via the plain
+   [hidden] attribute rather than a class so main.js only has to
+   toggle `.hidden` on the element itself. Promoted here from
+   wedding-request-step2.css once a second page (Step 1's date field)
+   needed it and that stylesheet isn't loaded there. */
+.wr-file-error { color: var(--status-rejected-text); font-weight: 600; }
+.wr-file-error[hidden] { display: none; }
+
 .ps-radio-row { display: flex; align-items: center; gap: 28px; flex-wrap: wrap; }
 .ps-radio { display: flex; align-items: center; gap: 9px; font-size: 14px; color: var(--text-dark); cursor: pointer; }
 .ps-radio input[type="radio"] { width: 18px; height: 18px; }
@@ -735,6 +813,12 @@ input[type="radio"], input[type="checkbox"] { accent-color: var(--maroon-700); }
 .ps-form-row-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
 .ps-form-row-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
 .ps-form-row-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+
+@media (max-width: 640px) {
+    .ps-form-row-2, .ps-form-row-3, .ps-form-row-4 { grid-template-columns: 1fr; }
+    .wr-actions { flex-direction: column-reverse; }
+    .wr-cancel, .wr-submit { width: 100%; flex: none; }
+}
 
 /* a select wrapped the same way as calendar.php's toolbar dropdown,
    just stretched to fill a form field's full width. The select inside
@@ -793,6 +877,161 @@ input[type="radio"], input[type="checkbox"] { accent-color: var(--maroon-700); }
 .ps-field-icon > svg { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); width: 17px; height: 17px; stroke: var(--text-body); pointer-events: none; }
 
 /* =====================================================================
+   Drag-and-drop file upload zone. First built for baptism-request-
+   step2.php's single Birth Certificate upload; wedding-request-
+   step2.php's 8 requirements use plain native file inputs instead
+   since a full dropzone per row would be a lot of visual weight for
+   that many fields -- this is for the "there's just one important
+   file" case. The real <input type="file"> covers the ENTIRE box
+   (absolutely positioned, opacity 0), so every pixel in the dashed
+   area is genuinely clickable to open the file picker, not just the
+   "Choose File" pill -- that pill is purely decorative underneath it.
+   Drag-and-drop itself is handled by main.js's initDropzones().
+   ===================================================================== */
+.ps-dropzone {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 28px 24px;
+    border: 2px dashed var(--card-border);
+    border-radius: var(--radius-md);
+    background: var(--card-bg);
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.15s ease, background 0.15s ease;
+}
+.ps-dropzone.is-dragover { border-color: var(--gold); background: var(--cream-deep); }
+.ps-dropzone input[type="file"] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+}
+.ps-dropzone-icon { width: 34px; height: 34px; color: var(--text-body); margin-bottom: 2px; }
+.ps-dropzone-icon svg { width: 100%; height: 100%; stroke-width: 1.6; }
+.ps-dropzone-text { font-size: 13.5px; color: var(--text-dark); }
+.ps-dropzone-or { font-size: 11.5px; color: #b5a89f; margin: 2px 0; }
+.ps-dropzone-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 9px 18px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--card-border);
+    background: var(--card-bg);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-dark);
+    pointer-events: none; /* the real input already covers the whole box */
+}
+.ps-dropzone-filename { font-size: 12px; color: var(--text-body); margin-top: 8px; }
+
+/* =====================================================================
+   Custom date picker -- a hand-built popup calendar, NOT a styled
+   native <input type="date">. First needed by baptism-request.php's
+   "Preferred Regular Baptism Date" field: only future Saturdays may be
+   selected, and a native date input's browser-drawn calendar can't be
+   made to grey out arbitrary weekdays via CSS at all (its popup lives
+   in a closed shadow DOM the page has no access to). main.js's
+   initDatepickers() renders the month grid into .ps-datepicker-panel
+   and reads which dates to disable from data attributes on the
+   .ps-datepicker wrapper, so this same component works for any future
+   field with its own day-of-week rule, not just this one.
+   ===================================================================== */
+.ps-datepicker { position: relative; }
+.ps-datepicker-field { position: relative; }
+/* same [type] specificity note as .ps-input-icon above -- keeps this
+   padding rule winning over .ps-field input[type="text"]'s own
+   padding regardless of file order */
+.ps-field .ps-datepicker-field input[type] { padding-right: 40px; cursor: pointer; }
+.ps-datepicker-toggle {
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    color: var(--text-body);
+}
+.ps-datepicker-toggle:hover { background: var(--cream-deep); color: var(--maroon-700); }
+.ps-datepicker-toggle svg { width: 16px; height: 16px; }
+
+.ps-datepicker-panel {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    z-index: 40;
+    width: 300px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-card-hover);
+    padding: 14px;
+}
+.ps-datepicker-panel[hidden] { display: none; }
+/* a field near the bottom of a long page (e.g. baptism-request.php's
+   "4. Preferred Baptism Date", the LAST field before Save/Continue)
+   would otherwise open this ~300px-tall panel further down than the
+   page itself, inflating the page's scrollable height past the
+   sticky sidebar's own fixed height -- main.js's initDatepickers()
+   measures available space on open and adds this class to flip the
+   panel above the input instead whenever there isn't enough room
+   below, the same way most date-picker widgets behave. */
+.ps-datepicker-panel.is-flipped { top: auto; bottom: calc(100% + 8px); }
+
+.ps-datepicker-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.ps-datepicker-head strong { font-size: 13.5px; color: var(--text-dark); font-family: 'Playfair Display', serif; }
+/* nav buttons use the same inline SVG chevron icons as the rest of
+   the site (icons.php's chevron-left/chevron-right) instead of raw
+   "‹ ›" text glyphs -- those render in whatever font the browser
+   substitutes for the character and looked visually inconsistent
+   with every other icon on the page. */
+.ps-datepicker-nav {
+    width: 26px; height: 26px; border-radius: 7px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text-body);
+}
+.ps-datepicker-nav svg { width: 14px; height: 14px; }
+.ps-datepicker-nav:hover:not(:disabled) { background: var(--cream-deep); color: var(--maroon-700); }
+.ps-datepicker-nav:disabled { opacity: 0.3; cursor: not-allowed; }
+
+.ps-datepicker-weekdays, .ps-datepicker-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; text-align: center; }
+.ps-datepicker-weekdays span { font-size: 10.5px; font-weight: 600; color: var(--text-body); padding: 4px 0; }
+
+.ps-datepicker-day {
+    width: 100%;
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12.5px;
+    border-radius: 8px;
+    color: var(--text-dark);
+    font: inherit;
+}
+/* the leading/trailing blank cells that pad the grid out to a full
+   week row -- invisible, not just "disabled", since they don't
+   represent a real date at all */
+.ps-datepicker-day.is-muted { visibility: hidden; }
+/* a real date the user isn't allowed to pick -- past, or (for the
+   Saturday-only mode) not a Saturday. Greyed out AND a real disabled
+   button, so it can't be focused or clicked, matching the "user
+   should not be able to click them" requirement. */
+.ps-datepicker-day.is-disabled { color: #d8cdc4; cursor: not-allowed; }
+.ps-datepicker-day.is-selectable { cursor: pointer; font-weight: 600; }
+.ps-datepicker-day.is-selectable:hover { background: var(--cream-deep); }
+.ps-datepicker-day.is-selected { background: var(--maroon-700); color: #fff; }
+.ps-datepicker-day.is-today:not(.is-selected) { box-shadow: inset 0 0 0 1.5px var(--gold); }
+
+/* =====================================================================
    Intro banner (art + heading + paragraph, optional button)
    First built for wedding.php's "A Sacred Covenant of Love", reused
    as-is by wedding-guidelines.php's "Welcome!" banner -- promoted here
@@ -810,6 +1049,205 @@ input[type="radio"], input[type="checkbox"] { accent-color: var(--maroon-700); }
 .wed-banner-text { flex: 1; min-width: 0; }
 .wed-banner-text h2 { font-size: 25px; margin-bottom: 8px; }
 .wed-banner-text p { font-size: 13.5px; color: var(--text-body); line-height: 1.6; max-width: 62ch; }
+
+/* =====================================================================
+   Sacrament landing page kit: quick-link cards, the 3-column overview
+   row (process / reminders / schedule), the 3-step process indicator,
+   and the About+quote card. First built for wedding.php, promoted
+   here once baptism.php needed the exact same page shape -- every
+   future sacrament page (confirmation.php, funeral.php) will too, so
+   this stays in the shared file rather than getting copy-pasted again.
+   Kept the "wed-" prefixed names (not renamed to something neutral
+   like "sacrament-") for the same reason .ann-/.wed-banner did:
+   renaming across multiple pages wasn't worth the churn versus just
+   documenting it here.
+   ===================================================================== */
+
+/* ---- quick-link cards row ------------------------------------------------ */
+.wed-quicklinks {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+    margin-bottom: 22px;
+}
+
+.wed-quicklink-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+    padding: 18px;
+    transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+.wed-quicklink-card:hover { box-shadow: var(--shadow-card-hover); transform: translateY(-2px); }
+
+.wed-quicklink-icon {
+    width: 44px; height: 44px; border-radius: 12px;
+    background: var(--cream-deep);
+    color: var(--maroon-700);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+}
+.wed-quicklink-icon svg { width: 20px; height: 20px; }
+
+.wed-quicklink-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.wed-quicklink-text strong { font-size: 14px; color: var(--maroon-700); font-weight: 700; }
+.wed-quicklink-text small { font-size: 12px; color: var(--text-body); line-height: 1.35; }
+
+.wed-quicklink-chevron { width: 15px; height: 15px; stroke: #c9bdb4; flex-shrink: 0; }
+
+/* ---- overview row: process / reminders / schedule ------------------------ */
+.wed-overview-grid {
+    display: grid;
+    grid-template-columns: 1.8fr 1fr 1fr;
+    gap: 20px;
+    align-items: stretch;
+    margin-bottom: 22px;
+}
+
+.wed-process-card p,
+.wed-schedule-card p { font-size: 13px; color: var(--text-body); margin: 8px 0 0; line-height: 1.55; }
+
+.wed-reminders-card,
+.wed-schedule-card { display: flex; flex-direction: column; }
+.wed-reminders-card { background: linear-gradient(135deg, var(--cream-deep), #f7ecd6); }
+.wed-schedule-card .ps-btn { margin-top: 16px; align-self: flex-start; }
+
+/* 3-step process indicator */
+.wed-steps {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    position: relative;
+    margin-top: 26px;
+    padding: 0 10px;
+}
+.wed-steps::before {
+    content: '';
+    position: absolute;
+    top: 22px;
+    left: 54px;
+    right: 54px;
+    height: 2px;
+    background: var(--card-border);
+    z-index: 0;
+}
+.wed-step {
+    position: relative;
+    z-index: 1;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    text-align: center;
+}
+.wed-step-num {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: var(--cream-deep);
+    border: 2px solid var(--card-border);
+    color: var(--maroon-700);
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 18px;
+    display: flex; align-items: center; justify-content: center;
+}
+.wed-step.is-current .wed-step-num {
+    background: var(--maroon-700);
+    border-color: var(--maroon-700);
+    color: #fff;
+    box-shadow: 0 4px 10px rgba(92, 27, 46, 0.3);
+}
+.wed-step strong { font-size: 13.5px; color: var(--text-dark); }
+.wed-step small { font-size: 11px; color: var(--text-body); }
+
+/* ---- About [sacrament] + scripture quote ---------------------------------- */
+.wed-about-card {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+}
+.wed-about-text { flex: 1.4; min-width: 0; }
+.wed-about-text p { font-size: 13.5px; color: var(--text-body); line-height: 1.6; margin-top: 8px; max-width: 62ch; }
+
+.wed-quote {
+    flex: 1;
+    text-align: right;
+    border-left: 1px solid var(--card-border);
+    padding-left: 28px;
+}
+.wed-quote p {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 16px;
+    color: var(--text-dark);
+    line-height: 1.5;
+}
+.wed-quote cite {
+    display: block;
+    margin-top: 8px;
+    font-size: 12.5px;
+    font-style: normal;
+    color: var(--text-body);
+}
+
+/* ---- CTA button + small caption underneath (e.g. "Begin your request
+   in just a few steps."), wrapped so they stack/center together --
+   wedding.php's banner button has no caption so it doesn't use this,
+   but baptism.php and now mass-intention.php both do. First built in
+   baptism.css; promoted here once a second page (this one) needed the
+   identical wrapper, exactly like this section's own header comment
+   already predicted every future sacrament page would. Kept the
+   "bap-" name rather than renaming for the same reason the rest of
+   this file's "wed-" names weren't renamed either. -------------------- */
+.bap-start { display: flex; flex-direction: column; align-items: center; gap: 8px; flex-shrink: 0; }
+.bap-start small { font-size: 11.5px; color: var(--text-body); }
+
+/* ---- fee/offering row list, e.g. baptism.php's Baptism Schedule &
+   Fees card or mass-intention.php's single Mass Offering row --
+   promoted alongside .bap-start for the same reason. -------------------- */
+.bap-fee-list { display: flex; flex-direction: column; gap: 12px; margin: 14px 0; }
+.bap-fee-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px;
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-sm);
+}
+.bap-fee-icon {
+    width: 36px; height: 36px; border-radius: 9px;
+    background: var(--cream-deep);
+    color: var(--maroon-700);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+}
+.bap-fee-icon svg { width: 17px; height: 17px; }
+.bap-fee-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.bap-fee-text strong { font-size: 13px; color: var(--text-dark); }
+.bap-fee-text small { font-size: 11px; color: var(--text-body); }
+.bap-fee-amount { font-size: 12.5px; font-weight: 700; color: var(--maroon-700); white-space: nowrap; }
+
+.bap-process-note { margin-top: 18px; }
+.bap-fee-note { margin: 2px 0 14px; }
+
+@media (max-width: 1200px) {
+    .wed-quicklinks { grid-template-columns: repeat(2, 1fr); }
+    .wed-overview-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 800px) {
+    .wed-quicklinks { grid-template-columns: 1fr; }
+    .wed-about-card { flex-direction: column; align-items: flex-start; }
+    .wed-quote { text-align: left; border-left: none; border-top: 1px solid var(--card-border); padding-left: 0; padding-top: 16px; width: 100%; }
+    .wed-banner { flex-direction: column; align-items: flex-start; text-align: left; }
+    .wed-banner-art { width: 90px; }
+    .bap-start { width: 100%; align-items: stretch; }
+    .bap-start .ps-btn { width: 100%; justify-content: center; }
+}
 
 /* =====================================================================
    Guideline-page building blocks: a numbered "steps" list with a
@@ -893,6 +1331,96 @@ input[type="radio"], input[type="checkbox"] { accent-color: var(--maroon-700); }
 .ps-help-footer-icon svg { width: 20px; height: 20px; }
 .ps-help-footer-text strong { display: block; font-size: 14.5px; color: var(--text-dark); }
 .ps-help-footer-text small { font-size: 12.5px; color: var(--text-body); }
+
+/* =====================================================================
+   Section tab bar -- jump-links to anchors ON THE SAME PAGE (#steps,
+   #documents, etc.), with a scroll-spy in main.js keeping whichever
+   tab matches the section currently in view marked .active. First
+   built for baptism-guidelines.php; every future guidelines page will
+   likely want the same bar, so it's here rather than scoped to one
+   page. Visually an underline-tab style (distinct from .ps-tabs, the
+   filled PILL style used for announcements.php's category filter --
+   different job: this is "where am I on this page", not "filter this
+   list").
+   ===================================================================== */
+.ps-anchor-tabs {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    padding: 4px 24px;
+    margin-bottom: 22px;
+    overflow-x: auto;
+}
+.ps-anchor-tab {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 2px;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--text-body);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+.ps-anchor-tab svg { width: 16px; height: 16px; stroke: currentColor; flex-shrink: 0; }
+.ps-anchor-tab::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0; bottom: -1px;
+    height: 2px;
+    background: var(--gold);
+    transform: scaleX(0);
+    transition: transform 0.15s ease;
+}
+.ps-anchor-tab:hover { color: var(--text-dark); }
+.ps-anchor-tab.active { color: var(--maroon-700); }
+.ps-anchor-tab.active::after { transform: scaleX(1); }
+
+/* single highlighted requirement box -- for a guidelines page whose
+   "documents needed" section is really just one item (baptism only
+   needs a birth certificate), where the full .ps-icon-list would look
+   sparse for a single row */
+.ps-doc-highlight {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: var(--cream-deep);
+    border-radius: var(--radius-md);
+    padding: 18px 20px;
+    margin-bottom: 14px;
+}
+.ps-doc-highlight-icon {
+    width: 44px; height: 44px; border-radius: 12px;
+    background: var(--card-bg);
+    color: var(--maroon-700);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+}
+.ps-doc-highlight-icon svg { width: 20px; height: 20px; }
+.ps-doc-highlight-text strong { display: block; font-size: 14.5px; color: var(--text-dark); }
+.ps-doc-highlight-text small { display: block; font-size: 12.5px; color: var(--text-body); margin-top: 2px; }
+
+/* FAQ accordion -- real native <details>/<summary>, not a JS-driven
+   fake one. Browsers handle open/close, keyboard (Enter/Space),
+   and accessibility semantics for free; this is just the skin. */
+.ps-faq-item { border-bottom: 1px solid var(--card-border); }
+.ps-faq-item:last-child { border-bottom: none; }
+.ps-faq-item summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 16px 2px;
+    cursor: pointer;
+    list-style: none;
+}
+.ps-faq-item summary::-webkit-details-marker { display: none; }
+.ps-faq-item summary strong { font-size: 13.5px; color: var(--text-dark); font-weight: 600; }
+.ps-faq-chevron { width: 16px; height: 16px; stroke: var(--text-body); flex-shrink: 0; transition: transform 0.15s ease; }
+.ps-faq-item[open] summary strong { color: var(--maroon-700); }
+.ps-faq-item[open] .ps-faq-chevron { transform: rotate(180deg); }
+.ps-faq-answer { padding: 0 2px 16px; font-size: 13px; color: var(--text-body); line-height: 1.6; }
 
 /* =====================================================================
    Shared page layout + "Upcoming Events" widget

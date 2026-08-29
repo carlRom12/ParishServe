@@ -1,9 +1,13 @@
 /* =====================================================================
    wedding-request.css
-   Page-specific styles for wedding-request.php. The form-field kit
-   (.ps-field, .ps-radio-row, .ps-form-row-*, etc.) lives in style.css
-   since every future request form will reuse it -- this file is just
-   the step bar and this page's own spacing/layout.
+   Despite the name, this is now the shared "request wizard" stylesheet
+   -- baptism-request.php loads this same file directly rather than
+   getting its own near-identical copy, since every class here (.wr-*)
+   was already generic with no wedding-specific wording baked in. The
+   form-field kit itself (.ps-field, .ps-radio-row, .ps-form-row-*,
+   etc.) lives in style.css since every request form needs it; this
+   file is just the step bar and wizard-page spacing/layout that both
+   wedding-request.php and baptism-request.php share.
    ===================================================================== */
 
 /* ---- step bar (1 The Couple > 2 Requirements > 3 Review & Send) -------- */
@@ -31,6 +35,12 @@
     color: #fff;
     box-shadow: 0 4px 10px rgba(92, 27, 46, 0.3);
 }
+/* a step already completed (its index is before the page's current
+   step) -- cream circle like "upcoming", but with a checkmark instead
+   of a number, and its title reads as done rather than muted */
+.wr-step.is-done .wr-step-num { color: var(--status-approved-text); }
+.wr-step.is-done .wr-step-num svg { width: 18px; height: 18px; stroke-width: 2.6; }
+.wr-step.is-done .wr-step-text strong { color: var(--text-dark); }
 
 .wr-step-text { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
 .wr-step-text strong { font-size: 14px; color: var(--text-body); font-weight: 600; }
@@ -43,60 +53,163 @@
 .wr-form h2 { font-size: 22px; }
 .wr-form-sub { font-size: 13.5px; color: var(--text-body); margin: 6px 0 24px; }
 
+/* .wr-section/.wr-section-heading/.wr-section-sub and .wr-required
+   moved to style.css -- donations.php needed the identical "N. Title"
+   numbered-card-heading pattern but isn't part of any wizard, so it
+   didn't make sense for it to load a stylesheet whose own header
+   comment calls it "the shared request wizard stylesheet". See
+   style.css's form-kit section. */
+
+/* ---- sacrament type selector cards (Regular/Special Baptism), first
+   built for baptism-request.php's Step 1 -- generic enough any future
+   sacrament with more than one request "type" (confirmation, funeral
+   mass options) could reuse the same markup/JS (main.js's
+   initTypeCardToggle()) ---------------------------------------------------- */
+.wr-type-options { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 16px; }
+.wr-type-card {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 18px 18px 18px 42px;
+    border: 1.5px solid var(--card-border);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: border-color 0.15s ease, background 0.15s ease;
+}
+.wr-type-card:hover { border-color: var(--gold-light); }
+.wr-type-card input[type="radio"] { position: absolute; top: 20px; left: 16px; margin: 0; }
+.wr-type-card-icon {
+    width: 46px; height: 46px; border-radius: 50%;
+    background: var(--cream-deep);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--gold-dark);
+    flex-shrink: 0;
+}
+.wr-type-card-icon svg { width: 22px; height: 22px; }
+.wr-type-card-body strong { display: block; font-size: 15px; color: var(--text-dark); }
+.wr-type-card-body span { display: block; font-size: 12.5px; color: var(--text-body); margin-top: 1px; }
+.wr-type-fee { font-size: 13px; font-weight: 700; color: var(--maroon-700); margin-top: 4px; }
+.wr-type-card.is-checked { border-color: var(--gold); background: var(--cream-deep); }
+
+/* ---- a form card's heading + subtitle on the left, a small badge on
+   the right (mass-intention-request.php's "Mass Intention offering:
+   ₱100.00" pill) -- wedding/baptism's Step 1 never needed anything in
+   that top-right spot, so .wr-form h2/.wr-form-sub keep their own
+   margins when this wrapper isn't used at all. --------------------------- */
+.wr-form-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 24px; }
+.wr-form-header .wr-form h2,
+.wr-form-header h2 { margin: 0; }
+.wr-form-header .wr-form-sub { margin: 6px 0 0; }
+
+.wr-offering-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    background: var(--cream-deep);
+    border: 1px solid var(--card-border);
+    border-radius: 999px;
+    font-size: 12.5px;
+    color: var(--text-dark);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+.wr-offering-badge svg { width: 15px; height: 15px; color: var(--gold-dark); }
+.wr-offering-badge strong { color: var(--maroon-700); font-weight: 700; }
+
+/* ---- 5-way selectable intent-type cards (mass-intention-request.php),
+   a vertical-centered variant of .wr-type-card: no fee line, icon +
+   label stacked and centered instead of a horizontal icon-left/text-
+   right row, and no card starts pre-selected (the reference image
+   shows every radio empty by default, unlike Regular/Special Baptism
+   which always has one chosen) ---------------------------------------------- */
+.wr-intent-options { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; margin-bottom: 18px; }
+.wr-intent-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 22px 12px 16px;
+    border: 1.5px solid var(--card-border);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    text-align: center;
+    transition: border-color 0.15s ease, background 0.15s ease;
+}
+.wr-intent-card:hover { border-color: var(--gold-light); }
+.wr-intent-card input[type="radio"] { position: absolute; top: 12px; left: 12px; margin: 0; }
+.wr-intent-card-icon {
+    width: 48px; height: 48px; border-radius: 50%;
+    background: var(--cream-deep);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--gold-dark);
+}
+.wr-intent-card-icon svg { width: 22px; height: 22px; }
+.wr-intent-card strong { font-size: 13px; color: var(--text-dark); font-weight: 600; line-height: 1.3; }
+/* optional sub-text line under the label, e.g. mass-intention-request-
+   step2.php's "Offered during regular parish schedule" -- the 5-card
+   Intent Type row on Step 1 has no sub-text so this simply never
+   appears there. A dedicated class rather than a bare `span` selector
+   on purpose: .wr-intent-card-icon is ALSO a <span> and a plain
+   ".wr-intent-card span" descendant selector would out-specificity
+   (and override) that icon's own display:flex centering. */
+.wr-intent-card-sub { display: block; font-size: 11.5px; color: var(--text-body); line-height: 1.35; margin-top: -2px; }
+.wr-intent-card.is-checked { border-color: var(--gold); background: var(--cream-deep); }
+
+/* 2-card variant of .wr-intent-options, e.g. mass-intention-request-
+   step2.php's Regular/Special Mass Type choice -- same .wr-intent-card
+   styling, just fewer/wider columns */
+.wr-mass-type-options { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+
+/* .wr-required moved to style.css alongside .wr-section* -- see the
+   note near where those used to live in this file */
+
 .wr-field-group { display: flex; flex-direction: column; gap: 12px; margin-bottom: 26px; }
 .wr-field-group .ps-form-row-4 { margin-bottom: 0; }
 
 /* every field-group except the last keeps its bottom margin; the last
-   one before the date/mobile row shouldn't double up on spacing */
-.wr-form > .ps-form-row-2 { margin-bottom: 22px; }
+   one before the date/mobile row shouldn't double up on spacing.
+   .ps-form-row-3 added alongside -row-2 once mass-intention-request*
+   .php's forms needed a 3-column row directly inside .wr-form too --
+   without it, that row sat flush against whatever followed it (an
+   info banner or the notes field), no gap at all. */
+.wr-form > .ps-form-row-2,
+.wr-form > .ps-form-row-3 { margin-bottom: 22px; }
 .wr-form > .ps-field { margin-bottom: 8px; }
+/* a bare info banner sitting directly inside .wr-form (mass-intention-
+   request-step2.php has two: one plain, one .is-tip) -- neither has
+   its own margin, so without this they'd sit flush against whatever
+   comes right before/after them */
+.wr-form > .ps-info-banner { margin: 18px 0; }
 
-/* ---- action row ------------------------------------------------------ */
-.wr-actions {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    margin-top: 18px;
-    padding-top: 24px;
-    border-top: 1px solid var(--card-border);
-}
-.wr-cancel {
-    flex: 0 0 200px;
-    justify-content: center;
-    background: var(--cream-deep);
-    color: var(--text-dark);
-}
-.wr-cancel:hover { background: #efe2c8; }
-.wr-submit { flex: 1; justify-content: center; }
+/* .wr-notes-field/.wr-optional moved to style.css (which already held
+   them briefly on their way from wedding-request-step2.css) once
+   donations.php -- not part of any wizard -- needed .wr-optional too */
 
-/* ---- inline "not built yet" notice, shown by main.js on submit -------- */
-.wr-next-step-notice {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    margin-top: 18px;
-    padding: 14px 16px;
-    border-radius: var(--radius-md);
-    background: var(--status-pending-bg);
-    color: var(--status-pending-text);
-    font-size: 13px;
-    line-height: 1.5;
-}
-.wr-next-step-notice svg { width: 16px; height: 16px; stroke: currentColor; flex-shrink: 0; margin-top: 2px; }
-.wr-next-step-notice[hidden] { display: none; }
+/* .wr-actions/.wr-cancel/.wr-submit/.wr-next-step-notice moved to
+   style.css -- donations.php needed the identical action-row/"not
+   built yet" notice pattern but isn't part of a wizard either, same
+   reasoning as .wr-section*/.wr-required's move above. */
 
 /* ---- responsive ------------------------------------------------------ */
+/* .ps-form-row-4/-2's own collapse and .wr-actions/.wr-cancel/.wr-submit's
+   own responsive rules now come from style.css, loaded on every page --
+   only the pieces still specific to the wizard stylesheet stay here. */
 @media (max-width: 1100px) {
     .ps-form-row-4 { grid-template-columns: repeat(2, 1fr); }
+    .wr-intent-options { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 640px) {
+    .wr-type-options { grid-template-columns: 1fr; }
+    .wr-intent-options { grid-template-columns: repeat(2, 1fr); }
+    .wr-mass-type-options { grid-template-columns: 1fr; }
+    .wr-form-header { flex-direction: column; }
 }
 
 @media (max-width: 900px) {
     .wr-stepbar { flex-direction: column; align-items: stretch; gap: 14px; }
     .wr-step-sep { display: none; }
-}
-
-@media (max-width: 640px) {
-    .ps-form-row-4, .ps-form-row-2 { grid-template-columns: 1fr; }
-    .wr-actions { flex-direction: column-reverse; }
-    .wr-cancel, .wr-submit { width: 100%; flex: none; }
 }

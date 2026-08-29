@@ -72,20 +72,7 @@ require __DIR__ . '/includes/sidebar.php';
     </section>
 
     <!-- ============================ STEP BAR ============================== -->
-    <div class="ps-card wr-stepbar">
-        <?php foreach ($steps as $i => $step): ?>
-            <div class="wr-step<?php echo $i === $currentStep ? ' is-current' : ''; ?>">
-                <span class="wr-step-num"><?php echo (int) $i + 1; ?></span>
-                <span class="wr-step-text">
-                    <strong><?php echo htmlspecialchars($step['title']); ?></strong>
-                    <small><?php echo htmlspecialchars($step['sub']); ?></small>
-                </span>
-            </div>
-            <?php if ($i < count($steps) - 1): ?>
-                <?php ps_icon('chevron-right', 'wr-step-sep'); ?>
-            <?php endif; ?>
-        <?php endforeach; ?>
-    </div>
+    <?php require __DIR__ . '/includes/step-bar.php'; ?>
 
     <section class="ann-grid">
         <div class="ann-main">
@@ -126,7 +113,7 @@ require __DIR__ . '/includes/sidebar.php';
                 <div class="ps-field wr-notes-field">
                     <label for="officeNotes">Anything the office should know? <span class="wr-optional">(optional)</span></label>
                     <textarea id="officeNotes" name="officeNotes" rows="3" maxlength="500" placeholder="e.g. We would prefer an afternoon ceremony."></textarea>
-                    <small class="ps-form-hint">Up to 500 characters.</small>
+                    <small class="ps-form-hint" id="officeNotesCount">0 / 500</small>
                 </div>
 
                 <div class="wr-actions">

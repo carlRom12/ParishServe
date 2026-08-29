@@ -87,7 +87,10 @@ $importantReminders = [
 ];
 
 $pageTitle = 'Wedding Request';
-$pageCss   = 'wedding-request-step3.css';
+// now loads wedding-request.css too -- this page's own step bar/
+// actions/notice styles were promoted there (see wedding-request-
+// step3.css's header comment)
+$pageCss   = ['wedding-request.css', 'wedding-request-step3.css'];
 $activeNav = 'wedding';
 require __DIR__ . '/includes/header.php';
 require __DIR__ . '/includes/sidebar.php';
@@ -106,22 +109,12 @@ require __DIR__ . '/includes/sidebar.php';
     </section>
 
     <!-- ============================ STEP BAR ============================== -->
-    <div class="ps-card wr-stepbar">
-        <?php foreach ($steps as $i => $step): ?>
-            <div class="wr-step<?php echo $i === $currentStep ? ' is-current' : ''; ?>">
-                <span class="wr-step-num"><?php echo (int) $i + 1; ?></span>
-                <span class="wr-step-text">
-                    <strong><?php echo htmlspecialchars($step['title']); ?></strong>
-                    <small><?php echo htmlspecialchars($step['sub']); ?></small>
-                </span>
-            </div>
-            <?php if ($i < count($steps) - 1): ?>
-                <?php ps_icon('chevron-right', 'wr-step-sep'); ?>
-            <?php endif; ?>
-        <?php endforeach; ?>
-    </div>
+    <?php require __DIR__ . '/includes/step-bar.php'; ?>
 
-    <form class="wr3-form" action="wedding-request-confirmation.php" method="post" data-wizard-step-form novalidate>
+    <!-- wr-form added alongside the existing wr3-form (which no CSS/JS
+         actually hooks into) so this form gets wedding-request.css's
+         .wr-form-scoped .wr-actions divider styling -->
+    <form class="wr3-form wr-form" action="wedding-request-confirmation.php" method="post" data-wizard-step-form novalidate>
 
         <section class="ann-grid">
             <div class="ann-main">
