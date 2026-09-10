@@ -1,0 +1,11 @@
+/* Reuse the Confirmation calendar components with the Funeral page shell. */
+.funeral-schedule-page .conf-req-grid { grid-template-columns: minmax(0, 1.75fr) minmax(0, 1fr); margin-inline: 0; gap: 18px; }
+.funeral-schedule-page .conf-sched-card { min-width: 0; }
+.funeral-schedule-page .conf-sched-head h2 { font-size: 25px; }
+.funeral-schedule-page .fg-tabs [aria-current] { background: #fbeef1; }
+.funeral-schedule-page .conf-sched-day { min-height: 62px; }
+.funeral-schedule-page .conf-req-note { margin-top: 18px; }
+.funeral-schedule-page .conf-req-side-card .ps-btn { width: 100%; border-radius: 28px; margin-top: 16px; }
+.funeral-schedule-demo { font-size: 12px; color: #7c7378; margin-bottom: 14px; }
+@media (max-width: 1100px) { .funeral-schedule-page .conf-req-grid { grid-template-columns: 1fr; } }
+@media (max-width: 520px) { .funeral-schedule-page .conf-sched-day { min-height: 48px; padding: 5px; } .funeral-schedule-page .conf-sched-grid { gap: 4px; } }

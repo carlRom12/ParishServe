@@ -1,0 +1,38 @@
+/* Confirmation's form and step components, adapted for the funeral request. */
+.funeral-request-page .conf-req-grid { margin-inline: 0; grid-template-columns: minmax(0, 1.8fr) minmax(0, 1fr); gap: 20px; }
+.funeral-request-page .wr-stepbar { margin: 0 0 20px; }
+.funeral-request-page .wr-form h2 { font-size: 25px; }
+.funeral-request-page .wr-form-sub { margin-bottom: 20px; }
+.funeral-request-page .wr-step-sep { display: grid; place-items: center; color: #b8aba5; }
+.funeral-request-page .conf-apply-steps-list small { display: block; margin-top: 3px; font-size: 12px; font-weight: 400; }
+.funeral-request-page .conf-apply-steps-list strong { font-size: 13px; }
+.funeral-request-page .fg-tabs [aria-current] { background: #fbeef1; }
+.funeral-request-page .fg-contact { margin-top: 12px; border-radius: 28px; gap: 10px; }
+.funeral-request-page .conf-req-side-card p { line-height: 1.6; }
+.funeral-subheading { font-size: 22px; font-style: italic; border-top: 1px solid #eee8e4; padding-top: 16px; margin: 20px 0 12px; }
+.funeral-draft-note { margin: 16px 0; padding: 12px 14px; border-radius: 8px; background: #fbf1e3; font-size: 13px; line-height: 1.6; }
+.funeral-confirm { display: flex; gap: 10px; align-items: center; margin-top: 20px; }
+.funeral-review-row { display: grid; grid-template-columns: 1fr 1.4fr; gap: 18px; padding: 12px 0; border-bottom: 1px solid #eee8e4; font-size: 13px; }
+.funeral-review-row strong { overflow-wrap: anywhere; white-space: pre-wrap; }
+.funeral-request-page .wr-submit:disabled { opacity: .5; cursor: not-allowed; }
+.funeral-request-page .wr3-intro { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+.funeral-request-page .wr3-review-row strong { overflow-wrap: anywhere; white-space: pre-wrap; min-width: 0; }
+.funeral-request-page .wr3-review-row span { flex-shrink: 1; }
+.funeral-request-page .wr3-review-row .is-empty { color: #8d8390; font-weight: 400; }
+.funeral-file-status { margin-left: auto; font-size: 12px; color: #7c7378; }
+.funeral-request-page .wr3-doc-list li { flex-wrap: wrap; }
+.funeral-request-page .wr3-doc-name { overflow-wrap: anywhere; min-width: 0; }
+.funeral-request-page .ps-dropzone.is-dragover { border-color: #8a2642; background: #fbeef1; }
+.funeral-arrangement-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+.funeral-arrangement-column { min-width: 0; }
+.funeral-location-choice { border: 0; padding: 0; margin: 0 0 22px; min-width: 0; }
+.funeral-location-choice legend { font-size: 13px; margin-bottom: 10px; color: var(--text-body); }
+.funeral-location-choice > div { display: flex; gap: 35px; }
+.funeral-location-choice label { display: inline-flex; align-items: center; gap: 10px; font-size: 13px; }
+.funeral-location-choice input { width: 19px; height: 19px; accent-color: #8a2642; }
+.funeral-notes-field { position: relative; }
+.funeral-notes-field textarea { padding-bottom: 26px; }
+#serviceNotesCount { display: block; text-align: right; margin-top: -25px; padding-right: 10px; position: relative; pointer-events: none; }
+@media (max-width: 600px) { .funeral-arrangement-grid { grid-template-columns: 1fr; gap: 0; } }
+@media (max-width: 1000px) { .funeral-request-page .conf-req-grid { grid-template-columns: 1fr; } }
+@media (max-width: 520px) { .funeral-review-row { grid-template-columns: 1fr; gap: 4px; } }

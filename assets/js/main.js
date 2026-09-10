@@ -273,6 +273,7 @@
             passwordInput.value = '';
 
             if (alertBox) {
+                alertBox.querySelector('[data-auth-message]').textContent = 'Sign-in is not available yet.';
                 alertBox.hidden = false;
                 alertBox.focus();
             }
@@ -374,6 +375,7 @@
         });
 
         if (firstInvalid) { firstInvalid.focus(); return; }
+        if (!form.reportValidity()) return;
 
         if (submitBtn) { submitBtn.disabled = true; submitBtn.classList.add('is-loading'); }
         if (submitLabel) submitLabel.textContent = 'Creating accountâ€¦';

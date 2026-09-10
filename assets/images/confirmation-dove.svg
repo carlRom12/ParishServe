@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none" stroke="#dda03d" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+  <title>Dove with raised wings</title>
+  <path d="M48 77C34 72 23 62 19 48C25 53 31 56 38 57C25 48 19 36 21 23C29 34 39 42 50 46C40 36 35 22 39 9C47 25 58 30 66 41C71 48 72 54 70 61L81 38C85 30 94 28 101 32C105 34 107 38 107 41L115 45L105 48C102 53 102 60 100 67C97 80 86 89 72 91L45 112L31 100L39 91L15 90L9 78C23 81 37 81 48 77Z"/>
+  <path d="M48 77C60 73 67 66 70 61M31 100L49 88"/>
+  <circle cx="98" cy="39" r="1.8" fill="#dda03d" stroke="none"/>
+</svg>

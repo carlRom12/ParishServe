@@ -1,0 +1,217 @@
+/* =====================================================================
+   confirmation-guidelines.css
+   Page-specific styles for confirmation-guidelines.php ("About
+   Confirmation" -- and eventually Requirements/Schedule/Apply Now as
+   more sections get built, matching the tab bar). "cg-" prefixed,
+   matching the wg-/bg- convention wedding-guidelines.php/baptism-
+   guidelines.php already use for THEIR page-specific pieces.
+
+   Reuses real shared components where they already fit: .ps-anchor-
+   tabs (the underline section-tab bar), .ps-info-banner, .ps-card,
+   .ps-btn. Does NOT reuse confirmation.php's .conf-hero -- that hero
+   has a bottom fade + negative-margin card overlap specifically
+   because a 4-card row sits UNDER it; this page's hero is followed by
+   a plain tab bar instead, so it stays a normal rounded photo banner.
+   ===================================================================== */
+
+/* ---- top row: back-link (left) + topbar (right) -- same min-height
+   reasoning as confirmation.css's .conf-topline: .ps-topbar is
+   position:absolute with top:22px and a ~46px-tall user chip, so this
+   row needs to be tall enough to actually contain it. ---------------- */
+.cg-topline { position: relative; display: flex; align-items: center; justify-content: space-between; min-height: 66px; margin-bottom: 0; }
+.cg-greeting { display: flex; align-items: center; gap: 12px; font-size: 12px; }
+.cg-greeting img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
+.cg-greeting strong { display: block; font-size: 14px; color: #20232d; }
+.cg-back-link { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; color: var(--maroon-700); }
+.cg-back-link svg { width: 16px; height: 16px; }
+.cg-back-link:hover { text-decoration: underline; }
+.cg-back-link:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; border-radius: 4px; }
+
+/* ---- photo hero: same photo/gradient treatment as confirmation.php's
+   hero, minus the bottom fade + card overlap (nothing sits on top of
+   this one), plus an eyebrow label the landing page's hero doesn't
+   have --------------------------------------------------------------- */
+.cg-hero {
+    position: relative;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    aspect-ratio: 2045 / 769;
+    min-height: 260px;
+    max-height: 360px;
+    display: flex;
+    align-items: center;
+    margin-bottom: 22px;
+}
+.cg-hero-image { position: absolute; inset: 0; }
+.cg-hero-image img { width: 100%; height: 100%; object-fit: cover; object-position: center 42%; }
+.cg-hero-image::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(20, 6, 12, 0.92) 0%, rgba(20, 6, 12, 0.7) 18%, rgba(20, 6, 12, 0.32) 36%, rgba(20, 6, 12, 0.06) 52%, rgba(20, 6, 12, 0) 64%);
+}
+.cg-hero-text { position: relative; z-index: 2; padding: 28px 36px; max-width: 620px; }
+.cg-hero-eyebrow {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.85);
+    padding-bottom: 8px;
+    margin-bottom: 10px;
+    border-bottom: 2px solid var(--gold);
+}
+.cg-hero-text h1 { font-size: 34px; color: #fff; }
+.cg-hero-text p { font-size: 15px; color: rgba(255, 255, 255, 0.92); margin-top: 8px; }
+.cg-hero-quote { margin-top: 16px; }
+.cg-hero-quote p { font-family: 'Playfair Display', serif; font-style: italic; font-size: 15px; color: #fff; }
+.cg-hero-quote cite { display: block; margin-top: 4px; font-size: 12.5px; font-style: normal; color: rgba(255, 255, 255, 0.75); }
+
+/* ---- main 2-column layout: content (~65%) + sidebar (~35%) ------------ */
+.cg-layout { display: grid; grid-template-columns: 1.9fr 1fr; gap: 20px; align-items: start; }
+.cg-side { display: flex; flex-direction: column; gap: 20px; }
+
+.cg-main-card h2 { font-size: 19px; margin-bottom: 12px; }
+/* every sub-section after the first gets a divider + breathing room,
+   since all three ("What is Confirmation?"/"Importance of
+   Confirmation"/"Who Can Receive Confirmation?") live in ONE card
+   rather than three separate ones, matching the reference image */
+.cg-subsection + .cg-subsection { margin-top: 30px; padding-top: 26px; border-top: 1px solid var(--card-border); }
+
+/* ---- "What is Confirmation?" intro text + quote card ------------------ */
+/* align-items: start, not center -- the paragraph and the quote card
+   are naturally different heights, and centering the shorter one left
+   visible empty space above/below it instead of both blocks simply
+   starting at the same top edge */
+.cg-intro-grid { display: grid; grid-template-columns: 1.8fr 1fr; gap: 24px; align-items: start; }
+.cg-intro-grid p { font-size: 14.5px; color: var(--text-body); line-height: 1.7; }
+.cg-quote-card { background: var(--cream-deep); border-radius: var(--radius-md); padding: 22px 18px; text-align: center; }
+.cg-quote-icon { width: 34px; height: 34px; color: var(--gold-dark); margin: 0 auto 10px; }
+.cg-quote-icon svg { width: 100%; height: 100%; stroke-width: 1.6; }
+.cg-quote-card p { font-family: 'Playfair Display', serif; font-style: italic; font-size: 14.5px; color: var(--text-dark); line-height: 1.5; }
+.cg-quote-card cite { display: block; margin-top: 8px; font-size: 12px; font-style: normal; color: var(--text-body); }
+
+/* ---- "Importance of Confirmation" 4-up icon grid ----------------------- */
+.cg-benefit-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-top: 16px; }
+.cg-benefit-icon {
+    width: 46px; height: 46px; border-radius: 50%;
+    background: var(--cream-deep);
+    color: var(--maroon-700);
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 12px;
+}
+.cg-benefit-icon svg { width: 20px; height: 20px; }
+.cg-benefit-item strong { display: block; font-size: 14.5px; color: var(--text-dark); margin-bottom: 4px; }
+.cg-benefit-item p { font-size: 13px; color: var(--text-body); line-height: 1.5; }
+
+/* ---- "Who Can Receive Confirmation?" text + info banner ---------------- */
+.cg-subsection > p { font-size: 14.5px; color: var(--text-body); line-height: 1.7; margin-bottom: 16px; }
+
+/* ---- sidebar: "A Life Empowered by the Spirit" card --------------------- */
+.cg-side-card h3 { font-size: 17px; margin-bottom: 10px; }
+.cg-side-card p { font-size: 14px; color: var(--text-body); line-height: 1.7; }
+
+/* ---- sidebar: compact "Need Help?" card, a real link (not just a
+   button) with a trailing arrow -- different shape from confirmation.
+   php's own Need Help card (icon+heading+paragraph+full-width button
+   stacked), since this one lives in a narrower sidebar slot ----------- */
+.cg-help-mini { display: flex; align-items: center; gap: 14px; color: inherit; }
+.cg-help-mini-icon {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: var(--cream-deep);
+    color: var(--maroon-700);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+}
+.cg-help-mini-icon svg { width: 20px; height: 20px; }
+.cg-help-mini-text { flex: 1; min-width: 0; }
+.cg-help-mini-text strong { display: block; font-size: 13.5px; color: var(--text-dark); }
+.cg-help-mini-text span { font-size: 12.5px; color: var(--text-body); line-height: 1.4; }
+.cg-help-mini-arrow { width: 16px; height: 16px; color: var(--maroon-700); flex-shrink: 0; transition: transform 0.15s ease; }
+.cg-help-mini:hover .cg-help-mini-arrow { transform: translateX(3px); }
+.cg-help-mini:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; border-radius: var(--radius-lg); }
+
+/* ---- responsive ---------------------------------------------------------- */
+@media (max-width: 1200px) {
+    .cg-layout { grid-template-columns: 1fr; }
+    .cg-benefit-grid { grid-template-columns: repeat(2, 1fr); }
+    .cg-intro-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 640px) {
+    .cg-benefit-grid { grid-template-columns: 1fr; }
+    .cg-hero { aspect-ratio: auto; height: 260px; }
+    .cg-hero-text { padding: 22px 20px; max-width: 100%; }
+    .cg-hero-text h1 { font-size: 26px; }
+    .cg-topline { flex-wrap: wrap; gap: 10px; }
+}
+
+/* About Confirmation reference: compact hero, reading column and devotional aside. */
+.confirmation-about-page { --cream: #fcfaf5; --text-body: #484b59; --text-dark: #730b2d; --radius-lg: 8px; --radius-md: 8px; --card-border: #eee9e2; }
+.confirmation-about-page .ps-main { padding-top: 0; }
+.cg-topline .ps-topbar { position: static; margin: 0; width: auto; }
+.cg-back-link { margin: 0 0 8px; }
+.cg-hero { aspect-ratio: 5.6; min-height: 232px; max-height: 300px; margin-bottom: 12px; }
+.cg-hero-image img { object-position: center 43%; }
+.cg-hero-text { padding: 28px 40px; max-width: 740px; }
+.cg-hero-text h1 { font-size: 46px; line-height: 1.18; }
+.cg-hero-text > p { font-size: 18px; }
+.cg-hero-eyebrow { letter-spacing: 0; font-weight: 500; }
+.cg-hero-quote p { font-size: 16px; }
+.cg-hero-quote cite { font-size: 13px; }
+.confirmation-about-page .ps-anchor-tabs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); padding: 0; gap: 0; margin-bottom: 14px; overflow: hidden; }
+.confirmation-about-page .ps-anchor-tab { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 12px 8px; min-height: 46px; font-size: 12px; text-align: center; border-radius: 0; }
+.confirmation-about-page .ps-anchor-tab.active { background: #f7ebda; border-bottom: 2px solid #780d2b; }
+.cg-layout { grid-template-columns: minmax(0, 3fr) minmax(280px, 1fr); gap: 16px; }
+.cg-main-card { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.cg-subsection { background: #fff; padding: 18px 22px; border-bottom: 1px solid #eee9e2; }
+.cg-subsection + .cg-subsection { margin: 0; padding-top: 18px; border-top: 0; }
+.cg-main-card h2 { font-size: 26px; line-height: 1.25; margin-bottom: 8px; }
+.cg-intro-grid { grid-template-columns: minmax(0, 2.1fr) minmax(200px, 1fr); gap: 24px; align-items: stretch; }
+.cg-intro-copy p { font-size: 14px; line-height: 1.5; }
+.cg-intro-copy p + p { margin-top: 12px; }
+.cg-quote-card { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 12px 18px; background: #f7f0e4; border-radius: 8px; }
+.cg-dove { width: 190px; max-width: 100%; height: auto; margin-bottom: 6px; }
+.cg-quote-card p { font: italic 16px/1.4 Georgia, serif; max-width: 200px; }
+.cg-benefit-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; margin-top: 8px; }
+.cg-benefit-item { text-align: center; padding: 0 16px; }
+.cg-benefit-item + .cg-benefit-item { border-left: 1px solid #eee9e2; }
+.cg-benefit-icon { width: 56px; height: 56px; margin: 0 auto 6px; background: #faead4; }
+.cg-benefit-icon svg { width: 30px; height: 30px; }
+.cg-benefit-item strong { font: 600 16px 'Playfair Display', Georgia, serif; }
+.cg-benefit-item p { font-size: 13px; line-height: 1.4; }
+.cg-subsection > p { font-size: 13px; line-height: 1.5; margin-bottom: 8px; }
+.cg-subsection .ps-info-banner { margin-top: 8px; font-size: 12px; padding: 10px 14px; background: #f8f0e4; }
+.cg-side { gap: 12px; }
+.cg-side-card { padding: 18px 16px; box-shadow: none; }
+.cg-side-card h3 { font-size: 20px; line-height: 1.25; }
+.cg-side-card h3::after { content: ''; display: block; width: 68px; margin-top: 10px; border-bottom: 1px solid #ba923a; }
+.cg-side-card > p { font-size: 12px; line-height: 1.55; }
+.cg-spirit-photo { display: block; width: 100%; height: auto; aspect-ratio: 2.4; object-fit: cover; margin: 12px 0; border-radius: 8px; }
+.cg-scripture p { font: italic 13px/1.45 Georgia, serif; color: #730b2d; }
+.cg-scripture cite { display: block; margin-top: 8px; font-size: 12px; font-style: normal; }
+.cg-help-mini { display: grid; grid-template-columns: 48px minmax(0, 1fr); padding: 18px 16px; gap: 12px; box-shadow: none; }
+.cg-help-mini-icon { width: 48px; height: 48px; background: #faead4; }
+.cg-help-mini-text strong { font: 600 20px 'Playfair Display', Georgia, serif; margin-bottom: 6px; }
+.cg-contact-button { grid-column: 1 / -1; display: block; border: 1px solid #8a2440; border-radius: 7px; color: #730b2d; padding: 10px 8px; text-align: center; font-size: 12px; font-weight: 600; }
+@media (max-width: 1200px) {
+    .cg-layout { grid-template-columns: minmax(0, 2fr) minmax(250px, 1fr); }
+    .cg-intro-grid { grid-template-columns: 1fr; }
+    .cg-quote-card { flex-direction: row; gap: 18px; flex-wrap: wrap; }
+    .cg-dove { width: 140px; }
+    .cg-benefit-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 0; }
+    .cg-benefit-item:nth-child(3) { border-left: 0; }
+}
+@media (max-width: 760px) {
+    .cg-hero { min-height: 270px; height: auto; max-height: none; }
+    .cg-hero-text { padding: 26px 20px; }
+    .cg-hero-text h1 { font-size: 32px; }
+    .cg-hero-text > p { font-size: 16px; }
+    .cg-hero-image::after { background: linear-gradient(90deg, #180b12d9, #180b1233); }
+    .cg-layout { grid-template-columns: 1fr; }
+    .confirmation-about-page .ps-anchor-tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .cg-main-card h2 { font-size: 23px; }
+    .cg-subsection { padding: 18px 14px; }
+    .cg-topline .ps-user-chip { display: none; }
+}

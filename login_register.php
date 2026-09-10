@@ -8,7 +8,7 @@ function backToRegister($message) {
     unset($_POST['password'], $_POST['confirmPassword']);
     $_SESSION['old_input'] = $_POST;
  
-    header("Location: register.php");
+    header("Location: register.html");
     exit;
 }
 
@@ -90,7 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['otp_send_failed'] = true;
         }
  
-        header("Location: verify-otp.php");
+        header("Location: verify-otp.html");
         exit;
  
     }else {
