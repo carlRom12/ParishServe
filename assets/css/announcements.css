@@ -54,9 +54,13 @@
 
 /* ---- Featured Announcement carousel ------------------------------------- */
 .ann-carousel { position: relative; }
+.ann-carousel-track {
+    display: grid;
+}
 
 .ann-slide {
-    display: none;
+    grid-area: 1 / 1;
+    display: grid;
     grid-template-columns: 260px 1fr;
     gap: 24px;
     background: linear-gradient(135deg, var(--cream-deep), #f7ecd6);
@@ -64,8 +68,18 @@
     border: 1px solid var(--card-border);
     overflow: hidden;
     padding-right: 90px; /* room for the nav controls, bottom-right */
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    z-index: 0;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
 }
-.ann-slide.is-active { display: grid; }
+.ann-slide.is-active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    z-index: 1;
+}
 
 .ann-slide-image { height: 100%; min-height: 220px; }
 .ann-slide-image img { width: 100%; height: 100%; object-fit: cover; }
@@ -109,9 +123,9 @@
 .ann-dot {
     width: 8px; height: 8px; border-radius: 50%;
     background: var(--card-border);
-    transition: background 0.15s ease, transform 0.15s ease;
+    transition: background 0.2s ease, transform 0.2s var(--ps-ease);
 }
-.ann-dot.is-active { background: var(--maroon-700); transform: scale(1.2); }
+.ann-dot.is-active { background: var(--maroon-700); transform: scale(1.25); }
 
 /* ---- All Announcements list --------------------------------------------- */
 .ann-table-head {
@@ -132,11 +146,15 @@
     grid-template-columns: 1fr 160px 110px 40px;
     gap: 12px;
     align-items: center;
-    padding: 14px 4px;
+    padding: 14px 8px;
+    margin: 0 -8px;
+    border-radius: var(--radius-sm);
     border-bottom: 1px solid var(--card-border);
+    transition: background 0.2s ease;
 }
 .ann-row.is-hidden { display: none; }
 .ann-row:last-of-type { border-bottom: none; }
+.ann-row:hover { background: var(--cream); }
 
 .ann-row-main { display: flex; align-items: center; gap: 14px; min-width: 0; }
 .ann-row-main img { width: 56px; height: 56px; border-radius: var(--radius-sm); object-fit: cover; flex-shrink: 0; }
@@ -175,7 +193,16 @@
 
 /* ---- Important Notices (sidebar) ----------------------------------------- */
 .ann-notice-list { display: flex; flex-direction: column; gap: 14px; }
-.ann-notice-list li { display: flex; align-items: center; gap: 12px; }
+.ann-notice-list li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-radius: var(--radius-sm);
+    padding: 4px;
+    margin: 0 -4px;
+    transition: background 0.2s ease, transform 0.2s var(--ps-ease);
+}
+.ann-notice-list li:hover { background: var(--cream); transform: translateX(3px); }
 
 .ann-notice-icon {
     width: 34px; height: 34px; border-radius: 9px;
@@ -209,7 +236,7 @@
     color: var(--gold);
     opacity: 0.18;
 }
-.ann-contact-art svg { width: 100%; height: 100%; }
+.ann-contact-art svg { width: 100%; height: 100%; animation: ps-crest-float 5s ease-in-out infinite; }
 
 /* ---- responsive ----------------------------------------------------------- */
 @media (max-width: 1200px) {

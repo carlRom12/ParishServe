@@ -59,8 +59,11 @@
     flex-direction: column;
     gap: 4px;
     min-width: 0;
+    transition: background 0.2s ease;
 }
+.cal-cell:hover { background: var(--cream); }
 .cal-cell.is-muted { background: #faf7f0; }
+.cal-cell.is-muted:hover { background: #f3eee4; }
 .cal-cell.is-muted .cal-cell-day { color: #c9bdb4; }
 
 .cal-cell-day {
@@ -72,9 +75,14 @@
     border-radius: 50%;
     flex-shrink: 0;
 }
-.cal-cell-day.is-today { background: var(--maroon-700); color: #fff; }
+.cal-cell-day.is-today {
+    background: var(--maroon-700);
+    color: #fff;
+    animation: ps-soft-pulse 2.2s ease-in-out infinite;
+}
 
-.cal-event { display: flex; align-items: flex-start; gap: 5px; font-size: 10.5px; color: var(--text-body); line-height: 1.3; }
+.cal-event { display: flex; align-items: flex-start; gap: 5px; font-size: 10.5px; color: var(--text-body); line-height: 1.3; border-radius: 4px; transition: background 0.15s ease, color 0.15s ease; }
+.cal-event:hover { background: var(--cream-deep); color: var(--text-dark); }
 .cal-event.is-filtered-out { display: none; }
 .cal-event .ps-dot { margin-top: 3px; }
 .cal-event-text {
@@ -110,7 +118,9 @@
     font-size: 12px;
     color: var(--text-dark);
     border-radius: 50%;
+    transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;
 }
+.cal-mini-cell:hover:not(.is-muted):not(.is-today) { background: var(--cream-deep); transform: scale(1.08); }
 .cal-mini-cell.is-muted { color: #c9bdb4; }
 .cal-mini-cell.is-today { background: var(--maroon-700); color: #fff; font-weight: 700; }
 

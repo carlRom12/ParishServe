@@ -60,19 +60,17 @@
     --shadow-card-hover: 0 8px 24px rgba(61, 15, 31, 0.12);
 
     --sidebar-width: 268px;
+
+    /* motion — shared timing so hover, page-load, and pulses feel like
+       one design language instead of each page inventing its own */
+    --ps-ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --ps-duration: 0.45s;
 }
 
 /* ---- Reset ---------------------------------------------------------- */
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* smooth anchor scrolling site-wide, but not for anyone who's told
-   their OS they don't want motion -- this rule was here before the
-   public landing page needed real anchor-nav (#home/#about/etc.), it
-   just never had a reduced-motion guard until now */
 html { scroll-behavior: smooth; }
-@media (prefers-reduced-motion: reduce) {
-    html { scroll-behavior: auto; }
-}
 
 body {
     font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -116,6 +114,20 @@ h1, h2, h3, h4 {
     padding: 32px 40px 56px;
 }
 
+/* page-load rise: every direct child of the main column (hero, stats,
+   card grids, form shells) fades up in a short stagger so the screen
+   doesn't just "pop" into place. nth-child delays are enough — no JS. */
+.ps-main > * {
+    animation: ps-rise 0.55s var(--ps-ease) both;
+}
+.ps-main > *:nth-child(1) { animation-delay: 0.04s; }
+.ps-main > *:nth-child(2) { animation-delay: 0.11s; }
+.ps-main > *:nth-child(3) { animation-delay: 0.18s; }
+.ps-main > *:nth-child(4) { animation-delay: 0.25s; }
+.ps-main > *:nth-child(5) { animation-delay: 0.32s; }
+.ps-main > *:nth-child(6) { animation-delay: 0.39s; }
+.ps-main > *:nth-child(n+7) { animation-delay: 0.44s; }
+
 /* =====================================================================
    SIDEBAR
    ===================================================================== */
@@ -131,6 +143,7 @@ h1, h2, h3, h4 {
     top: 0;
     padding: 28px 20px 24px;
     overflow: hidden; /* keeps the decorative church art from spilling out */
+    animation: ps-slide-in 0.6s var(--ps-ease) both;
 }
 
 /* -- logo block -- */
@@ -146,6 +159,7 @@ h1, h2, h3, h4 {
     height: 56px;
     margin: 0 auto 10px;
     color: var(--gold);
+    animation: ps-crest-float 4.5s ease-in-out infinite;
 }
 
 .ps-logo-eyebrow {
@@ -199,7 +213,7 @@ h1, h2, h3, h4 {
     font-size: 14px;
     font-weight: 500;
     color: var(--text-on-dark);
-    transition: background 0.15s ease, color 0.15s ease;
+    transition: background 0.2s ease, color 0.2s ease, transform 0.2s var(--ps-ease), box-shadow 0.2s ease;
 }
 
 .ps-nav-link svg {
@@ -207,11 +221,14 @@ h1, h2, h3, h4 {
     height: 18px;
     flex-shrink: 0;
     stroke: currentColor;
+    transition: transform 0.2s var(--ps-ease);
 }
 
 .ps-nav-link:hover {
     background: rgba(230, 207, 148, 0.12);
+    transform: translateX(3px);
 }
+.ps-nav-link:hover svg { transform: scale(1.08); }
 
 .ps-nav-link.active {
     background: var(--gold);
@@ -219,6 +236,7 @@ h1, h2, h3, h4 {
     font-weight: 600;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
 }
+.ps-nav-link.active:hover { transform: none; }
 
 /* -- decorative church silhouette behind logout button -- */
 .ps-sidebar-art {
@@ -245,11 +263,12 @@ h1, h2, h3, h4 {
     font-size: 14px;
     font-weight: 500;
     background: rgba(0, 0, 0, 0.12);
-    transition: background 0.15s ease, border-color 0.15s ease;
+    transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s var(--ps-ease);
 }
 .ps-logout-btn:hover {
     background: rgba(0, 0, 0, 0.22);
     border-color: var(--gold);
+    transform: translateY(-1px);
 }
 .ps-logout-btn svg { width: 17px; height: 17px; stroke: currentColor; }
 
@@ -264,6 +283,7 @@ h1, h2, h3, h4 {
     border: 1px solid var(--card-border);
     box-shadow: var(--shadow-card);
     padding: 22px 24px;
+    transition: box-shadow 0.25s ease, transform 0.25s var(--ps-ease);
 }
 
 .ps-card-header {
@@ -290,8 +310,16 @@ h1, h2, h3, h4 {
     display: inline-flex;
     align-items: center;
     gap: 4px;
+    transition: color 0.2s ease;
 }
-.ps-link-more svg { width: 13px; height: 13px; stroke: currentColor; }
+.ps-link-more svg {
+    width: 13px;
+    height: 13px;
+    stroke: currentColor;
+    transition: transform 0.2s var(--ps-ease);
+}
+.ps-link-more:hover { color: var(--maroon-900); }
+.ps-link-more:hover svg { transform: translateX(3px); }
 
 /* status pill, shared by dashboard + every request-tracking page later */
 .ps-status {
@@ -336,7 +364,9 @@ h1, h2, h3, h4 {
     align-items: center;
     justify-content: center;
     color: var(--maroon-700);
+    transition: transform 0.2s var(--ps-ease), box-shadow 0.2s ease;
 }
+.ps-notif-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(61, 15, 31, 0.2); }
 .ps-notif-btn svg { width: 19px; height: 19px; stroke: currentColor; }
 
 .ps-notif-badge {
@@ -355,6 +385,7 @@ h1, h2, h3, h4 {
     align-items: center;
     justify-content: center;
     border: 2px solid var(--cream);
+    animation: ps-badge-pulse 2.2s ease-in-out infinite;
 }
 
 .ps-user-chip {
@@ -366,7 +397,9 @@ h1, h2, h3, h4 {
     border-radius: 999px;
     box-shadow: 0 4px 14px rgba(61, 15, 31, 0.16);
     cursor: pointer;
+    transition: transform 0.2s var(--ps-ease), box-shadow 0.2s ease;
 }
+.ps-user-chip:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(61, 15, 31, 0.2); }
 .ps-user-avatar {
     width: 34px; height: 34px; border-radius: 50%;
     background: var(--maroon-700); color: #fff;
@@ -393,14 +426,16 @@ h1, h2, h3, h4 {
     border-radius: 999px;
     font-size: 13.5px;
     font-weight: 600;
-    transition: background 0.15s ease, transform 0.15s ease;
+    transition: background 0.2s ease, transform 0.2s var(--ps-ease), box-shadow 0.2s ease;
 }
 .ps-btn svg { width: 15px; height: 15px; stroke: currentColor; }
 .ps-btn-primary { background: var(--maroon-700); color: #fff; box-shadow: 0 4px 12px rgba(92, 27, 46, 0.25); }
-.ps-btn-primary:hover { background: var(--maroon-800); transform: translateY(-1px); }
+.ps-btn-primary:hover { background: var(--maroon-800); transform: translateY(-2px); box-shadow: 0 8px 18px rgba(92, 27, 46, 0.32); }
+.ps-btn-primary:active { transform: translateY(0); }
 
 .ps-btn-outline { background: var(--card-bg); color: var(--maroon-700); border: 1.5px solid var(--maroon-700); }
-.ps-btn-outline:hover { background: var(--cream-deep); transform: translateY(-1px); }
+.ps-btn-outline:hover { background: var(--cream-deep); transform: translateY(-2px); }
+.ps-btn-outline:active { transform: translateY(0); }
 
 .ps-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
 
@@ -457,11 +492,16 @@ h1, h2, h3, h4 {
     background: var(--card-bg); border: 1px solid var(--card-border);
     display: flex; align-items: center; justify-content: center;
     color: var(--text-dark);
-    transition: border-color 0.15s ease, color 0.15s ease;
+    transition: border-color 0.2s ease, color 0.2s ease, transform 0.2s var(--ps-ease), background 0.2s ease;
     flex-shrink: 0;
 }
 .ps-round-btn svg { width: 15px; height: 15px; stroke: currentColor; }
-.ps-round-btn:hover:not(:disabled) { border-color: var(--gold); color: var(--maroon-700); }
+.ps-round-btn:hover:not(:disabled) {
+    border-color: var(--gold);
+    color: var(--maroon-700);
+    transform: scale(1.08);
+    background: var(--cream-deep);
+}
 .ps-round-btn:disabled { opacity: 0.35; cursor: default; }
 
 .ps-tabs { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -473,9 +513,9 @@ h1, h2, h3, h4 {
     background: var(--card-bg);
     border: 1px solid var(--card-border);
     color: var(--text-body);
-    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s var(--ps-ease);
 }
-.ps-tab:hover { border-color: var(--gold); color: var(--text-dark); }
+.ps-tab:hover { border-color: var(--gold); color: var(--text-dark); transform: translateY(-1px); }
 .ps-tab.active {
     background: var(--maroon-700);
     border-color: var(--maroon-700);
@@ -493,9 +533,10 @@ h1, h2, h3, h4 {
     font-size: 13px;
     color: var(--text-dark);
     min-width: 220px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 .ps-search input::placeholder { color: #b5a89f; }
-.ps-search input:focus { outline: none; border-color: var(--gold); }
+.ps-search input:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px rgba(201, 162, 74, 0.18); }
 
 .ps-filter-btn {
     display: inline-flex;
@@ -533,13 +574,14 @@ h1, h2, h3, h4 {
     width: 34px; height: 34px; border-radius: 8px;
     display: flex; align-items: center; justify-content: center;
     color: #b5a89f;
-    transition: color 0.15s ease, background 0.15s ease;
+    transition: color 0.2s ease, background 0.2s ease, transform 0.2s var(--ps-ease);
     flex-shrink: 0;
 }
-.ps-bookmark-btn svg { width: 17px; height: 17px; stroke: currentColor; fill: none; }
+.ps-bookmark-btn svg { width: 17px; height: 17px; stroke: currentColor; fill: none; transition: transform 0.2s var(--ps-ease); }
 .ps-bookmark-btn:hover { background: var(--cream-deep); color: var(--maroon-700); }
+.ps-bookmark-btn:hover svg { transform: scale(1.12); }
 .ps-bookmark-btn.is-saved { color: var(--gold-dark); }
-.ps-bookmark-btn.is-saved svg { fill: var(--gold); stroke: var(--gold-dark); }
+.ps-bookmark-btn.is-saved svg { fill: var(--gold); stroke: var(--gold-dark); animation: ps-pop 0.35s var(--ps-ease); }
 
 /* small gold divider + cross, used under page <h1>s (first seen under
    "Announcements", will get reused on every other page's heading) */
@@ -571,68 +613,36 @@ h1, h2, h3, h4 {
     font-size: 13px;
     font-weight: 600;
     color: var(--text-body);
-    transition: background 0.15s ease, color 0.15s ease;
+    transition: background 0.2s ease, color 0.2s ease, transform 0.2s var(--ps-ease);
 }
+.ps-segmented button:hover:not(.active) { color: var(--text-dark); }
 .ps-segmented button.active { background: var(--maroon-700); color: #fff; }
 
 /* plain select dropdown, styled to match the rest of the toolbar controls */
-/* IMPORTANT: the select spans the FULL box (border/background/padding
-   all live on the <select> itself now, not the wrapper) and the
-   chevron is a decorative, pointer-events:none overlay on top of it.
-   This used to be an inline-flex row of [select, separate icon]
-   sitting side by side -- which meant a click landing exactly on the
-   visual arrow hit the icon, not the select, and the dropdown didn't
-   open. Overlaying instead (same pattern as .ps-input-icon/
-   .ps-field-icon) means every pixel in the box is really the select,
-   so the arrow is always clickable. font-size/line-height are set
-   explicitly and match .ps-field's inputs exactly -- they used to
-   differ (13px here vs 14px on text inputs), which is why this box
-   came out a couple pixels shorter than a date/text field next to it
-   in the same row. */
 .ps-select {
-    position: relative;
-    display: inline-block;
-    width: auto;
-}
-/* .ps-select.ps-select (repeating the class) isn't a typo -- it's the
-   same specificity fix applied to .ps-field-icon/.ps-input-icon
-   earlier. A <select> wrapped in .ps-select often ALSO sits inside a
-   .ps-field (register.php's Suffix/Gender do), and ".ps-field select"
-   in the form-kit block below ties this rule's specificity exactly
-   (1 class + 1 type each) -- a tie that ".ps-field select" would win
-   purely because it's declared later in the file, silently stripping
-   the padding-right this select needs to clear the chevron. Repeating
-   the class pushes this to 2 classes + 1 type, which wins outright
-   regardless of where either rule sits in the file. */
-.ps-select.ps-select select {
-    appearance: none;
-    -webkit-appearance: none;
-    width: 100%;
-    padding: 12px 34px 12px 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
     border-radius: var(--radius-sm);
     border: 1px solid var(--card-border);
     background: var(--card-bg);
-    font: inherit;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
-    line-height: 20px;
     color: var(--text-dark);
+}
+.ps-select select {
+    border: none;
+    background: transparent;
+    font: inherit;
+    color: inherit;
+    appearance: none;
+    -webkit-appearance: none;
+    padding-right: 4px;
     cursor: pointer;
 }
-.ps-select.ps-select select:focus {
-    outline: none;
-    border-color: var(--gold);
-    box-shadow: 0 0 0 3px rgba(201, 162, 74, 0.15);
-}
-.ps-select svg {
-    position: absolute;
-    right: 14px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 14px; height: 14px;
-    stroke: var(--text-body);
-    pointer-events: none;
-}
+.ps-select select:focus { outline: none; }
+.ps-select svg { width: 12px; height: 12px; stroke: var(--text-body); flex-shrink: 0; }
 
 /* soft cream/gold info banner, e.g. calendar.php's "events subject to
    change" footnote -- generic enough other pages will want it too */
@@ -648,14 +658,6 @@ h1, h2, h3, h4 {
     font-size: 13px;
 }
 .ps-info-banner svg { width: 16px; height: 16px; stroke: var(--gold-dark); flex-shrink: 0; }
-/* baptism-request.php toggles this banner via the plain `hidden`
-   attribute (initTypeCardToggle() in main.js) -- without this rule the
-   banner's own `display: flex` above wins the cascade over the
-   browser's built-in `[hidden] { display: none }` (author styles beat
-   the UA stylesheet even at equal specificity), so the "hidden"
-   banner would stay fully visible. Same class of bug the mobile menu
-   hit earlier this session. */
-.ps-info-banner[hidden] { display: none; }
 
 /* =====================================================================
    Plain page header + breadcrumb
@@ -668,12 +670,6 @@ h1, h2, h3, h4 {
    ===================================================================== */
 .ps-plain-header { position: relative; padding: 6px 0 26px; }
 .ps-plain-header h1 { font-size: 30px; }
-/* a plain intro paragraph under the heading, e.g. mass-intention.php's
-   "Offer a Mass for your loved ones and special intentions." -- the
-   wizard/guidelines pages using .ps-plain-header so far only ever
-   paired the heading with a breadcrumb, never both a breadcrumb AND a
-   subtitle, so this is a new (but very ordinary) addition. */
-.ps-plain-header p { font-size: 14.5px; color: var(--text-body); margin-top: 6px; }
 
 .ps-breadcrumb { display: flex; align-items: center; gap: 8px; margin-top: 8px; font-size: 13px; color: var(--text-body); }
 .ps-breadcrumb a { color: var(--text-body); font-weight: 500; }
@@ -690,60 +686,6 @@ h1, h2, h3, h4 {
    ===================================================================== */
 input[type="radio"], input[type="checkbox"] { accent-color: var(--maroon-700); }
 
-/* ---- numbered section heading, e.g. baptism-request.php's "1. Baptism
-   Type" / "2. Child Information" or donations.php's "1. Donation
-   Details" -- each is its own .ps-card rather than one continuous form
-   card. Promoted here from wedding-request.css once donations.php (not
-   part of any wizard) needed the identical pattern. ------------------- */
-.wr-section { margin-bottom: 20px; }
-.wr-section-heading { font-size: 16px; color: var(--text-dark); margin-bottom: 4px; }
-/* a second numbered heading inside the same card (e.g. baptism-
-   request.php's "3. Parent/Guardian..." card also holding "4.
-   Preferred Baptism Date") needs breathing room from the row above it */
-.wr-section-heading:not(:first-child) { margin-top: 24px; }
-.wr-section-sub { font-size: 13px; color: var(--text-body); margin-bottom: 18px; }
-
-/* red required-asterisk, first shown in baptism-request.php's
-   reference image next to labels/section headings */
-.wr-required { color: var(--status-rejected-text); margin-left: 2px; }
-
-/* ---- form action row (Cancel + primary submit) and the inline "not
-   built yet" notice main.js shows on intercepted submits -- promoted
-   here from wedding-request.css once donations.php (not part of any
-   wizard) needed the identical pattern. ---------------------------------- */
-.wr-actions { display: flex; align-items: center; gap: 16px; margin-top: 4px; }
-/* wedding/baptism's Step 2+3 (and the old single-card baptism Step 1)
-   keep the actions row INSIDE the same .ps-card as the fields, where a
-   divider line reads as "end of this card's content". baptism-request.
-   php's rebuilt Step 1 and donations.php instead stack several
-   separate .ps-cards and put Cancel/Save below all of them as their
-   own row -- no divider line makes sense floating outside any card
-   there, so only add one when .wr-actions is actually inside .wr-form. */
-.wr-form .wr-actions { padding-top: 24px; border-top: 1px solid var(--card-border); }
-.wr-cancel { flex: 0 0 200px; justify-content: center; background: var(--cream-deep); color: var(--text-dark); }
-.wr-cancel:hover { background: #efe2c8; }
-.wr-submit { flex: 1; justify-content: center; }
-
-.wr-next-step-notice {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    margin-top: 18px;
-    padding: 14px 16px;
-    border-radius: var(--radius-md);
-    background: var(--status-pending-bg);
-    color: var(--status-pending-text);
-    font-size: 13px;
-    line-height: 1.5;
-}
-.wr-next-step-notice svg { width: 16px; height: 16px; stroke: currentColor; flex-shrink: 0; margin-top: 2px; }
-.wr-next-step-notice[hidden] { display: none; }
-
-/* notes/details field + optional label tag -- promoted here (by way of
-   wedding-request.css) once donations.php needed .wr-optional too */
-.wr-notes-field { margin-top: 22px; }
-.wr-optional { font-weight: 400; color: var(--text-body); }
-
 .ps-field { display: flex; flex-direction: column; gap: 6px; }
 .ps-field-label { font-size: 13px; font-weight: 600; color: var(--text-dark); }
 
@@ -752,7 +694,6 @@ input[type="radio"], input[type="checkbox"] { accent-color: var(--maroon-700); }
 .ps-field input[type="tel"],
 .ps-field input[type="date"],
 .ps-field input[type="number"],
-.ps-field input[type="password"],
 .ps-field select,
 .ps-field textarea {
     padding: 12px 14px;
@@ -761,33 +702,9 @@ input[type="radio"], input[type="checkbox"] { accent-color: var(--maroon-700); }
     background: var(--card-bg);
     font: inherit;
     font-size: 14px;
-    line-height: 20px; /* explicit, matches .ps-select select exactly --
-        different form control types (text input vs date input vs
-        select) can compute slightly different natural line-heights at
-        the same font-size, which is what made a date field come out a
-        few px taller than a <select> sitting right next to it in the
-        same row. Pinning both to the same literal value removes the
-        ambiguity instead of hoping the browser's defaults happen to
-        agree. */
     color: var(--text-dark);
     width: 100%;
 }
-.ps-field input::placeholder, .ps-field textarea::placeholder { color: #b5a89f; }
-
-/* a <select> has no "placeholder" concept -- its hint option (e.g.
-   "Select suffix") renders in the exact same dark color a real answer
-   would, which reads as already-filled-in and inconsistent next to
-   real placeholder text next to it. main.js toggles this class based
-   on whether the current value is the empty hint option, so an
-   unanswered dropdown visually matches an empty text field. */
-/* .is-placeholder repeated: same reasoning as .ps-select.ps-select
-   above -- ".ps-select.ps-select select" (2 classes + 1 type) would
-   tie this rule's specificity exactly, and a tie is fragile (only
-   wins by luck of file order). The repeat pushes this to 3 classes,
-   an unambiguous win regardless of where either rule lives. */
-.ps-field select.is-placeholder.is-placeholder { color: #b5a89f; }
-.ps-field select option { color: var(--text-dark); } /* the dropdown's own option list stays normal weight regardless */
-
 .ps-field input:focus, .ps-field select:focus, .ps-field textarea:focus {
     outline: none;
     border-color: var(--gold);
@@ -796,240 +713,24 @@ input[type="radio"], input[type="checkbox"] { accent-color: var(--maroon-700); }
 
 .ps-form-hint { font-size: 11.5px; color: var(--text-body); }
 
-/* inline field-level error text, e.g. baptism-request.php's date
-   picker or wedding-request-step2.php's file-size rejection -- shares
-   the same red/bold treatment either way, hidden via the plain
-   [hidden] attribute rather than a class so main.js only has to
-   toggle `.hidden` on the element itself. Promoted here from
-   wedding-request-step2.css once a second page (Step 1's date field)
-   needed it and that stylesheet isn't loaded there. */
-.wr-file-error { color: var(--status-rejected-text); font-weight: 600; }
-.wr-file-error[hidden] { display: none; }
-
 .ps-radio-row { display: flex; align-items: center; gap: 28px; flex-wrap: wrap; }
 .ps-radio { display: flex; align-items: center; gap: 9px; font-size: 14px; color: var(--text-dark); cursor: pointer; }
 .ps-radio input[type="radio"] { width: 18px; height: 18px; }
 
 .ps-form-row-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
-.ps-form-row-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
 .ps-form-row-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
 
-@media (max-width: 640px) {
-    .ps-form-row-2, .ps-form-row-3, .ps-form-row-4 { grid-template-columns: 1fr; }
-    .wr-actions { flex-direction: column-reverse; }
-    .wr-cancel, .wr-submit { width: 100%; flex: none; }
-}
-
 /* a select wrapped the same way as calendar.php's toolbar dropdown,
-   just stretched to fill a form field's full width. The select inside
-   already fills .ps-select at 100% regardless (see the base rule
-   above) -- this modifier only needs to stretch the WRAPPER itself,
-   since plain .ps-select is inline-block and shrinks to content by
-   default (fine for a compact toolbar filter like calendar.php's; not
-   fine inside a full-width form field). */
-.ps-select.is-block { display: block; width: 100%; }
+   just stretched to fill a form field's full width */
+.ps-select.is-block { width: 100%; justify-content: space-between; }
+.ps-select.is-block select { flex: 1; }
 
 /* an <input> with a trailing icon (e.g. the calendar glyph on a date
    field) -- the input keeps its normal .ps-field styling, this just
    wraps it so the icon can sit inside the right edge */
 .ps-input-icon { position: relative; }
-/* NOTE the [type] on the end isn't decorative -- it's load-bearing.
-   .ps-field input[type="date"] (etc.) sets padding via a selector
-   worth (2 classes/attributes, 1 type). ".ps-field .ps-input-icon
-   input" alone TIES that exactly (2 classes, 1 type) and would only
-   win by virtue of appearing later in the file -- fragile, and
-   exactly the kind of thing that silently breaks if this block ever
-   gets moved. Adding a bare [type] attribute selector (every input
-   has one) pushes this to (3, 1), so it wins outright regardless of
-   source order. Found this the hard way: without it, the icon
-   overlapped the input's placeholder text because the padding never
-   actually applied. */
-.ps-field .ps-input-icon input[type] { padding-right: 40px; }
+.ps-input-icon input { padding-right: 40px; }
 .ps-input-icon svg { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; stroke: var(--text-body); pointer-events: none; }
-
-/* type="date" inputs draw their OWN calendar icon natively in
-   Chrome/Edge/Safari, right on top of the custom one .ps-input-icon
-   already draws -- looked like two calendar icons side by side.
-   Just dim it to invisible rather than repositioning it (that pseudo-
-   element lives in the browser's internal shadow DOM for the input;
-   fighting its layout with position/width/height is fragile and
-   varies by browser version). Opacity alone still leaves it clickable
-   in its own default spot, which is enough to keep the native picker
-   reachable while removing the visual duplicate. Firefox has no
-   equivalent pseudo-element to target, so this is a Chromium/WebKit-
-   specific fix -- acceptable since that covers the primary
-   dev/testing browsers here. */
-.ps-input-icon input[type="date"]::-webkit-calendar-picker-indicator {
-    opacity: 0;
-    cursor: pointer;
-}
-
-/* mirror of .ps-input-icon, LEADING icon instead of trailing -- first
-   built for login.php's email/password fields, generic enough any
-   future field (search-style inputs aside, which already have their
-   own .ps-search) can reuse it. `.has-trailing` adds room on the
-   right too, for a field that also has a trailing control like the
-   password show/hide button. Same specificity note as .ps-input-icon
-   above applies here (the [type] is load-bearing, not decorative). */
-.ps-field-icon { position: relative; }
-.ps-field .ps-field-icon input[type] { padding-left: 42px; }
-.ps-field .ps-field-icon.has-trailing input[type] { padding-right: 42px; }
-.ps-field-icon > svg { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); width: 17px; height: 17px; stroke: var(--text-body); pointer-events: none; }
-
-/* =====================================================================
-   Drag-and-drop file upload zone. First built for baptism-request-
-   step2.php's single Birth Certificate upload; wedding-request-
-   step2.php's 8 requirements use plain native file inputs instead
-   since a full dropzone per row would be a lot of visual weight for
-   that many fields -- this is for the "there's just one important
-   file" case. The real <input type="file"> covers the ENTIRE box
-   (absolutely positioned, opacity 0), so every pixel in the dashed
-   area is genuinely clickable to open the file picker, not just the
-   "Choose File" pill -- that pill is purely decorative underneath it.
-   Drag-and-drop itself is handled by main.js's initDropzones().
-   ===================================================================== */
-.ps-dropzone {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-    padding: 28px 24px;
-    border: 2px dashed var(--card-border);
-    border-radius: var(--radius-md);
-    background: var(--card-bg);
-    text-align: center;
-    cursor: pointer;
-    transition: border-color 0.15s ease, background 0.15s ease;
-}
-.ps-dropzone.is-dragover { border-color: var(--gold); background: var(--cream-deep); }
-.ps-dropzone input[type="file"] {
-    position: absolute;
-    inset: 0;
-    opacity: 0;
-    cursor: pointer;
-    width: 100%;
-    height: 100%;
-}
-.ps-dropzone-icon { width: 34px; height: 34px; color: var(--text-body); margin-bottom: 2px; }
-.ps-dropzone-icon svg { width: 100%; height: 100%; stroke-width: 1.6; }
-.ps-dropzone-text { font-size: 13.5px; color: var(--text-dark); }
-.ps-dropzone-or { font-size: 11.5px; color: #b5a89f; margin: 2px 0; }
-.ps-dropzone-btn {
-    display: inline-flex;
-    align-items: center;
-    padding: 9px 18px;
-    border-radius: var(--radius-sm);
-    border: 1px solid var(--card-border);
-    background: var(--card-bg);
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text-dark);
-    pointer-events: none; /* the real input already covers the whole box */
-}
-.ps-dropzone-filename { font-size: 12px; color: var(--text-body); margin-top: 8px; }
-
-/* =====================================================================
-   Custom date picker -- a hand-built popup calendar, NOT a styled
-   native <input type="date">. First needed by baptism-request.php's
-   "Preferred Regular Baptism Date" field: only future Saturdays may be
-   selected, and a native date input's browser-drawn calendar can't be
-   made to grey out arbitrary weekdays via CSS at all (its popup lives
-   in a closed shadow DOM the page has no access to). main.js's
-   initDatepickers() renders the month grid into .ps-datepicker-panel
-   and reads which dates to disable from data attributes on the
-   .ps-datepicker wrapper, so this same component works for any future
-   field with its own day-of-week rule, not just this one.
-   ===================================================================== */
-.ps-datepicker { position: relative; }
-.ps-datepicker-field { position: relative; }
-/* same [type] specificity note as .ps-input-icon above -- keeps this
-   padding rule winning over .ps-field input[type="text"]'s own
-   padding regardless of file order */
-.ps-field .ps-datepicker-field input[type] { padding-right: 40px; cursor: pointer; }
-.ps-datepicker-toggle {
-    position: absolute;
-    right: 6px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 30px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 8px;
-    color: var(--text-body);
-}
-.ps-datepicker-toggle:hover { background: var(--cream-deep); color: var(--maroon-700); }
-.ps-datepicker-toggle svg { width: 16px; height: 16px; }
-
-.ps-datepicker-panel {
-    position: absolute;
-    top: calc(100% + 8px);
-    left: 0;
-    z-index: 40;
-    width: 300px;
-    background: var(--card-bg);
-    border: 1px solid var(--card-border);
-    border-radius: var(--radius-md);
-    box-shadow: var(--shadow-card-hover);
-    padding: 14px;
-}
-.ps-datepicker-panel[hidden] { display: none; }
-/* a field near the bottom of a long page (e.g. baptism-request.php's
-   "4. Preferred Baptism Date", the LAST field before Save/Continue)
-   would otherwise open this ~300px-tall panel further down than the
-   page itself, inflating the page's scrollable height past the
-   sticky sidebar's own fixed height -- main.js's initDatepickers()
-   measures available space on open and adds this class to flip the
-   panel above the input instead whenever there isn't enough room
-   below, the same way most date-picker widgets behave. */
-.ps-datepicker-panel.is-flipped { top: auto; bottom: calc(100% + 8px); }
-
-.ps-datepicker-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
-.ps-datepicker-head strong { font-size: 13.5px; color: var(--text-dark); font-family: 'Playfair Display', serif; }
-/* nav buttons use the same inline SVG chevron icons as the rest of
-   the site (icons.php's chevron-left/chevron-right) instead of raw
-   "‹ ›" text glyphs -- those render in whatever font the browser
-   substitutes for the character and looked visually inconsistent
-   with every other icon on the page. */
-.ps-datepicker-nav {
-    width: 26px; height: 26px; border-radius: 7px;
-    display: flex; align-items: center; justify-content: center;
-    color: var(--text-body);
-}
-.ps-datepicker-nav svg { width: 14px; height: 14px; }
-.ps-datepicker-nav:hover:not(:disabled) { background: var(--cream-deep); color: var(--maroon-700); }
-.ps-datepicker-nav:disabled { opacity: 0.3; cursor: not-allowed; }
-
-.ps-datepicker-weekdays, .ps-datepicker-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; text-align: center; }
-.ps-datepicker-weekdays span { font-size: 10.5px; font-weight: 600; color: var(--text-body); padding: 4px 0; }
-
-.ps-datepicker-day {
-    width: 100%;
-    aspect-ratio: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 12.5px;
-    border-radius: 8px;
-    color: var(--text-dark);
-    font: inherit;
-}
-/* the leading/trailing blank cells that pad the grid out to a full
-   week row -- invisible, not just "disabled", since they don't
-   represent a real date at all */
-.ps-datepicker-day.is-muted { visibility: hidden; }
-/* a real date the user isn't allowed to pick -- past, or (for the
-   Saturday-only mode) not a Saturday. Greyed out AND a real disabled
-   button, so it can't be focused or clicked, matching the "user
-   should not be able to click them" requirement. */
-.ps-datepicker-day.is-disabled { color: #d8cdc4; cursor: not-allowed; }
-.ps-datepicker-day.is-selectable { cursor: pointer; font-weight: 600; }
-.ps-datepicker-day.is-selectable:hover { background: var(--cream-deep); }
-.ps-datepicker-day.is-selected { background: var(--maroon-700); color: #fff; }
-.ps-datepicker-day.is-today:not(.is-selected) { box-shadow: inset 0 0 0 1.5px var(--gold); }
 
 /* =====================================================================
    Intro banner (art + heading + paragraph, optional button)
@@ -1049,205 +750,6 @@ input[type="radio"], input[type="checkbox"] { accent-color: var(--maroon-700); }
 .wed-banner-text { flex: 1; min-width: 0; }
 .wed-banner-text h2 { font-size: 25px; margin-bottom: 8px; }
 .wed-banner-text p { font-size: 13.5px; color: var(--text-body); line-height: 1.6; max-width: 62ch; }
-
-/* =====================================================================
-   Sacrament landing page kit: quick-link cards, the 3-column overview
-   row (process / reminders / schedule), the 3-step process indicator,
-   and the About+quote card. First built for wedding.php, promoted
-   here once baptism.php needed the exact same page shape -- every
-   future sacrament page (confirmation.php, funeral.php) will too, so
-   this stays in the shared file rather than getting copy-pasted again.
-   Kept the "wed-" prefixed names (not renamed to something neutral
-   like "sacrament-") for the same reason .ann-/.wed-banner did:
-   renaming across multiple pages wasn't worth the churn versus just
-   documenting it here.
-   ===================================================================== */
-
-/* ---- quick-link cards row ------------------------------------------------ */
-.wed-quicklinks {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 18px;
-    margin-bottom: 22px;
-}
-
-.wed-quicklink-card {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    background: var(--card-bg);
-    border: 1px solid var(--card-border);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-card);
-    padding: 18px;
-    transition: box-shadow 0.15s ease, transform 0.15s ease;
-}
-.wed-quicklink-card:hover { box-shadow: var(--shadow-card-hover); transform: translateY(-2px); }
-
-.wed-quicklink-icon {
-    width: 44px; height: 44px; border-radius: 12px;
-    background: var(--cream-deep);
-    color: var(--maroon-700);
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-}
-.wed-quicklink-icon svg { width: 20px; height: 20px; }
-
-.wed-quicklink-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
-.wed-quicklink-text strong { font-size: 14px; color: var(--maroon-700); font-weight: 700; }
-.wed-quicklink-text small { font-size: 12px; color: var(--text-body); line-height: 1.35; }
-
-.wed-quicklink-chevron { width: 15px; height: 15px; stroke: #c9bdb4; flex-shrink: 0; }
-
-/* ---- overview row: process / reminders / schedule ------------------------ */
-.wed-overview-grid {
-    display: grid;
-    grid-template-columns: 1.8fr 1fr 1fr;
-    gap: 20px;
-    align-items: stretch;
-    margin-bottom: 22px;
-}
-
-.wed-process-card p,
-.wed-schedule-card p { font-size: 13px; color: var(--text-body); margin: 8px 0 0; line-height: 1.55; }
-
-.wed-reminders-card,
-.wed-schedule-card { display: flex; flex-direction: column; }
-.wed-reminders-card { background: linear-gradient(135deg, var(--cream-deep), #f7ecd6); }
-.wed-schedule-card .ps-btn { margin-top: 16px; align-self: flex-start; }
-
-/* 3-step process indicator */
-.wed-steps {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    position: relative;
-    margin-top: 26px;
-    padding: 0 10px;
-}
-.wed-steps::before {
-    content: '';
-    position: absolute;
-    top: 22px;
-    left: 54px;
-    right: 54px;
-    height: 2px;
-    background: var(--card-border);
-    z-index: 0;
-}
-.wed-step {
-    position: relative;
-    z-index: 1;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    text-align: center;
-}
-.wed-step-num {
-    width: 44px; height: 44px; border-radius: 50%;
-    background: var(--cream-deep);
-    border: 2px solid var(--card-border);
-    color: var(--maroon-700);
-    font-family: 'Playfair Display', serif;
-    font-weight: 700;
-    font-size: 18px;
-    display: flex; align-items: center; justify-content: center;
-}
-.wed-step.is-current .wed-step-num {
-    background: var(--maroon-700);
-    border-color: var(--maroon-700);
-    color: #fff;
-    box-shadow: 0 4px 10px rgba(92, 27, 46, 0.3);
-}
-.wed-step strong { font-size: 13.5px; color: var(--text-dark); }
-.wed-step small { font-size: 11px; color: var(--text-body); }
-
-/* ---- About [sacrament] + scripture quote ---------------------------------- */
-.wed-about-card {
-    display: flex;
-    align-items: center;
-    gap: 32px;
-}
-.wed-about-text { flex: 1.4; min-width: 0; }
-.wed-about-text p { font-size: 13.5px; color: var(--text-body); line-height: 1.6; margin-top: 8px; max-width: 62ch; }
-
-.wed-quote {
-    flex: 1;
-    text-align: right;
-    border-left: 1px solid var(--card-border);
-    padding-left: 28px;
-}
-.wed-quote p {
-    font-family: 'Playfair Display', serif;
-    font-style: italic;
-    font-size: 16px;
-    color: var(--text-dark);
-    line-height: 1.5;
-}
-.wed-quote cite {
-    display: block;
-    margin-top: 8px;
-    font-size: 12.5px;
-    font-style: normal;
-    color: var(--text-body);
-}
-
-/* ---- CTA button + small caption underneath (e.g. "Begin your request
-   in just a few steps."), wrapped so they stack/center together --
-   wedding.php's banner button has no caption so it doesn't use this,
-   but baptism.php and now mass-intention.php both do. First built in
-   baptism.css; promoted here once a second page (this one) needed the
-   identical wrapper, exactly like this section's own header comment
-   already predicted every future sacrament page would. Kept the
-   "bap-" name rather than renaming for the same reason the rest of
-   this file's "wed-" names weren't renamed either. -------------------- */
-.bap-start { display: flex; flex-direction: column; align-items: center; gap: 8px; flex-shrink: 0; }
-.bap-start small { font-size: 11.5px; color: var(--text-body); }
-
-/* ---- fee/offering row list, e.g. baptism.php's Baptism Schedule &
-   Fees card or mass-intention.php's single Mass Offering row --
-   promoted alongside .bap-start for the same reason. -------------------- */
-.bap-fee-list { display: flex; flex-direction: column; gap: 12px; margin: 14px 0; }
-.bap-fee-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 10px;
-    border: 1px solid var(--card-border);
-    border-radius: var(--radius-sm);
-}
-.bap-fee-icon {
-    width: 36px; height: 36px; border-radius: 9px;
-    background: var(--cream-deep);
-    color: var(--maroon-700);
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-}
-.bap-fee-icon svg { width: 17px; height: 17px; }
-.bap-fee-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
-.bap-fee-text strong { font-size: 13px; color: var(--text-dark); }
-.bap-fee-text small { font-size: 11px; color: var(--text-body); }
-.bap-fee-amount { font-size: 12.5px; font-weight: 700; color: var(--maroon-700); white-space: nowrap; }
-
-.bap-process-note { margin-top: 18px; }
-.bap-fee-note { margin: 2px 0 14px; }
-
-@media (max-width: 1200px) {
-    .wed-quicklinks { grid-template-columns: repeat(2, 1fr); }
-    .wed-overview-grid { grid-template-columns: 1fr; }
-}
-
-@media (max-width: 800px) {
-    .wed-quicklinks { grid-template-columns: 1fr; }
-    .wed-about-card { flex-direction: column; align-items: flex-start; }
-    .wed-quote { text-align: left; border-left: none; border-top: 1px solid var(--card-border); padding-left: 0; padding-top: 16px; width: 100%; }
-    .wed-banner { flex-direction: column; align-items: flex-start; text-align: left; }
-    .wed-banner-art { width: 90px; }
-    .bap-start { width: 100%; align-items: stretch; }
-    .bap-start .ps-btn { width: 100%; justify-content: center; }
-}
 
 /* =====================================================================
    Guideline-page building blocks: a numbered "steps" list with a
@@ -1333,96 +835,6 @@ input[type="radio"], input[type="checkbox"] { accent-color: var(--maroon-700); }
 .ps-help-footer-text small { font-size: 12.5px; color: var(--text-body); }
 
 /* =====================================================================
-   Section tab bar -- jump-links to anchors ON THE SAME PAGE (#steps,
-   #documents, etc.), with a scroll-spy in main.js keeping whichever
-   tab matches the section currently in view marked .active. First
-   built for baptism-guidelines.php; every future guidelines page will
-   likely want the same bar, so it's here rather than scoped to one
-   page. Visually an underline-tab style (distinct from .ps-tabs, the
-   filled PILL style used for announcements.php's category filter --
-   different job: this is "where am I on this page", not "filter this
-   list").
-   ===================================================================== */
-.ps-anchor-tabs {
-    display: flex;
-    align-items: center;
-    gap: 30px;
-    padding: 4px 24px;
-    margin-bottom: 22px;
-    overflow-x: auto;
-}
-.ps-anchor-tab {
-    position: relative;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 16px 2px;
-    font-size: 13.5px;
-    font-weight: 600;
-    color: var(--text-body);
-    white-space: nowrap;
-    flex-shrink: 0;
-}
-.ps-anchor-tab svg { width: 16px; height: 16px; stroke: currentColor; flex-shrink: 0; }
-.ps-anchor-tab::after {
-    content: '';
-    position: absolute;
-    left: 0; right: 0; bottom: -1px;
-    height: 2px;
-    background: var(--gold);
-    transform: scaleX(0);
-    transition: transform 0.15s ease;
-}
-.ps-anchor-tab:hover { color: var(--text-dark); }
-.ps-anchor-tab.active { color: var(--maroon-700); }
-.ps-anchor-tab.active::after { transform: scaleX(1); }
-
-/* single highlighted requirement box -- for a guidelines page whose
-   "documents needed" section is really just one item (baptism only
-   needs a birth certificate), where the full .ps-icon-list would look
-   sparse for a single row */
-.ps-doc-highlight {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    background: var(--cream-deep);
-    border-radius: var(--radius-md);
-    padding: 18px 20px;
-    margin-bottom: 14px;
-}
-.ps-doc-highlight-icon {
-    width: 44px; height: 44px; border-radius: 12px;
-    background: var(--card-bg);
-    color: var(--maroon-700);
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-}
-.ps-doc-highlight-icon svg { width: 20px; height: 20px; }
-.ps-doc-highlight-text strong { display: block; font-size: 14.5px; color: var(--text-dark); }
-.ps-doc-highlight-text small { display: block; font-size: 12.5px; color: var(--text-body); margin-top: 2px; }
-
-/* FAQ accordion -- real native <details>/<summary>, not a JS-driven
-   fake one. Browsers handle open/close, keyboard (Enter/Space),
-   and accessibility semantics for free; this is just the skin. */
-.ps-faq-item { border-bottom: 1px solid var(--card-border); }
-.ps-faq-item:last-child { border-bottom: none; }
-.ps-faq-item summary {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    padding: 16px 2px;
-    cursor: pointer;
-    list-style: none;
-}
-.ps-faq-item summary::-webkit-details-marker { display: none; }
-.ps-faq-item summary strong { font-size: 13.5px; color: var(--text-dark); font-weight: 600; }
-.ps-faq-chevron { width: 16px; height: 16px; stroke: var(--text-body); flex-shrink: 0; transition: transform 0.15s ease; }
-.ps-faq-item[open] summary strong { color: var(--maroon-700); }
-.ps-faq-item[open] .ps-faq-chevron { transform: rotate(180deg); }
-.ps-faq-answer { padding: 0 2px 16px; font-size: 13px; color: var(--text-body); line-height: 1.6; }
-
-/* =====================================================================
    Shared page layout + "Upcoming Events" widget
    First built for announcements.php, reused as-is by calendar.php --
    promoted here once a second page needed the identical grid/widget.
@@ -1443,7 +855,16 @@ input[type="radio"], input[type="checkbox"] { accent-color: var(--maroon-700); }
 /* "Upcoming Events" widget: a date badge, title+meta, and a category
    dot -- identical on announcements.php and calendar.php */
 .ann-event-list { display: flex; flex-direction: column; gap: 16px; }
-.ann-event-list li { display: flex; align-items: center; gap: 12px; }
+.ann-event-list li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-radius: var(--radius-sm);
+    transition: background 0.2s ease, transform 0.2s var(--ps-ease);
+    padding: 4px;
+    margin: 0 -4px;
+}
+.ann-event-list li:hover { background: var(--cream); transform: translateX(3px); }
 
 .ann-event-date {
     width: 46px; flex-shrink: 0;
@@ -1475,5 +896,53 @@ input[type="radio"], input[type="checkbox"] { accent-color: var(--maroon-700); }
         display: none;
     }
     .ps-nav-link, .ps-logout-btn { justify-content: center; }
+    .ps-nav-link:hover { transform: none; }
     .ps-main { padding: 24px 20px 40px; }
+}
+
+/* =====================================================================
+   Motion primitives
+   Used by the shell (sidebar slide-in, main-column rise) and by page
+   CSS that needs a shared pulse/pop. Keep these calm — this is a
+   parish portal, not a marketing landing page.
+   ===================================================================== */
+@keyframes ps-rise {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: none; }
+}
+@keyframes ps-slide-in {
+    from { opacity: 0; transform: translateX(-18px); }
+    to   { opacity: 1; transform: none; }
+}
+@keyframes ps-crest-float {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-4px); }
+}
+@keyframes ps-badge-pulse {
+    0%, 100% { transform: scale(1); }
+    50%      { transform: scale(1.12); }
+}
+@keyframes ps-soft-pulse {
+    0%, 100% { box-shadow: 0 0 0 4px rgba(230, 207, 148, 0.45); }
+    50%      { box-shadow: 0 0 0 7px rgba(230, 207, 148, 0.12); }
+}
+@keyframes ps-pop {
+    0%   { transform: scale(0.7); }
+    70%  { transform: scale(1.18); }
+    100% { transform: scale(1); }
+}
+@keyframes ps-wave {
+    0%, 60%, 100% { transform: rotate(0deg); }
+    15% { transform: rotate(16deg); }
+    30% { transform: rotate(-8deg); }
+    45% { transform: rotate(12deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
 }
