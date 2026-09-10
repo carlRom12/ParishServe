@@ -16,8 +16,12 @@ The frontend uses HTML5, CSS3, and vanilla JavaScript. Open `landingpage.html` d
 
 ## Backend And Current Limits
 
-Browsing the HTML pages does not require PHP. Registration and email verification require PHP, the existing `parish_serve` MySQL database with its `users` table, and configured mail delivery. No database schema is included in this repository.
+Browsing the HTML pages does not require PHP. Registration and email verification require PHP, the existing `parish_serve` MySQL database with its `users` table, and configured mail delivery. The incoming `database/schema.sql` is a demo schema with seed accounts. Its `users` columns differ from the current registration/OTP handlers (which need separate name fields and OTP fields); reconcile these before using it for account services. Import only into a disposable development database, not over an existing parish database.
 
 Login authentication and final service-request saving are not implemented. Existing sample data and unfinished destinations remain placeholders. Multi-step form drafts use browser session storage; they are not submitted parish records. Do not enter sensitive real information in demo requests.
 
 Shared PHP presentation includes have been expanded into the HTML pages. Update repeated navigation/layout markup across pages when changing it. PHP is only used for backend account operations.
+
+## Merge notes
+
+The frontend remains HTML with expanded navigation and icons. Incoming carousel accessibility/animation changes and page animations are retained. Shared form, upload, review, and responsive styles remain available to Confirmation, Funeral, Baptism, and Mass Intention pages. Calendar events and request submissions remain demo-only. The SQL schema contains demo accounts with documented passwords; it is not a production setup.

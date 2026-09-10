@@ -26,7 +26,12 @@
     align-items: center;
     gap: 10px;
 }
-.db-wave { font-size: 26px; }
+.db-wave {
+    font-size: 26px;
+    display: inline-block;
+    transform-origin: 70% 70%;
+    animation: ps-wave 2.4s ease-in-out 0.6s 3;
+}
 
 .db-subtitle {
     margin-top: 8px;
@@ -44,7 +49,7 @@
     border-radius: 24px;
     overflow: hidden;
 }
-.db-hero-image img { width: 100%; height: 100%; object-fit: cover; }
+.db-hero-image img { width: 100%; height: 100%; object-fit: cover; animation: db-hero-pan 18s ease-in-out infinite alternate; }
 .db-hero-image::after {
     /* fades the photo into the page background on its left edge so it
        reads as a banner rather than a hard-edged rectangle, matching
@@ -72,6 +77,17 @@
     display: flex;
     align-items: center;
     gap: 16px;
+    animation: ps-rise 0.55s var(--ps-ease) both;
+    transition: box-shadow 0.25s ease, transform 0.25s var(--ps-ease), border-color 0.25s ease;
+}
+.stat-card:nth-child(1) { animation-delay: 0.12s; }
+.stat-card:nth-child(2) { animation-delay: 0.18s; }
+.stat-card:nth-child(3) { animation-delay: 0.24s; }
+.stat-card:nth-child(4) { animation-delay: 0.30s; }
+.stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-card-hover);
+    border-color: var(--gold-light);
 }
 
 .stat-icon {
@@ -83,7 +99,8 @@
     align-items: center;
     justify-content: center;
 }
-.stat-icon svg { width: 23px; height: 23px; }
+.stat-icon svg { width: 23px; height: 23px; transition: transform 0.25s var(--ps-ease); }
+.stat-card:hover .stat-icon svg { transform: scale(1.08); }
 
 .stat-icon.tint-amber  { background: var(--status-pending-bg);   color: var(--status-pending-text); }
 .stat-icon.tint-green  { background: var(--status-approved-bg);  color: var(--status-approved-text); }
@@ -152,7 +169,10 @@
 /* set by main.js: whichever schedule slot is currently happening,
    based on the visitor's own clock */
 .db-timeline-item.is-now .db-timeline-body strong { color: var(--maroon-700); }
-.db-timeline-item.is-now .db-timeline-dot { box-shadow: 0 0 0 4px var(--gold-light); }
+.db-timeline-item.is-now .db-timeline-dot {
+    box-shadow: 0 0 0 4px var(--gold-light);
+    animation: ps-soft-pulse 1.8s ease-in-out infinite;
+}
 .db-timeline-item.is-now .db-timeline-time { color: var(--maroon-700); }
 
 /* ---- "My Requests" list ------------------------------------------------ */
@@ -162,9 +182,13 @@
     display: flex;
     align-items: center;
     gap: 14px;
-    padding: 12px 0;
+    padding: 12px 8px;
+    margin: 0 -8px;
+    border-radius: var(--radius-sm);
     border-bottom: 1px solid var(--card-border);
+    transition: background 0.2s ease, transform 0.2s var(--ps-ease);
 }
+.db-request-item:hover { background: var(--cream); }
 .db-request-item:last-child { border-bottom: none; }
 
 .db-request-icon {
@@ -236,6 +260,7 @@
     border-color: var(--maroon-700);
     color: #fff;
     box-shadow: 0 4px 10px rgba(92, 27, 46, 0.35);
+    animation: ps-soft-pulse 2s ease-in-out infinite;
 }
 
 .db-progress-name { font-size: 10.5px; font-weight: 500; color: var(--text-body); text-align: center; }
@@ -280,10 +305,16 @@
     border-radius: var(--radius-md);
     overflow: hidden;
     background: var(--card-bg);
-    transition: box-shadow 0.15s ease, transform 0.15s ease;
+    transition: box-shadow 0.25s ease, transform 0.25s var(--ps-ease);
 }
-.db-announcement-card:hover { box-shadow: var(--shadow-card-hover); transform: translateY(-2px); }
-.db-announcement-card img { width: 100%; height: 130px; object-fit: cover; }
+.db-announcement-card:hover { box-shadow: var(--shadow-card-hover); transform: translateY(-5px); }
+.db-announcement-card img {
+    width: 100%;
+    height: 130px;
+    object-fit: cover;
+    transition: transform 0.45s var(--ps-ease);
+}
+.db-announcement-card:hover img { transform: scale(1.05); }
 .db-announcement-text { padding: 14px 16px; }
 .db-announcement-text strong { display: block; font-size: 14px; color: var(--text-dark); margin-bottom: 4px; }
 .db-announcement-text p { font-size: 12.5px; color: var(--text-body); line-height: 1.5; margin-bottom: 8px; }
@@ -302,4 +333,9 @@
     .db-side { flex-direction: column; }
     .db-announcement-grid { grid-template-columns: 1fr; }
     .db-hero-image { display: none; }
+}
+
+@keyframes db-hero-pan {
+    from { transform: scale(1); }
+    to   { transform: scale(1.06); }
 }

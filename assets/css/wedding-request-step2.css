@@ -37,6 +37,7 @@
     background: var(--maroon-700);
     color: #fff;
     box-shadow: 0 4px 10px rgba(92, 27, 46, 0.3);
+    animation: ps-soft-pulse 2s ease-in-out infinite;
 }
 .wr-step-text { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
 .wr-step-text strong { font-size: 14px; color: var(--text-body); font-weight: 600; }
@@ -138,18 +139,15 @@
     outline-offset: 2px;
 }
 
-/* .wr-file-error itself moved to style.css -- baptism-request.php's
-   Step 1 date picker needs the same red inline-error look and that
-   page doesn't load this stylesheet, only wedding-request.css +
-   style.css. See style.css's form-kit section. */
+.wr-file-error {
+    color: var(--status-rejected-text);
+    font-weight: 600;
+}
+.wr-file-error[hidden] { display: none; }
 
-/* .wr-notes-field/.wr-optional moved to style.css (by way of
-   wedding-request.css) -- baptism-request-step2.php and now mass-
-   intention-request.php/donations.php also use them but never loaded
-   this stylesheet, so on baptism's page that field was silently
-   rendering unstyled (no top margin, "(optional)" in the same weight/
-   color as real label text) until this moved. See style.css's form-
-   kit section. */
+/* ---- notes field + optional label tag ---------------------------------- */
+.wr-notes-field { margin-top: 22px; }
+.wr-optional { font-weight: 400; color: var(--text-body); }
 
 /* ---- "Need help?" sidebar card ------------------------------------------ */
 .wr-help-card h3 { font-size: 17px; margin-bottom: 6px; }
