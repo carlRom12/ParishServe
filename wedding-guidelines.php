@@ -1,4 +1,27 @@
 <?php
+/**
+ * wedding-guidelines.php
+ * ---------------------------------------------------------------------
+ * ONE page covering everything the reference image showed: Steps to
+ * be Taken, Documents Needed, Fees/Decorations/Cancellations, and
+ * Sponsors -- as sections A/B/C/D on this single page, not four
+ * separate files. wedding.php's "Documents Needed" and "Steps to Be
+ * Taken" quick-link cards jump here with #documents / #steps anchors
+ * instead of linking to their own pages (see wedding.php's
+ * $quickLinks array). Discussed with the group first: this avoids
+ * duplicating the same requirements/fees content across multiple
+ * files that could drift out of sync when the parish updates a
+ * policy. "Frequently Asked Questions" still gets its own separate
+ * page later since Q&A content isn't part of this image at all.
+ *
+ * Like wedding.php, this is almost entirely static parish copy (not
+ * per-user data), so it's plain PHP arrays feeding the markup rather
+ * than a "TODO: replace with a query" situation -- the realistic path
+ * to making this editable later is a small admin CMS content table,
+ * not a per-request database table.
+ * ---------------------------------------------------------------------
+ */
+
 $steps = [
     'Couples have to present themselves personally for interview by a priest, at least one month before the scheduled wedding. Earlier than one month is preferred.',
     "Attend the Pre-Marriage seminar in the parish or in a parish convenient for them. If they decide to attend the pre-marriage seminar in another parish they will have to present a Certificate of Attendance duly signed by a priest from that parish.",
@@ -66,15 +89,6 @@ require __DIR__ . '/includes/sidebar.php';
         </nav>
     </section>
 
-    <!-- ============================ SECTION TABS ========================== -->
-    <nav class="ps-card ps-anchor-tabs" aria-label="Wedding guideline sections" data-scroll-spy-tabs>
-        <?php foreach ($tabs as $i => $tab): ?>
-            <a href="<?php echo htmlspecialchars($tab['href']); ?>" class="ps-anchor-tab<?php echo $i === 0 ? ' active' : ''; ?>" data-scroll-spy-tab="<?php echo htmlspecialchars(ltrim($tab['href'], '#')); ?>">
-                <?php ps_icon($tab['icon']); ?> <?php echo htmlspecialchars($tab['label']); ?>
-            </a>
-        <?php endforeach; ?>
-    </nav>
-
     <!-- ============================ WELCOME BANNER ======================== -->
     <div class="ps-card wed-banner">
         <div class="wed-banner-art"><img src="assets/images/wedding-rings.svg" alt=""></div>
@@ -87,7 +101,7 @@ require __DIR__ . '/includes/sidebar.php';
     <!-- ============================ A + B ROW ============================= -->
     <div class="wg-row-2">
 
-        <div class="ps-card" id="steps" data-scroll-spy-section="steps">
+        <div class="ps-card" id="steps">
             <h3 class="ps-card-title">A. Steps to be Taken</h3>
             <div class="ps-steps-list">
                 <?php foreach ($steps as $i => $step): ?>
@@ -99,7 +113,7 @@ require __DIR__ . '/includes/sidebar.php';
             </div>
         </div>
 
-        <div class="ps-card" id="documents" data-scroll-spy-section="documents">
+        <div class="ps-card" id="documents">
             <h3 class="ps-card-title">B. Documents Needed</h3>
             <div class="ps-icon-list">
                 <?php foreach ($documents as $i => $doc): ?>
@@ -114,7 +128,7 @@ require __DIR__ . '/includes/sidebar.php';
     </div>
 
     <!-- ============================ C: FEES =============================== -->
-    <div class="ps-card wg-section-card" id="fees" data-scroll-spy-section="fees">
+    <div class="ps-card wg-section-card">
         <h3 class="ps-card-title">C. Fees / Decorations / Cancellations</h3>
         <div class="wg-fees-grid">
 
@@ -142,7 +156,7 @@ require __DIR__ . '/includes/sidebar.php';
     </div>
 
     <!-- ============================ D: SPONSORS =========================== -->
-    <div class="ps-card wg-section-card" id="sponsors" data-scroll-spy-section="sponsors">
+    <div class="ps-card wg-section-card">
         <h3 class="ps-card-title">D. Primary / Secondary Sponsors, Ring Bearers, Flower Girls, Guest Priests</h3>
         <div class="wg-sponsors-grid">
 
