@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Decorative art for the "A Sacred Covenant of Love" banner on wedding.php: a small cross, two interlocking rings, and laurel branches, all in a single gold line-art style matching the rest of the palette. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 160" fill="none" stroke="#c9a24a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+  <!-- small cross -->
+  <path d="M100 10v22M91 18h18"/>
+  <!-- interlocking rings -->
+  <circle cx="86" cy="92" r="26"/>
+  <circle cx="114" cy="92" r="26"/>
+  <!-- laurel branch, left -->
+  <g opacity="0.85">
+    <path d="M40 130c-6-24-2-46 14-64"/>
+    <path d="M46 118c-8-2-13-8-14-16"/>
+    <path d="M42 100c-8 0-14-5-16-13"/>
+    <path d="M42 82c-7 2-14-1-18-8"/>
+    <path d="M48 66c-6 3-13 1-17-5"/>
+  </g>
+  <!-- laurel branch, right (mirrored) -->
+  <g opacity="0.85">
+    <path d="M160 130c6-24 2-46-14-64"/>
+    <path d="M154 118c8-2 13-8 14-16"/>
+    <path d="M158 100c8 0 14-5 16-13"/>
+    <path d="M158 82c7 2 14-1 18-8"/>
+    <path d="M152 66c6 3 13 1 17-5"/>
+  </g>
+</svg>

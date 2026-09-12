@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Decorative art for the "A Prayer That Makes a Difference" banner on mass-intention.php: a chalice with rays of light above it and wheat fronds flanking the base, matching the gold line-art style of baptism-shell.svg and wedding-rings.svg. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 190" fill="none" stroke="#c9a24a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+  <!-- rays of light above the chalice -->
+  <path d="M100 20v14"/>
+  <path d="M72 30l8 12"/>
+  <path d="M128 30l-8 12"/>
+  <path d="M50 48l12 7"/>
+  <path d="M150 48l-12 7"/>
+
+  <!-- chalice: rim, bowl, stem, base -->
+  <path d="M70 60h60"/>
+  <path d="M70 60c0 26 12 42 30 42s30-16 30-42"/>
+  <path d="M100 102v36"/>
+  <path d="M84 150h32l-3 18h-26z"/>
+  <path d="M78 168h44" stroke-width="2.6"/>
+
+  <!-- wheat fronds flanking the base -->
+  <path d="M60 166c-6-21-4-41 9-58"/>
+  <path d="M64 149l-11-4M62 138l-11-2M63 127l-10 1" opacity="0.85"/>
+  <path d="M140 166c6-21 4-41-9-58"/>
+  <path d="M136 149l11-4M138 138l11-2M137 127l10 1" opacity="0.85"/>
+</svg>

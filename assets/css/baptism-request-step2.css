@@ -1,0 +1,26 @@
+/* =====================================================================
+   baptism-request-step2.css
+   The handful of classes unique to this page -- the step bar and form
+   kit come from wedding-request.css + style.css (see this page's own
+   header comment for why it loads both files). Just the Birth
+   Certificate label/dropzone row layout and the info-banner/counter
+   spacing here.
+   ===================================================================== */
+
+.bap2-upload-row {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 24px;
+    align-items: start;
+    margin-bottom: 18px;
+}
+.bap2-upload-label strong { display: block; font-size: 14px; color: var(--text-dark); margin-bottom: 4px; }
+.bap2-upload-label small { font-size: 12.5px; color: var(--text-body); }
+
+.bap2-note { margin-bottom: 14px; }
+
+.bap2-counter { display: block; text-align: right; margin-top: 6px; }
+
+@media (max-width: 700px) {
+    .bap2-upload-row { grid-template-columns: 1fr; }
+}

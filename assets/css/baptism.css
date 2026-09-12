@@ -1,0 +1,13 @@
+/* =====================================================================
+   baptism.css
+   Everything this page needed (the hero, intro banner, quick-links,
+   overview row, 3-step process, reminders, about+quote card, the CTA
+   button's caption wrapper, and the fee-schedule rows) now lives in
+   style.css's "Sacrament landing page kit" -- the last two of those
+   (.bap-start, .bap-fee-*) started out page-specific here but were
+   promoted once mass-intention.php needed the exact same pieces, the
+   same way everything else in that shared kit already had been. This
+   file is kept as an empty placeholder (still loaded by baptism.php's
+   $pageCss) rather than removed, so touching baptism.php itself isn't
+   needed just to tidy up an include list.
+   ===================================================================== */

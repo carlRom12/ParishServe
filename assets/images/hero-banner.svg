@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  hero-banner.svg
+  Placeholder art for the top-right banner strip on the dashboard
+  greeting card (the reference image uses a real photo of the church
+  altar/interior there). We drew a simple stylized altar scene instead
+  of leaving it blank or broken -- swap this <img> src in dashboard.php
+  for a real parish photo whenever the group has one on hand, no other
+  changes needed.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 340" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f6e9cf"/>
+      <stop offset="100%" stop-color="#e9d3ab"/>
+    </linearGradient>
+    <linearGradient id="archGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#6d2238"/>
+      <stop offset="100%" stop-color="#3d0f1f"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="340" fill="url(#skyGrad)"/>
+  <!-- back arches -->
+  <path d="M60 340 V150 a70 70 0 0 1 140 0 V340 Z" fill="#c9a24a" opacity="0.25"/>
+  <path d="M400 340 V120 a90 90 0 0 1 180 0 V340 Z" fill="#c9a24a" opacity="0.20"/>
+  <!-- central arch / altar niche -->
+  <path d="M210 340 V130 a90 90 0 0 1 180 0 V340 Z" fill="url(#archGrad)"/>
+  <!-- stained glass roundel -->
+  <circle cx="300" cy="150" r="34" fill="#e6cf94" opacity="0.9"/>
+  <circle cx="300" cy="150" r="34" fill="none" stroke="#c9a24a" stroke-width="4"/>
+  <path d="M300 116 v68 M266 150 h68 M277 127 l46 46 M323 127 l-46 46" stroke="#6d2238" stroke-width="3"/>
+  <!-- cross above altar -->
+  <path d="M300 210 v70 M280 232 h40" stroke="#e6cf94" stroke-width="6" stroke-linecap="round"/>
+  <!-- altar table -->
+  <rect x="240" y="300" width="120" height="14" rx="3" fill="#e6cf94"/>
+  <rect x="256" y="280" width="88" height="24" rx="3" fill="#f3ead8"/>
+  <!-- candle accents -->
+  <rect x="220" y="270" width="6" height="34" rx="2" fill="#c9a24a"/>
+  <circle cx="223" cy="266" r="4" fill="#e6a13a"/>
+  <rect x="374" y="270" width="6" height="34" rx="2" fill="#c9a24a"/>
+  <circle cx="377" cy="266" r="4" fill="#e6a13a"/>
+</svg>

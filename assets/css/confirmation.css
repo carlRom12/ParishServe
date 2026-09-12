@@ -1,0 +1,376 @@
+/* =====================================================================
+   confirmation.css
+   Page-specific styles for confirmation.html. Built as a FRESH one-off
+   design per this round's reference image, NOT a reuse of wedding.php/
+   baptism.php/mass-intention.php's landing-page kit (.wed-banner/.wed-
+   quicklinks/etc.) -- the group explicitly asked for this new layout
+   on confirmation.php specifically, with the other pages possibly
+   getting their own individual re-edits later (not necessarily this
+   same template). Every class here is "conf-" prefixed rather than
+   reusing "wed-"/"ann-" names, since this genuinely isn't the same
+   component shape (icon-top-centered quicklink cards instead of icon-
+   left horizontal ones, a banner with an integrated quote instead of
+   a separate quote card, FAQ + a contact card embedded on the landing
+   page itself instead of only on a guidelines sub-page).
+   ===================================================================== */
+
+/* ---- top row: small greeting (left) + topbar (right), plain
+   background, sits ABOVE the photo hero rather than overlaid on it.
+   min-height MUST clear .ps-topbar's own footprint: that element is
+   position:absolute with top:22px, and .ps-user-chip inside it is
+   ~46px tall (a 34px avatar + 6px top/bottom padding) -- so the
+   chip's bottom edge sits at ~68px from this container's top. 44px
+   was too short to contain that: since an absolutely positioned
+   descendant doesn't add to its parent's own height, the chip simply
+   spilled out the bottom of this row and overlapped the hero section
+   below it. 78px leaves a few px of safety margin below that 68px. */
+.conf-topline { position: relative; display: flex; align-items: center; min-height: 78px; margin-bottom: 16px; }
+.conf-greeting { display: flex; align-items: center; gap: 10px; }
+.conf-greeting-icon {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--cream-deep);
+    color: var(--maroon-700);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+}
+.conf-greeting-icon svg { width: 18px; height: 18px; }
+.conf-greeting-text small { display: block; font-size: 12px; color: var(--text-body); }
+.conf-greeting-text strong { display: block; font-size: 15px; color: var(--text-dark); }
+
+/* ---- photo hero: dark gradient overlay + white text, unlike
+   announcements.css's .ann-hero (which fades to cream for dark text) */
+.conf-hero {
+    position: relative;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    /* FIXED HEIGHT WAS THE ACTUAL BUG: a flat px height only keeps the
+       crop right at ONE specific viewport width. On a wider screen
+       than whatever width it was tuned against, the box gets
+       relatively WIDER at the same height, so object-fit:cover has to
+       crop MORE off the top/bottom to fill that extra width -- cutting
+       back into the chin/mouth again even though nothing about the
+       image itself changed. That's exactly what happened between the
+       ~1440px width this was last tuned against and the wider
+       (sidebar-less) screenshot that showed the crop had regressed.
+       aspect-ratio fixes the actual root cause: locking the box's own
+       ratio to the photo's real ratio (2045x769) means cover never
+       has meaningful cropping to do, at ANY viewport width -- height
+       just scales proportionally with width instead of staying fixed.
+       min/max-height are only sanity bounds for extreme cases (a very
+       narrow phone, an ultra-wide monitor), not the primary control. */
+    aspect-ratio: 2045 / 769;
+    min-height: 320px;
+    max-height: 480px;
+    display: flex;
+    align-items: center;
+    /* the quick-link row below is pulled UP on top of this (see
+       .conf-quicklinks' negative margin-top), so no bottom margin/
+       shadow of its own is needed here anymore -- the fade in
+       .conf-hero-image::after IS the transition now. */
+    margin-bottom: 0;
+}
+.conf-hero-image { position: absolute; inset: 0; }
+.conf-hero-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* with .conf-hero's aspect-ratio matching the photo's own ratio,
+       cover has essentially nothing to crop under normal conditions --
+       this only matters now when min/max-height forces the box away
+       from that exact ratio at the extremes. Retune if the photo is
+       ever swapped for a differently-framed shot. */
+    object-position: center 42%;
+}
+.conf-hero-image::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    /* two layered gradients on one pseudo-element (CSS backgrounds
+       stack, first-listed on top):
+       1) strong dark burgundy/black behind the text on the left,
+          falling off QUICKLY so it clears the candidate's face (which
+          starts around 35% across the frame) well before that point.
+       2) a fade to the page's own cream at the BOTTOM, so the photo
+          dissolves into the page instead of ending on a hard edge --
+          this is also what makes the card row below look right when
+          it's pulled up to overlap this fade (see .conf-quicklinks). */
+    background:
+        linear-gradient(90deg, rgba(20, 6, 12, 0.92) 0%, rgba(20, 6, 12, 0.7) 18%, rgba(20, 6, 12, 0.32) 36%, rgba(20, 6, 12, 0.06) 52%, rgba(20, 6, 12, 0) 64%),
+        linear-gradient(to bottom, rgba(250, 245, 234, 0) 65%, var(--cream) 100%);
+}
+.conf-hero-text { position: relative; z-index: 2; padding: 32px 36px; max-width: 620px; }
+.conf-hero-text h1 { font-size: 42px; color: #fff; }
+.conf-hero-text p { font-size: 16px; color: rgba(255, 255, 255, 0.92); margin-top: 8px; }
+.conf-hero-quote { margin-top: 20px; }
+.conf-hero-quote p {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 16px;
+    color: #fff;
+}
+.conf-hero-quote cite { display: block; margin-top: 4px; font-size: 13px; font-style: normal; color: rgba(255, 255, 255, 0.75); }
+
+/* ---- quick-link cards: icon-top-centered, a text-link CTA at the
+   bottom of the first three, a highlighted filled-button card last --
+   pulled UP with a negative margin so this row overlaps the bottom of
+   the hero (which fades to cream right where these cards sit), rather
+   than sitting fully below it with a hard seam. position+z-index makes
+   sure it paints on top of the hero image behind it (it would anyway,
+   being later in the document, but explicit here since the hero has
+   its own position:relative stacking context). */
+.conf-quicklinks {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+    margin-top: -64px;
+    margin-bottom: 22px;
+}
+.conf-quicklink-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+    padding: 26px 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+.conf-quicklink-card:hover { box-shadow: var(--shadow-card-hover); transform: translateY(-2px); }
+.conf-quicklink-icon { width: 38px; height: 38px; color: var(--gold-dark); margin-bottom: 4px; }
+.conf-quicklink-icon svg { width: 100%; height: 100%; stroke-width: 1.6; }
+.conf-quicklink-card h3 { font-size: 16px; color: var(--maroon-700); }
+.conf-quicklink-card p { font-size: 12.5px; color: var(--text-body); line-height: 1.5; flex: 1; margin-bottom: 6px; }
+.conf-quicklink-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 13px; font-weight: 700; color: var(--maroon-700);
+    padding: 4px 2px; /* small hit-area padding, not just a bare text line */
+    border-radius: 4px;
+}
+.conf-quicklink-link svg { width: 14px; height: 14px; transition: transform 0.15s ease; }
+.conf-quicklink-link:hover svg { transform: translateX(2px); }
+.conf-quicklink-link:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.conf-quicklink-card.is-cta { border: 1.5px solid var(--gold); background: linear-gradient(135deg, var(--cream-deep), #f7ecd6); }
+.conf-quicklink-card.is-cta .ps-btn { width: 100%; justify-content: center; margin-top: 4px; }
+
+/* ---- intro banner with an integrated quote on the right ---------------- */
+.conf-banner {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    background: linear-gradient(135deg, var(--cream-deep), #f7ecd6);
+    margin-bottom: 22px;
+}
+.conf-banner-art { width: 92px; flex-shrink: 0; }
+.conf-banner-art img { width: 100%; height: auto; }
+.conf-banner-text { flex: 1.5; min-width: 0; }
+.conf-banner-text h2 { font-size: 24px; margin-bottom: 8px; }
+.conf-banner-text p { font-size: 13.5px; color: var(--text-body); line-height: 1.6; }
+.conf-banner-quote { flex: 1; min-width: 0; border-left: 1px solid var(--card-border); padding-left: 24px; }
+.conf-banner-quote p { font-family: 'Playfair Display', serif; font-style: italic; font-size: 14.5px; color: var(--text-dark); line-height: 1.5; }
+.conf-banner-quote cite { display: block; margin-top: 8px; font-size: 12px; font-style: normal; color: var(--text-body); }
+
+/* ---- FAQ (left, ~65%) + "Need Help?" (right, ~35%) --------------------- */
+/* align-items: start, NOT the grid default (stretch) -- stretch was
+   tried in an earlier round to keep the Need Help card from looking
+   short next to a taller FAQ list, but with 6 FAQ items that card
+   ended up ~500px tall with its content vertically centered in the
+   middle of it -- a wall of blank white space above the actual
+   heading/button, which read as "the card is empty/broken" rather
+   than balanced. A compact card that sizes to its own content and
+   sits at the top of its column is the correct fix, not a forced
+   height match. */
+.conf-faq-grid { display: grid; grid-template-columns: 1.8fr 1fr; gap: 20px; align-items: start; }
+
+.conf-faq-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.conf-faq-head h2 { font-size: 22px; }
+.conf-faq-all-link { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; color: var(--maroon-700); flex-shrink: 0; padding: 4px 2px; border-radius: 4px; }
+.conf-faq-all-link svg { width: 14px; height: 14px; }
+.conf-faq-all-link:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+/* boxed accordion items (a bordered card each, not a continuous
+   divided list like .ps-faq-item elsewhere) -- different enough
+   visually from that shared component that it's its own class rather
+   than a modifier on it */
+.conf-faq-item {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-md);
+    padding: 0 18px;
+    margin-bottom: 12px;
+}
+.conf-faq-item:last-child { margin-bottom: 0; }
+.conf-faq-item summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 15px 0;
+    cursor: pointer;
+    list-style: none;
+}
+.conf-faq-item summary::-webkit-details-marker { display: none; }
+.conf-faq-item summary:focus-visible { outline: 2px solid var(--gold); outline-offset: -2px; border-radius: 4px; }
+.conf-faq-item summary strong { font-size: 13.5px; color: var(--text-dark); font-weight: 600; }
+.conf-faq-item[open] summary strong { color: var(--maroon-700); }
+.conf-faq-plus { width: 16px; height: 16px; stroke: var(--maroon-700); flex-shrink: 0; transition: transform 0.15s ease; }
+.conf-faq-item[open] .conf-faq-plus { transform: rotate(45deg); }
+.conf-faq-answer { padding: 0 0 16px; font-size: 13px; color: var(--text-body); line-height: 1.6; }
+
+.conf-help-card { background: var(--card-bg); }
+.conf-help-head { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 22px; }
+.conf-help-icon {
+    width: 48px; height: 48px; border-radius: 50%;
+    background: var(--cream-deep);
+    color: var(--maroon-700);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+}
+.conf-help-icon svg { width: 22px; height: 22px; }
+.conf-help-head h3 { font-size: 16px; margin-bottom: 4px; }
+.conf-help-head p { font-size: 12.5px; color: var(--text-body); line-height: 1.5; }
+.conf-help-btn { width: 100%; justify-content: center; }
+
+/* ---- responsive ---------------------------------------------------------- */
+@media (max-width: 1200px) {
+    .conf-quicklinks { grid-template-columns: repeat(2, 1fr); }
+    .conf-faq-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 800px) {
+    .conf-banner { flex-direction: column; align-items: flex-start; text-align: left; }
+    .conf-banner-quote { border-left: none; border-top: 1px solid var(--card-border); padding-left: 0; padding-top: 16px; width: 100%; }
+}
+
+@media (max-width: 640px) {
+    .conf-quicklinks { grid-template-columns: 1fr; }
+    .conf-hero { height: auto; min-height: 220px; }
+    .conf-hero-text { padding: 22px 20px; max-width: 100%; }
+    .conf-hero-text h1 { font-size: 28px; }
+    .conf-hero-text p { font-size: 14px; }
+    .conf-hero-quote p { font-size: 14px; }
+    /* the left-to-right gradient alone can leave text on a fully-
+       transparent (bright photo) area once the hero is this narrow --
+       a uniform dark scrim keeps text readable at any crop width */
+    .conf-hero-image::after { background: linear-gradient(180deg, rgba(20, 6, 12, 0.35) 0%, rgba(20, 6, 12, 0.8) 100%); }
+    .conf-topline { flex-wrap: wrap; gap: 10px; }
+}
+
+/* Reference layout, scoped to this page so the shared portal stays intact. */
+.confirmation-page {
+    --sidebar-width: 180px;
+    --cream: #fdfcfb;
+    --text-body: #4b4b53;
+    --text-dark: #510e24;
+    --card-border: #eee8e4;
+    --gold-dark: #dda03d;
+    --radius-lg: 8px;
+    --radius-md: 8px;
+    background: #fdfcfb;
+}
+.confirmation-page .ps-main { padding: 0 24px 40px; }
+.confirmation-page .ps-sidebar { background: #35121a; padding: 22px 12px; min-height: 100vh; }
+.confirmation-page .ps-logo { padding: 0 0 20px; }
+.confirmation-page .ps-logo-crest { width: 50px; height: 58px; margin-bottom: 12px; }
+.confirmation-page .ps-logo-name { font-size: 23px; }
+.confirmation-page .ps-logo-eyebrow { font-size: 10px; }
+.confirmation-page .ps-logo-sub { font-size: 10px; }
+.confirmation-page .ps-nav-link { padding: 9px 10px; gap: 10px; font-size: 11px; border-radius: 7px; }
+.confirmation-page .ps-nav-link svg { width: 16px; height: 16px; flex-shrink: 0; }
+.confirmation-page .ps-nav-section { font-size: 9px; margin-top: 20px; }
+.confirmation-page .ps-nav-link.active { background: #e3ab3e; color: #35121a; }
+.conf-topline { min-height: 84px; margin: 0; justify-content: space-between; gap: 20px; }
+.conf-topline .ps-topbar { position: static; gap: 12px; }
+.conf-topline .ps-user-chip { background: #fff; box-shadow: 0 3px 18px #35121a08; }
+.conf-greeting-text strong { font-family: 'Playfair Display', Georgia, serif; font-size: 17px; }
+.conf-greeting-icon { background: #eee8dc; color: #836f49; }
+.conf-hero { min-height: 355px; max-height: 470px; aspect-ratio: 2.65; align-items: flex-start; }
+.conf-hero-image img { object-position: center; }
+.conf-hero-image::after { background: linear-gradient(90deg, #190d0aa6, #190d0a45 40%, transparent 65%), linear-gradient(0deg, #fdfcfb, transparent 23%); }
+.conf-hero-text { padding: 72px 42px 95px; max-width: 650px; }
+.conf-hero-text h1 { font-size: 58px; line-height: 1.15; }
+.conf-hero-text > p { font-size: 21px; margin-top: 10px; }
+.conf-hero-quote { margin-top: 26px; }
+.conf-hero-quote p { font-family: inherit; font-size: 17px; }
+.conf-hero-quote cite { font-size: 14px; color: #fff; }
+.conf-quicklinks { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin: -50px 8px 24px; padding: 18px 16px 24px; background: #fff; border-bottom: 1px solid #f2eeea; }
+.conf-quicklink-card { min-width: 0; min-height: 228px; padding: 18px 12px 15px; gap: 10px; box-shadow: none; border-radius: 8px; }
+.conf-quicklink-icon { width: 48px; height: 48px; margin-bottom: 4px; }
+.conf-quicklink-card h3 { font-size: 18px; }
+.conf-quicklink-card p { font-size: 13px; line-height: 1.6; }
+.conf-quicklink-link { font-size: 13px; min-height: 40px; }
+.conf-quicklink-card.is-cta { background: #fff; border: 1px solid var(--card-border); }
+.conf-quicklink-card.is-cta .ps-btn { background: #570e25; padding: 11px 8px; font-size: 12px; white-space: normal; border-radius: 7px; }
+.conf-banner { margin: 0 8px 24px; padding: 26px 30px; background: #fbf6ee; border-block: 1px solid #f0e4d4; gap: 30px; }
+.conf-banner-art { width: 115px; }
+.conf-banner-text h2 { font-size: 25px; }
+.conf-banner-text p { font-size: 14px; }
+.conf-banner-quote { padding-left: 34px; border-color: #e7cfb3; }
+.conf-banner-quote p { font-size: 15px; }
+.conf-banner-quote cite { font-size: 13px; }
+.conf-faq-grid { grid-template-columns: minmax(0, 1.8fr) minmax(0, 1fr); gap: 7px 24px; padding: 20px; background: #fff; }
+.conf-faq-grid > div:first-child { display: contents; }
+.conf-faq-head { grid-column: 1 / -1; margin-bottom: 8px; gap: 16px; }
+.conf-faq-head h2 { font-size: 25px; }
+.conf-faq-item { grid-column: 1; margin: 0; padding: 0 14px; }
+.conf-faq-item summary { padding: 10px 0; min-height: 40px; }
+.conf-faq-item summary strong { font-size: 13px; font-weight: 400; }
+.conf-help-card { grid-column: 2; grid-row: 2 / span 6; height: 100%; padding: 20px 16px; background: #fcfaf7; box-shadow: none; }
+.conf-help-icon { width: 60px; height: 60px; color: #234368; background: #f4e6d0; }
+.conf-help-icon svg { width: 28px; height: 28px; }
+.conf-help-head h3 { font-size: 22px; }
+.conf-help-head p { font-size: 12px; }
+.conf-contact-list { display: grid; gap: 16px; font-style: normal; font-size: 13px; }
+.conf-contact-list > * { display: flex; align-items: flex-start; gap: 16px; min-width: 0; }
+.conf-contact-list > * > span:first-child { display: grid; place-items: center; width: 36px; height: 36px; flex: 0 0 36px; border-radius: 50%; background: #f4e6d0; color: #5a1527; font-size: 22px; }
+.conf-contact-list > * > span:last-child { padding-top: 7px; overflow-wrap: anywhere; }
+.conf-contact-list a:hover { color: #751b36; text-decoration: underline; }
+.confirmation-page :focus-visible { outline: 2px solid #b47820; outline-offset: 4px; }
+@media (max-width: 1100px) {
+    .confirmation-page { --sidebar-width: 76px; }
+    .confirmation-page .ps-logo-eyebrow, .confirmation-page .ps-logo-name, .confirmation-page .ps-logo-sub,
+    .confirmation-page .ps-nav-section, .confirmation-page .ps-nav-link span, .confirmation-page .ps-logout-btn span { display: none; }
+    .confirmation-page .ps-nav-link { justify-content: center; }
+    .conf-hero-text h1 { font-size: 48px; }
+    .conf-quicklinks { gap: 10px; padding-inline: 10px; }
+    .conf-quicklink-card h3 { font-size: 16px; }
+    .conf-banner { gap: 20px; padding: 24px; }
+    .conf-banner-art { width: 80px; }
+}
+@media (max-width: 800px) {
+    .conf-quicklinks { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .conf-faq-grid { display: block; padding: 16px 0; }
+    .conf-faq-grid > div:first-child { display: block; }
+    .conf-faq-item { margin-bottom: 8px; }
+    .conf-help-card { margin-top: 20px; height: auto; }
+    .conf-banner { flex-direction: column; align-items: flex-start; }
+    .conf-banner-quote { border-left: 0; border-top: 1px solid #e7cfb3; padding: 18px 0 0; }
+    .conf-faq-head { flex-wrap: wrap; }
+    .conf-topline .ps-user-info { display: none; }
+    .conf-hero-text { padding: 56px 24px 90px; }
+}
+@media (max-width: 520px) {
+    .confirmation-page { --sidebar-width: 56px; }
+    .confirmation-page .ps-sidebar { padding: 18px 5px; }
+    .confirmation-page .ps-logo-crest { width: 34px; }
+    .confirmation-page .ps-main { padding: 0 12px 28px; }
+    .conf-topline { min-height: 82px; flex-wrap: nowrap; gap: 6px; }
+    .conf-greeting-icon, .conf-topline .ps-user-chip { display: none; }
+    .conf-greeting-text strong { font-size: 14px; }
+    .conf-topline .ps-topbar { gap: 0; }
+    .conf-hero { min-height: 350px; aspect-ratio: auto; }
+    .conf-hero-image img { object-position: 55% center; }
+    .conf-hero-image::after { background: linear-gradient(90deg, #190d0ab3, #190d0a38); }
+    .conf-hero-text { padding: 40px 18px 80px; }
+    .conf-hero-text h1 { font-size: 32px; }
+    .conf-hero-text > p { font-size: 17px; }
+    .conf-hero-quote p { font-size: 15px; }
+    .conf-quicklinks { grid-template-columns: 1fr; margin: -30px 6px 20px; padding: 12px; }
+    .conf-quicklink-card { min-height: 210px; }
+    .conf-banner { margin-inline: 0; padding: 20px; }
+    .conf-banner-text h2, .conf-faq-head h2 { font-size: 22px; }
+}

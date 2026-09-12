@@ -1,0 +1,48 @@
+/* Funeral requirements: shared navigation with the About page. */
+.funeral-requirements-page { color: #4d6078; }
+.funeral-requirements-page .fg-topline { min-height: 76px; }
+.fr-greeting { display: flex; align-items: center; gap: 12px; }
+.fr-greeting img { border-radius: 50%; object-fit: cover; }
+.fr-greeting strong { display: block; color: #202026; font-size: 16px; }
+.funeral-requirements-page .fg-back { color: #8a1232; margin: 0 10px 14px; }
+.fr-banner { border-radius: 12px; overflow: hidden; background: #26140d; margin-bottom: 16px; }
+/* Shared hero keeps the full crucifix visible and the text at the upper left. */
+.fr-banner .fg-hero-image { display: block; }
+@media (max-width: 1000px) {
+    .fr-banner.fg-hero { display: block; aspect-ratio: auto; min-height: 0; }
+    .fr-banner .fg-hero-image { position: static; height: auto; }
+    .fr-banner.fg-hero::after { display: none; }
+    .fr-banner .fg-hero-copy { padding: 30px 42px; }
+}
+@media (max-width: 760px) { .fr-banner .fg-hero-copy { padding-inline: 24px; } }
+@media (max-width: 520px) { .fr-banner .fg-hero-copy { padding-inline: 16px; } }
+.funeral-requirements-page .fg-tabs { padding: 0; border: 1px solid #eee8e4; border-radius: 9px; overflow: hidden; background: #fff; margin-bottom: 22px; }
+.funeral-requirements-page .fg-tabs a, .funeral-requirements-page .fg-tabs button { border-right: 1px solid #f2eeea; min-height: 56px; }
+.funeral-requirements-page .fg-tabs svg { color: #950a30; }
+.funeral-requirements-page .fg-tabs [aria-current] { background: #faf0e4; color: #950a30; border-bottom-color: #950a30; }
+.fr-columns { display: grid; grid-template-columns: minmax(0, 1.8fr) minmax(0, 1fr); align-items: start; gap: 22px; }
+.fr-card { background: #fff; border: 1px solid #eee8e4; border-radius: 8px; padding: 20px 18px; min-width: 0; }
+.fr-main { padding: 24px; }
+.fr-main > h2 { font: 700 clamp(28px, 2.4vw, 38px)/1.2 Georgia, serif; color: #651037; margin-bottom: 10px; }
+.fr-card h2 { font: 700 23px/1.3 Georgia, serif; color: #74112d; margin-bottom: 5px; }
+.fr-card p { font-size: 14px; line-height: 1.6; }
+.fr-card .fr-intro { font-size: 15px; line-height: 1.65; }
+.fr-document { display: flex; gap: 20px; align-items: center; padding: 18px 16px; border: 1px solid #eee8e4; border-radius: 8px; margin: 20px 0; }
+.fr-icon { display: flex; align-items: center; justify-content: center; width: 64px; height: 64px; border-radius: 50%; background: #f5e8d5; color: #2f5771; flex-shrink: 0; }
+.fr-icon svg { width: 28px; height: 28px; }
+.fr-document-icon { width: 54px; height: 54px; background: #f8eaed; color: #8b1932; }
+.fr-notes { display: flex; gap: 18px; padding: 22px; background: #faf0e3; border-radius: 8px; }
+.fr-notes > svg { width: 24px; height: 24px; flex-shrink: 0; color: #cc8a22; margin-top: 2px; }
+.fr-notes h2 { color: #3e4e61; font-size: 18px; margin-bottom: 4px; }
+.fr-notes ul { padding-left: 20px; font-size: 14px; line-height: 1.65; }
+.fr-side { display: grid; gap: 20px; }
+.fr-office, .fr-help { display: flex; align-items: flex-start; gap: 20px; }
+.fr-office h2 { margin: 10px 0 14px; }
+.fr-help { align-items: center; margin-bottom: 15px; }
+.fr-side .fg-contact { border-radius: 30px; gap: 10px; padding: 10px; }
+.fr-quote { display: flex; gap: 18px; align-items: center; }
+.fr-quote img { flex-shrink: 0; }
+.fr-quote p { color: #74112d; font: italic 17px/1.5 Georgia, serif; }
+.fr-quote cite { display: block; margin-top: 6px; font-size: 12px; font-style: normal; }
+@media (max-width: 1100px) { .fr-columns { grid-template-columns: 1fr; } .fr-side { grid-template-columns: 1fr 1fr; } .fr-quote { grid-column: 1 / -1; } }
+@media (max-width: 600px) { .fr-side { grid-template-columns: 1fr; } .fr-main { padding: 20px 16px; } .fr-notes { padding: 16px; gap: 12px; } .fr-office, .fr-help { gap: 14px; } .fr-icon { width: 50px; height: 50px; } .fr-document { gap: 14px; padding: 16px 12px; } .fr-card h2 { font-size: 21px; } .funeral-requirements-page .fg-topline { min-height: 70px; } }

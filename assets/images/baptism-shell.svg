@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Decorative art for the "A Sacred Beginning" banner on baptism.php: a baptismal shell with falling water drops, a small cross above, matching the gold line-art style of wedding-rings.svg. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 190" fill="none" stroke="#c9a24a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+  <!-- small cross -->
+  <path d="M100 8v20M92 15h16"/>
+  <!-- sparkles either side of the cross -->
+  <path d="M62 30v10M57 35h10" opacity="0.8"/>
+  <path d="M138 30v10M133 35h10" opacity="0.8"/>
+
+  <!-- scallop shell -->
+  <path d="M100 46c-24 0-42 22-42 46 0 4 2 6 6 6h72c4 0 6-2 6-6 0-24-18-46-42-46z"/>
+  <path d="M100 46v52M78 51v41M122 51v41M60 66v26M140 66v26"/>
+  <path d="M64 98h72" stroke-width="2.6"/>
+
+  <!-- water drops falling from the shell -->
+  <path d="M84 112c0 6-4 10-4 16a4 4 0 0 0 8 0c0-6-4-10-4-16z"/>
+  <path d="M100 118c0 7-5 11-5 18a5 5 0 0 0 10 0c0-7-5-11-5-18z"/>
+  <path d="M116 112c0 6-4 10-4 16a4 4 0 0 0 8 0c0-6-4-10-4-16z"/>
+</svg>

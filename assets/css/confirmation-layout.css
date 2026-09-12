@@ -1,0 +1,334 @@
+/* Confirmation reference layout. All portal overrides are page-scoped. */
+.confirmation-page { --sidebar-width: 166px; --cream: #fdfcfb; --text-body: #494950; --text-dark: #520e24; --card-border: #eee8e4; --radius-lg: 8px; --radius-md: 8px; background: #fdfcfb; font-size: 14px; }
+.confirmation-page .ps-shell { display: flex; align-items: stretch; min-height: 100vh; }
+.confirmation-page .ps-sidebar { display: flex; width: var(--sidebar-width); flex: 0 0 var(--sidebar-width); padding: 22px 12px; background: #35121a; position: relative; top: auto; min-height: 100vh; }
+.confirmation-page .ps-main { display: block; width: calc(100% - var(--sidebar-width)); max-width: none; margin: 0; padding: 0 24px 38px; flex: 1; min-width: 0; }
+.confirmation-page .ps-logo { padding: 0 0 20px; }
+.confirmation-page .ps-logo-crest { width: 48px; height: 58px; margin: 0 auto 14px; }
+.confirmation-page .ps-logo-name { font-size: 22px; }
+.confirmation-page .ps-logo-eyebrow { font-size: 10px; }
+.confirmation-page .ps-logo-sub { font-size: 10px; }
+.confirmation-page .ps-nav-link { padding: 9px 10px; gap: 10px; font-size: 11px; border-radius: 7px; }
+.confirmation-page .ps-nav-link svg { width: 16px; height: 16px; flex-shrink: 0; }
+.confirmation-page .ps-nav-section { font-size: 9px; margin-top: 20px; }
+.confirmation-page .ps-nav-link.active { background: #e3ab3e; color: #35121a; }
+.confirmation-page .ps-sidebar-art { margin-top: auto; padding-top: 30px; height: 160px; }
+.conf-topline { display: flex; align-items: center; justify-content: space-between; min-height: 84px; gap: 18px; }
+.conf-greeting { display: flex; align-items: center; gap: 14px; }
+.conf-greeting-icon { display: grid; place-items: center; width: 36px; height: 36px; background: #ece8dc; color: #897049; border-radius: 50%; }
+.conf-greeting-icon svg { width: 20px; height: 20px; }
+.conf-greeting-text small { display: block; font-size: 12px; }
+.conf-greeting-text strong { display: block; color: #520e24; font: 600 17px 'Playfair Display', Georgia, serif; }
+.conf-topline .ps-topbar { position: static; display: flex; gap: 12px; }
+.conf-topline .ps-user-chip { background: #fff; box-shadow: 0 3px 18px #35121a08; }
+.conf-hero { position: relative; width: 100%; min-height: 360px; aspect-ratio: 2.7; overflow: hidden; border-radius: 12px 12px 0 0; }
+.conf-hero-image { position: absolute; inset: 0; }
+.conf-hero-image img { width: 100%; height: 100%; object-fit: cover; object-position: center; }
+.conf-hero-image::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, #190d0a99, #190d0a30 45%, transparent 70%), linear-gradient(0deg, #fdfcfb, transparent 22%); }
+.conf-hero-text { position: relative; z-index: 1; padding: 76px 42px 90px; max-width: 680px; color: #fff; }
+.conf-hero-text h1 { color: #fff; font-size: 60px; line-height: 1.15; }
+.conf-hero-text > p { font-size: 22px; margin-top: 10px; }
+.conf-hero-quote { margin-top: 28px; font-size: 17px; }
+.conf-hero-quote p { font-style: italic; }
+.conf-hero-quote cite { display: block; margin-top: 5px; font-size: 15px; font-style: normal; }
+.conf-hero-eyebrow { display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #f0d9a0; padding-bottom: 8px; margin-bottom: 6px; border-bottom: 2px solid #dda03d; }
+.conf-hero-eyebrow svg { width: 14px; height: 14px; margin-right: 5px; vertical-align: -2px; }
+
+/* ---- "Back to Confirmation" link, sub-pages only (About Confirmation
+   itself has no page above it to go back to) ------------------------- */
+.conf-back-link { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; color: #8a2642; margin: 0 8px 14px; }
+.conf-back-link svg { width: 16px; height: 16px; }
+.conf-back-link:hover { text-decoration: underline; }
+
+/* ---- section tab bar: About Confirmation / Requirements / Schedule /
+   Apply Now -- sub-navigation between this sacrament's own pages,
+   same idea as .ps-anchor-tabs elsewhere on the site but restyled to
+   this page family's brighter accent colors instead of the default
+   dark maroon tokens. -------------------------------------------------- */
+.conf-tabs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; background: #fff; border: 1px solid #eee8e4; border-radius: 8px; padding: 8px; margin: 0 8px 22px; overflow-x: auto; }
+.conf-tab { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 18px; border-radius: 7px; font-size: 13px; font-weight: 600; color: #7c7378; white-space: nowrap; border-bottom: 2px solid transparent; }
+.conf-tab svg { width: 17px; height: 17px; flex-shrink: 0; }
+.conf-tab:hover { color: #570e25; }
+.conf-tab.active { background: #fbeef1; color: #8a2642; border-bottom-color: #8a2642; }
+
+/* ---- Requirements page: main content card + sidebar --------------------- */
+.conf-req-grid { display: grid; grid-template-columns: minmax(0, 1.8fr) minmax(0, 1fr); align-items: start; gap: 20px; margin: 0 8px 22px; }
+.conf-req-card { padding: 24px; background: #fff; border: 1px solid #eee8e4; border-radius: 8px; }
+.conf-req-card h2 { font-size: 25px; margin-bottom: 10px; }
+.conf-req-card > p { font-size: 14px; line-height: 1.65; margin-bottom: 20px; }
+.conf-req-item { display: flex; align-items: flex-start; gap: 16px; padding: 18px; border: 1px solid #eee8e4; border-radius: 8px; }
+.conf-req-icon { display: grid; place-items: center; width: 48px; height: 48px; flex: 0 0 48px; color: #8a2642; background: #f8e9ea; border-radius: 50%; }
+.conf-req-icon svg { width: 22px; height: 22px; }
+.conf-req-item strong { display: block; font-size: 15px; margin-bottom: 4px; }
+.conf-req-item p { font-size: 13px; line-height: 1.5; }
+.conf-req-note { display: flex; align-items: flex-start; gap: 14px; margin-top: 22px; padding: 16px 18px; background: #fbf1e4; border-radius: 8px; }
+.conf-req-note svg { width: 18px; height: 18px; flex-shrink: 0; color: #b47820; margin-top: 2px; }
+.conf-req-note strong { display: block; font-size: 13.5px; margin-bottom: 3px; }
+.conf-req-note p { font-size: 12.5px; line-height: 1.55; }
+
+.conf-req-side { display: flex; flex-direction: column; gap: 20px; }
+/* same visual language as .conf-help-card (icon circle + heading via
+   the shared .conf-help-head/.conf-help-icon rules) but its own
+   wrapper class, since .conf-help-card carries grid-row/column
+   positioning specific to the FAQ page's grid that doesn't apply here */
+.conf-req-side-card { padding: 20px 16px; background: #fcfaf7; border: 1px solid #eee8e4; border-radius: 8px; }
+.conf-req-side-card .conf-help-head { margin-bottom: 14px; }
+.conf-req-side-card > p { font-size: 13px; line-height: 1.6; }
+.conf-req-side-card > p + p { margin-top: 10px; }
+.conf-req-side-card > .ps-btn { width: 100%; justify-content: center; margin-top: 4px; }
+.conf-req-quote { display: flex; align-items: center; gap: 16px; padding: 20px 16px; background: #fff; border: 1px solid #eee8e4; border-radius: 8px; }
+.conf-req-quote img { width: 38px; height: 38px; flex-shrink: 0; }
+.conf-req-quote p { font: italic 14px/1.5 Georgia, serif; color: #520e24; }
+.conf-req-quote cite { display: block; margin-top: 6px; font-size: 12px; font-style: normal; color: #494950; }
+
+/* ---- greeting avatar as a real photo instead of an icon circle
+   (About Confirmation uses a small round parish photo) ------------------ */
+.conf-greeting img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+
+/* ---- About Confirmation page: one main card with 3 divided
+   subsections (What is Confirmation? / Importance of Confirmation /
+   Who Can Receive Confirmation?) + sidebar. Reuses .conf-req-grid/
+   .conf-req-card/.conf-req-side/.conf-req-side-card/.conf-help-head/
+   .conf-help-icon directly (all already generic, no Requirements-
+   specific coupling) -- only the content shapes unique to THIS page
+   get their own classes below. -------------------------------------- */
+.conf-about-section + .conf-about-section { margin-top: 28px; padding-top: 24px; border-top: 1px solid #eee8e4; }
+.conf-about-card h2 { font-size: 22px; margin-bottom: 12px; }
+
+.conf-about-intro { display: grid; grid-template-columns: minmax(0, 1.8fr) minmax(0, 1fr); gap: 24px; align-items: start; }
+.conf-about-intro p { font-size: 14px; line-height: 1.7; }
+.conf-about-intro p + p { margin-top: 12px; }
+.conf-about-quote { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 22px 18px; background: #fbf1e4; border-radius: 8px; text-align: center; }
+.conf-about-quote img { width: 100px; height: auto; }
+.conf-about-quote p { font: italic 14px/1.5 Georgia, serif; color: #520e24; }
+.conf-about-quote cite { display: block; margin-top: 8px; font-size: 12px; font-style: normal; color: #494950; }
+
+.conf-about-benefit-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; }
+.conf-about-benefit-icon { display: grid; place-items: center; width: 46px; height: 46px; margin-bottom: 12px; color: #8a2642; background: #f8e9ea; border-radius: 50%; }
+.conf-about-benefit-icon svg { width: 20px; height: 20px; }
+.conf-about-benefit-item strong { display: block; font-size: 14.5px; margin-bottom: 4px; }
+.conf-about-benefit-item p { font-size: 13px; line-height: 1.5; }
+
+/* sidebar extras on top of the shared .conf-req-side-card look */
+.conf-about-life-heading { font-size: 20px; padding-bottom: 10px; margin-bottom: 14px; border-bottom: 2px solid #dda03d; }
+.conf-about-side-photo { width: 100%; height: auto; border-radius: 8px; margin-top: 16px; display: block; }
+.conf-about-side-scripture { margin-top: 14px; padding-top: 14px; border-top: 1px solid #eee8e4; }
+.conf-about-side-scripture p { font: italic 13.5px/1.55 Georgia, serif; color: #520e24; }
+.conf-about-side-scripture cite { display: block; margin-top: 6px; font-size: 12px; font-style: normal; color: #494950; }
+.conf-quicklinks { position: relative; z-index: 2; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin: -58px 8px 22px; padding: 18px 16px 25px; background: #fff; }
+.conf-quicklink-card { display: flex; flex-direction: column; align-items: center; gap: 10px; min-width: 0; min-height: 228px; padding: 18px 12px 15px; text-align: center; background: #fff; border: 1px solid #eee8e4; border-radius: 8px; }
+.conf-quicklink-icon { width: 48px; height: 48px; color: #dda03d; margin-bottom: 4px; }
+.conf-quicklink-icon svg { width: 100%; height: 100%; stroke-width: 1.6; }
+.conf-quicklink-card h3 { font-size: 18px; }
+.conf-quicklink-card p { flex: 1; font-size: 13px; line-height: 1.6; max-width: 215px; }
+.conf-quicklink-link { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 40px; font-size: 13px; font-weight: 600; color: #570e25; }
+.conf-quicklink-link svg, .conf-faq-all-link svg { width: 17px; height: 17px; flex-shrink: 0; }
+.conf-quicklink-card .ps-btn { width: 100%; min-height: 40px; justify-content: center; padding: 10px 8px; background: #570e25; color: #fff; border-radius: 7px; font-size: 12px; white-space: normal; box-shadow: none; }
+.conf-banner { display: flex; align-items: center; gap: 32px; margin: 0 8px 22px; padding: 28px 32px; background: #fbf6ee; border-block: 1px solid #f0e4d4; }
+.conf-banner-art { width: 118px; flex: 0 0 118px; }
+.conf-banner-art img { width: 100%; height: auto; }
+.conf-banner-text { flex: 1.5; min-width: 0; }
+.conf-banner-text h2 { font-size: 26px; line-height: 1.3; margin-bottom: 10px; }
+.conf-banner-text p { font-size: 14px; line-height: 1.65; }
+.conf-banner-quote { flex: 1; min-width: 0; padding-left: 34px; border-left: 1px solid #e7cfb3; }
+.conf-banner-quote p { font: italic 16px/1.45 Georgia, serif; }
+.conf-banner-quote cite { display: block; margin-top: 8px; font-size: 13px; font-style: normal; }
+.conf-faq-grid { display: grid; grid-template-columns: minmax(0, 1.8fr) minmax(0, 1fr); align-items: start; gap: 7px 24px; padding: 20px; background: #fff; }
+.conf-faq-grid > div:first-child { display: contents; }
+.conf-faq-head { grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; gap: 18px; margin-bottom: 8px; }
+.conf-faq-head h2 { font-size: 25px; }
+.conf-faq-all-link { display: inline-flex; align-items: center; gap: 10px; color: #570e25; font-size: 12px; flex-shrink: 0; }
+.conf-faq-item { grid-column: 1; margin: 0; padding: 0 14px; border: 1px solid #eee8e4; border-radius: 7px; background: #fff; }
+.conf-faq-item summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 40px; padding: 10px 0; cursor: pointer; list-style: none; }
+.conf-faq-item summary::-webkit-details-marker { display: none; }
+.conf-faq-item summary strong { font-size: 13px; font-weight: 400; }
+.conf-faq-plus { width: 16px; height: 16px; flex-shrink: 0; }
+.conf-faq-item[open] .conf-faq-plus { transform: rotate(45deg); }
+.conf-faq-answer { padding-bottom: 14px; font-size: 13px; line-height: 1.65; }
+/* grid-row: 2 / span 6 makes this card stretch to match the FAQ
+   list's full height (align-self: stretch) -- that worked fine while
+   a 3-row contact list gave the card enough of its own content to
+   fill that space, but with the placeholder contact info removed
+   (fake phone/email/address, never real data) the card is now much
+   shorter than its stretched box, so its content is centered vertically
+   rather than left pinned to the top with a large empty gap below it. */
+.conf-help-card { grid-column: 2; grid-row: 2 / span 6; align-self: stretch; display: flex; flex-direction: column; justify-content: center; padding: 20px 16px; background: #fcfaf7; border: 1px solid #eee8e4; border-radius: 8px; box-shadow: none; }
+.conf-help-head { display: flex; align-items: flex-start; gap: 18px; margin-bottom: 24px; }
+.conf-help-icon { display: grid; place-items: center; width: 60px; height: 60px; flex: 0 0 60px; color: #234368; background: #f4e6d0; border-radius: 50%; }
+.conf-help-icon svg { width: 28px; height: 28px; }
+.conf-help-head h3 { font-size: 22px; margin: 3px 0 6px; }
+.conf-help-head p { font-size: 12px; line-height: 1.5; }
+.conf-help-card > .ps-btn { width: 100%; justify-content: center; }
+.conf-quicklink-link:hover { color: #8a2642; text-decoration: underline; }
+
+/* ---- Schedule page: month-grid calendar + legend + sidebar event list.
+   Reuses .conf-req-grid/.conf-req-card/.conf-req-side/.conf-req-side-card/
+   .conf-req-note/.conf-help-head/.conf-help-icon directly (all already
+   generic) -- only the calendar grid, view toggle, legend dots, and
+   event list get their own classes below. ---------------------------- */
+.conf-sched-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 18px; }
+.conf-sched-head h2 { font-size: 25px; }
+.conf-sched-view-toggle { display: inline-flex; background: #fbf9f7; border: 1px solid #eee8e4; border-radius: 8px; padding: 3px; gap: 2px; }
+.conf-sched-view-btn { padding: 8px 16px; border-radius: 6px; font-size: 12.5px; font-weight: 600; color: #7c7378; }
+.conf-sched-view-btn:hover { color: #570e25; }
+.conf-sched-view-btn.active { background: #8a2642; color: #fff; }
+
+.conf-sched-toolbar { display: flex; align-items: center; justify-content: center; gap: 22px; margin-bottom: 18px; }
+.conf-sched-nav-btn { display: grid; place-items: center; width: 34px; height: 34px; flex-shrink: 0; color: #570e25; border: 1px solid #eee8e4; border-radius: 50%; }
+.conf-sched-nav-btn:hover { background: #fbeef1; border-color: #8a2642; }
+.conf-sched-nav-btn svg { width: 16px; height: 16px; }
+.conf-sched-month-label { font-size: 17px; min-width: 170px; text-align: center; }
+
+.conf-sched-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; margin-bottom: 18px; }
+.conf-sched-weekday { padding-bottom: 8px; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; text-align: center; color: #9a8b83; }
+.conf-sched-day { min-height: 76px; padding: 8px; display: flex; flex-direction: column; gap: 6px; border: 1px solid #eee8e4; border-radius: 7px; }
+.conf-sched-day.is-muted { opacity: 0.4; }
+.conf-sched-day.is-today { background: #fbeef1; border-color: #8a2642; }
+.conf-sched-day-num { font-size: 12.5px; font-weight: 600; }
+.conf-sched-day-dots { display: flex; flex-wrap: wrap; gap: 4px; }
+.conf-sched-dot { width: 8px; height: 8px; flex-shrink: 0; border-radius: 50%; }
+.conf-sched-dot.cat-mass { background: #8a2642; }
+.conf-sched-dot.cat-orientation { background: #dda03d; }
+.conf-sched-dot.cat-recollection { background: #2f7a43; }
+.conf-sched-dot.cat-other { background: #2b5f96; }
+
+.conf-sched-legend { margin: 0; padding-top: 14px; border-top: 1px solid #eee8e4; }
+
+.conf-sched-list-view { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+.conf-sched-list-view[hidden], .conf-sched-calendar-panel[hidden] { display: none; }
+.conf-sched-list-empty { padding: 18px; font-size: 13px; text-align: center; color: #7c7378; background: #fbf9f7; border-radius: 8px; }
+
+.conf-sched-upcoming-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+.conf-sched-upcoming-head h3 { font-size: 17px; }
+.conf-sched-view-all { font-size: 12px; font-weight: 600; color: #570e25; flex-shrink: 0; }
+.conf-sched-view-all:hover { text-decoration: underline; }
+
+.conf-sched-event-list { display: flex; flex-direction: column; gap: 12px; }
+.conf-sched-event-item, .conf-sched-list-view .conf-sched-event-item { display: flex; align-items: flex-start; gap: 12px; padding: 12px; border: 1px solid #eee8e4; border-radius: 8px; }
+.conf-sched-event-item.is-highlighted { background: #fbeef1; border-color: #8a2642; }
+.conf-sched-event-date { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 44px; height: 44px; flex: 0 0 44px; color: #8a2642; background: #f8e9ea; border-radius: 7px; }
+.conf-sched-event-date strong { font-size: 16px; line-height: 1.1; }
+.conf-sched-event-date small { font-size: 9px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; }
+.conf-sched-event-item.is-highlighted .conf-sched-event-date { color: #fff; background: #8a2642; }
+.conf-sched-event-info { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.conf-sched-event-info strong { font-size: 13.5px; }
+.conf-sched-event-info span { font-size: 12px; color: #7c7378; }
+.conf-sched-upcoming .conf-sched-event-list + p { margin-top: 14px; }
+
+/* ---- Apply Now page: a real 4-step wizard (Personal Information >
+   Additional Information > Upload Document > Review & Submit), reusing
+   the site's existing wizard kit wholesale -- wedding-request.css's
+   .wr-stepbar/.wr-step/.wr-form and wedding-request-step3.css's
+   .wr3-review-*/.wr3-doc-* (both already shared by baptism/wedding/
+   mass-intention) plus style.css's .ps-field-icon/.ps-dropzone/
+   .ps-toggle. The .conf-req-grid/.conf-req-side/.conf-req-side-card/
+   .conf-help-head/.conf-req-quote frame stays identical to the other
+   3 Confirmation sub-pages for uniformity -- only the step bar's
+   horizontal margin (to line up with .conf-tabs/.conf-req-grid above
+   and below it) and the sidebar's numbered step list are new here. */
+.confirmation-page .wr-stepbar { margin: 0 8px 22px; }
+
+.conf-apply-steps-list { display: flex; flex-direction: column; gap: 14px; list-style: none; font-size: 13px; line-height: 1.4; color: #7c7378; }
+.conf-apply-steps-list li { display: flex; align-items: flex-start; gap: 12px; }
+.conf-apply-steps-num { display: grid; place-items: center; width: 24px; height: 24px; flex: 0 0 24px; font-size: 12px; font-weight: 700; color: #520e24; background: #f4e6d0; border-radius: 50%; }
+.conf-apply-steps-list li.is-current { color: #520e24; font-weight: 600; }
+.conf-apply-steps-list li.is-current .conf-apply-steps-num { color: #fff; background: #8a2642; }
+
+/* Step 3 (Upload Document): label + dropzone row, same idea as
+   baptism-request-step2.css's .bap2-upload-row but that file frames
+   itself as page-specific to baptism, so this gets its own copy
+   rather than reaching across sacraments for a same-named class. */
+.conf-upload-row { display: grid; grid-template-columns: 200px 1fr; gap: 24px; align-items: start; margin-bottom: 18px; }
+.conf-upload-label strong { display: block; font-size: 14px; color: #520e24; margin-bottom: 4px; }
+.conf-upload-label small { font-size: 12.5px; color: #7c7378; }
+.conf-upload-note { margin-bottom: 14px; }
+
+/* Step 4 (Review & Submit): de-emphasize an unfilled row's "Not
+   provided" placeholder from a real answer -- both used identical
+   bold/dark .wr3-review-row strong styling by default (shared with
+   wedding/mass-intention's own review steps), which made it hard to
+   spot at a glance what still needs to be filled in before submitting.
+   Scoped to .confirmation-page only so baptism/wedding/mass-intention's
+   review steps, which load the same wedding-request-step3.css, keep
+   their existing look. */
+.confirmation-page .wr3-review-row strong.is-empty { color: #b5a89f; font-weight: 500; font-style: italic; }
+.confirmation-page .wr3-intro { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.confirmation-page .wr3-intro > div:first-child h2 { margin: 0; }
+.confirmation-page .wr3-intro > div:first-child p { margin: 4px 0 0; }
+.conf-review-progress { display: inline-flex; align-items: center; gap: 9px; padding: 8px 16px; background: #fbeef1; border-radius: 999px; font-size: 12.5px; font-weight: 600; color: #8a2642; white-space: nowrap; flex-shrink: 0; }
+.conf-review-progress.is-complete { background: #e5f3e9; color: #2f7a43; }
+.conf-review-progress svg { width: 15px; height: 15px; flex-shrink: 0; }
+
+.confirmation-page :focus-visible { outline: 2px solid #b47820; outline-offset: 3px; }
+@media (max-width: 1024px) {
+    .confirmation-page { --sidebar-width: 70px; }
+    .confirmation-page .ps-sidebar { padding-inline: 8px; }
+    .confirmation-page .ps-main { padding-inline: 18px; }
+    .conf-hero-text h1 { font-size: 48px; }
+    .conf-hero-text > p { font-size: 19px; }
+    .conf-quicklinks { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .conf-banner { gap: 20px; padding: 24px; }
+    .conf-banner-art { width: 80px; flex-basis: 80px; }
+    .conf-faq-grid { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 7px 16px; padding-inline: 8px; }
+    .conf-req-grid { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); padding-inline: 8px; }
+    .conf-about-benefit-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .conf-sched-day { min-height: 64px; }
+    .conf-sched-legend { gap: 10px 16px; }
+}
+@media (max-width: 760px) {
+    /* 4 equal columns squeeze unreadably narrow on a phone -- fall back
+       to a left-packed, horizontally scrollable row instead. */
+    .conf-tabs { display: flex; }
+    .conf-tab { flex: 0 0 auto; }
+    .conf-topline .ps-user-info { display: none; }
+    .conf-hero-text { padding: 60px 24px 90px; }
+    .conf-banner { flex-wrap: wrap; }
+    .conf-banner-text { flex: 1; }
+    .conf-banner-quote { flex: 1 0 100%; border-left: 0; border-top: 1px solid #e7cfb3; padding: 18px 0 0; }
+    .conf-faq-grid { display: block; }
+    .conf-faq-grid > div:first-child { display: block; }
+    .conf-faq-head { flex-wrap: wrap; }
+    .conf-faq-item { margin-bottom: 8px; }
+    .conf-help-card { margin-top: 22px; }
+    .conf-req-grid { grid-template-columns: 1fr; }
+    .conf-req-item { flex-wrap: wrap; }
+    .conf-about-intro { grid-template-columns: 1fr; }
+    .conf-sched-head { flex-direction: column; align-items: flex-start; }
+    .conf-sched-view-toggle { width: 100%; }
+    .conf-sched-view-btn { flex: 1; }
+    .conf-sched-day { min-height: 54px; padding: 5px; }
+    .conf-sched-day-num { font-size: 11px; }
+    .conf-upload-row { grid-template-columns: 1fr; }
+}
+@media (max-width: 520px) {
+    .confirmation-page { --sidebar-width: 54px; }
+    .confirmation-page .ps-sidebar { padding: 20px 4px; }
+    .confirmation-page .ps-logo-crest { width: 34px; }
+    .confirmation-page .ps-main { padding: 0 10px 28px; }
+    .conf-topline { min-height: 76px; gap: 8px; }
+    .conf-greeting-icon, .conf-topline .ps-user-chip { display: none; }
+    .conf-greeting-text strong { font-size: 14px; }
+    .conf-hero { min-height: 350px; aspect-ratio: auto; }
+    .conf-hero-image img { object-position: 55% center; }
+    .conf-hero-image::after { background: linear-gradient(90deg, #190d0ab3, #190d0a38); }
+    .conf-hero-text { padding: 42px 16px 85px; }
+    .conf-hero-text h1 { font-size: 30px; }
+    .conf-hero-text > p { font-size: 16px; }
+    .conf-hero-quote { font-size: 15px; }
+    .conf-quicklinks { grid-template-columns: 1fr; padding: 10px; margin: -35px 5px 20px; }
+    .conf-quicklink-card { min-height: 210px; }
+    .conf-banner { margin-inline: 0; padding: 20px; }
+    .conf-banner-art { width: 60px; flex-basis: 60px; }
+    .conf-banner-text h2, .conf-faq-head h2 { font-size: 22px; }
+    .conf-req-grid { margin-inline: 0; }
+    .conf-req-card, .conf-tabs { margin-inline: 0; }
+    .conf-req-card h2 { font-size: 22px; }
+    .conf-about-benefit-grid { grid-template-columns: 1fr; }
+    .conf-sched-weekday { font-size: 9px; }
+    .conf-sched-day { min-height: 44px; gap: 3px; }
+    .conf-sched-day-dots { gap: 2px; }
+    .conf-sched-dot { width: 6px; height: 6px; }
+    .conf-sched-toolbar { gap: 14px; }
+    .conf-sched-month-label { min-width: 0; font-size: 15px; }
+    .conf-sched-legend { flex-direction: column; align-items: flex-start; gap: 8px; }
+}

@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  parish-login.svg
+  Placeholder hero art for login.php's left panel. Deliberately a
+  SEPARATE file from parish-hero.svg (the public landing page's hero)
+  rather than reused: that one is a wide landscape canvas meant for a
+  short, very wide hero band, while this panel is roughly 45% width by
+  full viewport height, portrait shaped. Reusing the landscape version
+  here would crop it down to an unrecognizable sliver, same bug fixed
+  earlier on index.php. Composed portrait from the start instead:
+  viewBox 1000x1300. Swap in a real photo later by changing the img
+  src in login.php's .auth-visual-media (no other changes needed,
+  object-fit: cover handles any real photo's own aspect ratio fine).
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1300" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="loginSky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2f3f66"/>
+      <stop offset="30%" stop-color="#7a5f74"/>
+      <stop offset="55%" stop-color="#d68a5c"/>
+      <stop offset="75%" stop-color="#f3b877"/>
+      <stop offset="100%" stop-color="#f7d29a"/>
+    </linearGradient>
+    <radialGradient id="loginSun" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffe9b8" stop-opacity="0.95"/>
+      <stop offset="55%" stop-color="#f6c07a" stop-opacity="0.45"/>
+      <stop offset="100%" stop-color="#f6c07a" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="loginFacade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#e9dcc3"/>
+      <stop offset="100%" stop-color="#cbb98f"/>
+    </linearGradient>
+    <linearGradient id="loginTower" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#efe3c9"/>
+      <stop offset="100%" stop-color="#d3c19a"/>
+    </linearGradient>
+    <radialGradient id="loginGlassWarm" cx="50%" cy="30%" r="80%">
+      <stop offset="0%" stop-color="#ffe2a1"/>
+      <stop offset="100%" stop-color="#c9793f"/>
+    </radialGradient>
+    <radialGradient id="loginGroundGlow" cx="50%" cy="35%" r="60%">
+      <stop offset="0%" stop-color="#f7c98a" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#f7c98a" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="loginTree" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2c3b28"/>
+      <stop offset="100%" stop-color="#161f14"/>
+    </linearGradient>
+  </defs>
+
+  <!-- sky -->
+  <rect width="1000" height="1300" fill="url(#loginSky)"/>
+  <circle cx="680" cy="290" r="220" fill="url(#loginSun)"/>
+
+  <!-- clouds -->
+  <g fill="#f4c98f" opacity="0.35">
+    <ellipse cx="230" cy="200" rx="160" ry="20"/>
+    <ellipse cx="560" cy="150" rx="190" ry="22"/>
+  </g>
+
+  <!-- tree, left edge -->
+  <g fill="url(#loginTree)">
+    <ellipse cx="65" cy="560" rx="165" ry="250"/>
+    <ellipse cx="195" cy="690" rx="105" ry="150"/>
+    <rect x="50" y="740" width="26" height="400" rx="6"/>
+  </g>
+
+  <!-- ground glow -->
+  <ellipse cx="540" cy="880" rx="380" ry="320" fill="url(#loginGroundGlow)"/>
+
+  <!-- ================= CHURCH ================= -->
+  <g>
+    <!-- side wing, extending right, set behind the facade -->
+    <rect x="660" y="880" width="270" height="330" fill="url(#loginFacade)"/>
+    <rect x="660" y="860" width="270" height="22" fill="#b9a476"/>
+    <g fill="url(#loginGlassWarm)" stroke="#a5824f" stroke-width="4">
+      <path d="M695 1210 V1040 a26 26 0 0 1 52 0 V1210 Z"/>
+      <path d="M765 1210 V1040 a26 26 0 0 1 52 0 V1210 Z"/>
+      <path d="M835 1210 V1040 a24 24 0 0 1 48 0 V1210 Z"/>
+    </g>
+
+    <!-- main facade block -->
+    <rect x="280" y="740" width="440" height="470" fill="url(#loginFacade)"/>
+    <rect x="280" y="718" width="440" height="24" fill="#b9a476"/>
+
+    <!-- pediment above the facade -->
+    <path d="M248 740 L500 580 L752 740 Z" fill="url(#loginFacade)" stroke="#b9a476" stroke-width="4"/>
+    <circle cx="500" cy="700" r="32" fill="url(#loginGlassWarm)" stroke="#a5824f" stroke-width="5"/>
+    <path d="M500 660 v-58 M476 623 h48" stroke="#a5824f" stroke-width="6" stroke-linecap="round"/>
+
+    <!-- bell tower, rising from the center -->
+    <rect x="430" y="330" width="140" height="390" fill="url(#loginTower)"/>
+    <rect x="415" y="308" width="170" height="26" fill="#b9a476"/>
+    <path d="M458 470 V385 a26 26 0 0 1 52 0 V470 Z" fill="#4a2f1c"/>
+    <path d="M518 470 V385 a26 26 0 0 1 52 0 V470 Z" fill="#4a2f1c"/>
+    <path d="M410 308 L500 190 L590 308 Z" fill="#8a5a34" stroke="#6b4324" stroke-width="4"/>
+    <path d="M500 190 V100 M474 122 h52" stroke="#7c7367" stroke-width="9" stroke-linecap="round"/>
+    <circle cx="420" cy="318" r="10" fill="#c7b489"/>
+    <circle cx="580" cy="318" r="10" fill="#c7b489"/>
+
+    <!-- main arched entrance -->
+    <path d="M425 1210 V1010 a75 75 0 0 1 150 0 V1210 Z" fill="#5c3a22" stroke="#a5824f" stroke-width="6"/>
+    <line x1="500" y1="1070" x2="500" y2="1210" stroke="#3d2717" stroke-width="4"/>
+
+    <!-- side windows flanking the entrance -->
+    <path d="M310 970 V860 a45 45 0 0 1 90 0 V970 Z" fill="url(#loginGlassWarm)" stroke="#a5824f" stroke-width="5"/>
+    <path d="M600 970 V860 a45 45 0 0 1 90 0 V970 Z" fill="url(#loginGlassWarm)" stroke="#a5824f" stroke-width="5"/>
+
+    <!-- pilasters -->
+    <g fill="#c7b489">
+      <rect x="286" y="750" width="16" height="460"/>
+      <rect x="492" y="750" width="16" height="460"/>
+      <rect x="698" y="750" width="16" height="460"/>
+    </g>
+
+    <!-- shrubs -->
+    <g fill="#31462c">
+      <ellipse cx="360" cy="1225" rx="55" ry="22"/>
+      <ellipse cx="640" cy="1225" rx="55" ry="22"/>
+      <ellipse cx="870" cy="1230" rx="60" ry="20"/>
+    </g>
+
+    <!-- low fence -->
+    <g stroke="#221a15" stroke-width="6" opacity="0.85">
+      <line x1="150" y1="1150" x2="960" y2="1150"/>
+      <line x1="150" y1="1182" x2="960" y2="1182"/>
+    </g>
+    <g stroke="#221a15" stroke-width="5" opacity="0.85">
+      <line x1="175" y1="1132" x2="175" y2="1185"/>
+      <line x1="215" y1="1132" x2="215" y2="1185"/>
+      <line x1="255" y1="1132" x2="255" y2="1185"/>
+      <line x1="295" y1="1132" x2="295" y2="1185"/>
+      <line x1="740" y1="1132" x2="740" y2="1185"/>
+      <line x1="780" y1="1132" x2="780" y2="1185"/>
+      <line x1="820" y1="1132" x2="820" y2="1185"/>
+      <line x1="860" y1="1132" x2="860" y2="1185"/>
+      <line x1="900" y1="1132" x2="900" y2="1185"/>
+      <line x1="940" y1="1132" x2="940" y2="1185"/>
+    </g>
+
+    <!-- lamp posts with warm glow -->
+    <g>
+      <rect x="215" y="1050" width="8" height="112" fill="#241a12"/>
+      <circle cx="219" cy="1045" r="15" fill="#ffdf9b"/>
+      <circle cx="219" cy="1045" r="28" fill="#ffdf9b" opacity="0.35"/>
+      <rect x="850" y="1050" width="8" height="112" fill="#241a12"/>
+      <circle cx="854" cy="1045" r="15" fill="#ffdf9b"/>
+      <circle cx="854" cy="1045" r="28" fill="#ffdf9b" opacity="0.35"/>
+    </g>
+  </g>
+
+  <!-- soft foreground vignette -->
+  <rect x="0" y="1120" width="1000" height="180" fill="#1a1008" opacity="0.15"/>
+</svg>

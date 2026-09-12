@@ -1,0 +1,64 @@
+/* About Funeral Services: photo banner, service overview, and pastoral support. */
+.funeral-about-page { color: #566074; }
+.fg-topline { min-height: 58px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.fg-topline .ps-topbar { position: static; width: auto; margin: 0; padding: 0; }
+.fg-back { display: inline-flex; align-items: center; gap: 9px; color: #35121a; font-weight: 500; }
+.fg-back svg, .fg-contact svg { width: 20px; height: 20px; }
+.fg-header { border: 1px solid #eee8e4; border-radius: 12px; overflow: hidden; background: #fff; margin-bottom: 18px; box-shadow: 0 2px 6px #35121a04; }
+.fg-hero { position: relative; aspect-ratio: 3 / 1; min-height: 260px; display: flex; align-items: flex-start; color: white; background: #210d08; isolation: isolate; }
+/* Preserve the whole photograph, including the top and base of the crucifix. */
+.fg-hero-image { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; object-position: center; z-index: -2; }
+.fg-hero::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, #21090370, #21090318 58%, transparent); z-index: -1; }
+.fg-hero-copy { padding: 76px 42px 90px; max-width: 680px; text-align: left; }
+.fg-eyebrow { display: inline-block; text-transform: uppercase; letter-spacing: 2px; font-size: 12px; font-weight: 700; color: #f0d9a0; padding-bottom: 8px; margin-bottom: 6px; border-bottom: 2px solid #dda03d; }
+.fg-hero h1 { color: white; font: 700 60px/1.15 'Playfair Display', serif; margin: 14px 0 1px; }
+.fg-hero-copy > p { font-size: 22px; margin-top: 10px; }
+.fg-hero blockquote { margin-top: 28px; font: italic 17px/1.5 'Poppins', sans-serif; }
+.fg-hero cite { display: block; margin-top: 4px; font: normal 15px/1.5 'Poppins', sans-serif; }
+.fg-tabs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); padding: 0 24px; }
+.fg-tabs a, .fg-tabs button { display: flex; align-items: center; justify-content: center; gap: 14px; padding: 15px 10px; background: none; border: 0; border-bottom: 2px solid transparent; font: 500 13px/1.4 'Poppins', sans-serif; color: #414b5c; text-align: center; }
+.fg-tabs svg { width: 25px; height: 25px; flex-shrink: 0; }
+.fg-tabs [aria-current] { color: #760c22; border-bottom-color: #760c22; }
+.fg-tabs a:hover { background: #fcf7f2; }
+.fg-tabs button:disabled { cursor: not-allowed; }
+.fg-tabs small { display: block; font-size: 9px; color: #777; }
+.fg-columns { display: grid; grid-template-columns: minmax(0, 2.45fr) minmax(280px, 1fr); gap: 14px; align-items: start; }
+.fg-primary, .fg-secondary { display: grid; gap: 12px; min-width: 0; }
+.fg-card { padding: 14px 22px; border: 1px solid #eeeae7; border-radius: 10px; background: #fff; box-shadow: 0 2px 8px #35121a03; }
+.fg-card h2 { color: #710c21; font: 700 22px/1.3 'Playfair Display', serif; margin-bottom: 8px; }
+.fg-card p { font-size: 14px; line-height: 1.7; }
+.fg-intro { display: grid; grid-template-columns: minmax(0, 1fr) 235px; gap: 24px; align-items: center; }
+.fg-prayer { background: #fbf7f1; border-radius: 8px; padding: 12px; text-align: center; }
+.fg-prayer svg { width: 82px; height: 78px; color: #d99527; stroke-width: 1.1; }
+.fg-prayer p { font: italic 14px/1.5 Georgia, serif; }
+.fg-prayer cite { display: block; font-size: 12px; font-style: normal; margin-top: 4px; }
+.fg-features { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); padding-top: 6px; }
+.fg-feature { padding: 0 16px; border-right: 1px solid #eee8e4; }
+.fg-feature:last-child { border: 0; }
+.fg-icon { display: flex; align-items: center; justify-content: center; border-radius: 50%; width: 60px; height: 60px; flex-shrink: 0; color: #760c22; background: #fbf0e4; }
+.fg-icon svg { width: 31px; height: 31px; }
+.fg-feature .fg-icon { margin: 0 auto 5px; }
+.fg-feature h3 { color: #710c21; text-align: center; font: 700 14.5px/1.5 'Poppins', sans-serif; margin-bottom: 4px; }
+.fg-feature p { font-size: 13px; line-height: 1.5; }
+.fg-note { display: flex; align-items: center; gap: 14px; margin-top: 8px; padding: 8px 12px; border-radius: 7px; background: #fcf3e8; font-size: 12px; }
+.fg-note svg { width: 24px; height: 24px; color: #760c22; flex-shrink: 0; }
+.fg-secondary .fg-card { padding: 14px 19px 18px; }
+.fg-comfort-image { display: block; width: 100%; height: 146px; object-fit: cover; object-position: right center; border-radius: 7px; margin-top: 10px; }
+.fg-help { display: flex; align-items: center; gap: 15px; margin-bottom: 12px; }
+.fg-contact { display: flex; justify-content: center; align-items: center; gap: 24px; padding: 10px 12px; border: 1px solid #760c22; border-radius: 7px; color: #760c22; font-weight: 500; }
+.fg-contact:hover { background: #fcf3e8; }
+#family-information { scroll-margin-top: 20px; }
+/* On smaller screens, keep the text below the uncropped photograph. */
+@media (max-width: 1000px) {
+    .fg-header .fg-hero { display: block; aspect-ratio: auto; min-height: 0; }
+    .fg-header .fg-hero-image { position: static; display: block; height: auto; aspect-ratio: 3 / 1; object-position: center; }
+    .fg-header .fg-hero::after { display: none; }
+    .fg-header .fg-hero-copy { padding: 30px 42px; }
+}
+/* Match funeral.html's text inset at each navigation breakpoint. */
+@media (max-width: 1024px) { .fg-hero h1 { font-size: 48px; } .fg-hero-copy > p { font-size: 19px; } }
+@media (max-width: 760px) { .fg-header .fg-hero-copy { padding-inline: 24px; } }
+@media (max-width: 520px) { .fg-header .fg-hero-copy { padding-inline: 16px; } .fg-hero h1 { font-size: 30px; } .fg-hero-copy > p { font-size: 16px; } .fg-hero blockquote { font-size: 15px; } }
+@media (max-width: 1200px) { .fg-intro { grid-template-columns: minmax(0, 1fr) 175px; gap: 15px; } .fg-feature { padding-inline: 10px; } .fg-columns { grid-template-columns: minmax(0, 2fr) minmax(260px, 1fr); } }
+@media (max-width: 1000px) { .fg-columns { grid-template-columns: 1fr; } .fg-secondary { grid-template-columns: 1fr 1fr; align-items: start; } .fg-tabs { padding-inline: 8px; } .fg-tabs a, .fg-tabs button { gap: 7px; font-size: 12px; } }
+@media (max-width: 600px) { .fg-topline { flex-wrap: wrap; padding-bottom: 12px; } .fg-topline .ps-topbar { display: none; } .fg-hero-copy { padding: 26px 20px; } .fg-hero-image { object-position: 62% center; } .fg-hero::after { background: #21090385; } .fg-tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); } .fg-tabs a, .fg-tabs button { padding-block: 13px; } .fg-intro, .fg-secondary { grid-template-columns: 1fr; } .fg-prayer { display: none; } .fg-card, .fg-secondary .fg-card { padding: 18px; } .fg-features { grid-template-columns: 1fr 1fr; gap: 22px 0; } .fg-feature:nth-child(2) { border: 0; } .fg-comfort-image { height: 175px; } }

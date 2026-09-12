@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Decorative art for the "Your generosity makes a difference." banner on donations.php: a heart resting above an open, giving hand, matching the gold line-art style of baptism-shell.svg and mass-chalice.svg. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 190" fill="none" stroke="#c9a24a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+  <!-- heart -->
+  <path d="M100 92s-26-16-26-36c0-11 9-18 18-18 4 0 7 1.5 8 3.5 1-2 4-3.5 8-3.5 9 0 18 7 18 18 0 20-26 36-26 36z"/>
+
+  <!-- small sparkles either side of the heart -->
+  <path d="M60 44v10M55 49h10" opacity="0.8"/>
+  <path d="M140 44v10M135 49h10" opacity="0.8"/>
+
+  <!-- open, giving hand -->
+  <path d="M56 118c0-6 5-10 11-10h18l24 6h20c6 0 10 4 10 9 0 5.5-4.5 9-10 9h-32"/>
+  <path d="M56 118v20c0 6 5 11 11 11h48c14 0 27-6 36-16"/>
+  <path d="M97 123c-2 4-6 6-10 6"/>
+</svg>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Placeholder thumbnail for the "Mass Intentions Now Open" announcement card. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 200" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="miGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#e9d3ab"/>
+      <stop offset="100%" stop-color="#c9a24a"/>
+    </linearGradient>
+  </defs>
+  <rect width="300" height="200" fill="url(#miGrad)"/>
+  <g transform="translate(75,60)">
+    <path d="M0 10 C25 -5 50 -5 75 10 V110 C50 95 25 95 0 110 Z" fill="#fffaf0"/>
+    <path d="M150 10 C125 -5 100 -5 75 10 V110 C100 95 125 95 150 110 Z" fill="#f3ead8"/>
+    <path d="M75 10 V110" stroke="#5c1b2e" stroke-width="2"/>
+    <g stroke="#6d2238" stroke-width="2" opacity="0.7">
+      <line x1="14" y1="24" x2="60" y2="18"/>
+      <line x1="14" y1="42" x2="60" y2="36"/>
+      <line x1="14" y1="60" x2="60" y2="54"/>
+      <line x1="90" y1="18" x2="136" y2="24"/>
+      <line x1="90" y1="36" x2="136" y2="42"/>
+      <line x1="90" y1="54" x2="136" y2="60"/>
+    </g>
+  </g>
+</svg>

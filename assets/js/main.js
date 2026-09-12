@@ -1,0 +1,753 @@
+/**
+ * main.js
+ * ---------------------------------------------------------------------
+ * Shared vanilla JS, loaded on every page (see includes/footer.php).
+ * No framework, no build step -- just plain DOM stuff. Add new
+ * page-agnostic behavior here; anything that's ONLY relevant to one
+ * page should go in that page instead so this file doesn't turn into
+ * a junk drawer.
+ *
+ * Right now this only does one thing: highlights whichever entry in
+ * "Today at Our Lady of the Gate" is currently happening, based on the
+ * visitor's own clock. It's a nice touch that works with zero backend
+ * since it's just comparing times already sitting in the HTML.
+ * ---------------------------------------------------------------------
+ */
+
+(function highlightCurrentScheduleSlot() {
+    const items = document.querySelectorAll('.db-timeline-item[data-time]');
+    if (!items.length) return;
+
+    const now = new Date();
+    const nowMinutes = now.getHours() * 60 + now.getMinutes();
+
+    let activeItem = null;
+    let activeMinutes = -1;
+
+    items.forEach((item) => {
+        const [h, m] = item.dataset.time.split(':').map(Number);
+        const slotMinutes = (h * 60) + m;
+
+        // pick the LATEST slot that has already started (<= now),
+        // so at 11:00 AM "Morning Mass" (8AM) stays highlighted until
+        // "Baptism Ceremony" (10AM) takes over, etc.
+        if (slotMinutes <= nowMinutes && slotMinutes > activeMinutes) {
+            activeItem = item;
+            activeMinutes = slotMinutes;
+        }
+    });
+
+    items.forEach((item) => item.classList.remove('is-now'));
+    if (activeItem) activeItem.classList.add('is-now');
+})();
+
+
+/**
+ * Featured Announcement carousel (announcements.php). Plain
+ * show/hide of pre-rendered .ann-slide elements -- all slides are
+ * already in the HTML (PHP looped over $featuredSlides), JS just
+ * toggles which one has .is-active. No AJAX needed since there's
+ * nothing to fetch; this stops being true once slides come from a
+ * paginated query instead of a small hardcoded array.
+ */
+(function initAnnouncementCarousel() {
+    const carousel = document.querySelector('[data-carousel]');
+    if (!carousel) return;
+
+    const slides = Array.from(carousel.querySelectorAll('[data-slide]'));
+    const dots = Array.from(carousel.querySelectorAll('[data-carousel-dot]'));
+    const prevBtn = carousel.querySelector('[data-carousel-prev]');
+    const nextBtn = carousel.querySelector('[data-carousel-next]');
+    if (!slides.length) return;
+
+    let current = slides.findIndex((s) => s.classList.contains('is-active'));
+    if (current < 0) current = 0;
+
+    function goTo(index) {
+        current = (index + slides.length) % slides.length;
+        slides.forEach((s, i) => {
+            s.classList.toggle('is-active', i === current);
+            s.setAttribute('aria-hidden', i === current ? 'false' : 'true');
+        });
+        dots.forEach((d, i) => d.classList.toggle('is-active', i === current));
+    }
+
+    if (prevBtn) prevBtn.addEventListener('click', () => goTo(current - 1));
+    if (nextBtn) nextBtn.addEventListener('click', () => goTo(current + 1));
+    dots.forEach((dot, i) => dot.addEventListener('click', () => goTo(i)));
+
+    // slow auto-advance so the featured card feels alive; pause while
+    // the visitor is actually looking at / using the controls
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches && slides.length > 1) {
+        let timer = null;
+        const start = () => { if (timer) clearInterval(timer); timer = setInterval(() => goTo(current + 1), 6500); };
+        const stop = () => { if (timer) { clearInterval(timer); timer = null; } };
+        carousel.addEventListener('mouseenter', stop);
+        carousel.addEventListener('mouseleave', start);
+        carousel.addEventListener('focusin', stop);
+        carousel.addEventListener('focusout', start);
+        start();
+    }
+})();
+
+
+/**
+ * Announcements list: category tabs + search box, both filtering the
+ * SAME rows that are already in the DOM (data-category attribute set
+ * by PHP). Once this list comes from a real query, "changing tabs"
+ * would probably become a real GET request instead -- but for a
+ * hardcoded page-full of rows, refetching the page to filter 7 rows
+ * would be silly, so this stays client-side even after the backend
+ * exists.
+ */
+(function initAnnouncementFilters() {
+    const tabsWrap = document.querySelector('[data-filter-tabs]');
+    const searchInput = document.querySelector('[data-announcement-search]');
+    const rows = Array.from(document.querySelectorAll('[data-announcement-row]'));
+    const emptyMsg = document.querySelector('[data-announcement-empty]');
+    if (!rows.length) return;
+
+    let activeCategory = 'All Announcements';
+
+    function applyFilters() {
+        const query = (searchInput ? searchInput.value : '').trim().toLowerCase();
+        let visibleCount = 0;
+
+        rows.forEach((row) => {
+            const matchesCategory = activeCategory === 'All Announcements' || row.dataset.category === activeCategory;
+            const rowText = row.textContent.toLowerCase();
+            const matchesSearch = !query || rowText.includes(query);
+            const show = matchesCategory && matchesSearch;
+            row.classList.toggle('is-hidden', !show);
+            if (show) visibleCount += 1;
+        });
+
+        if (emptyMsg) emptyMsg.classList.toggle('is-visible', visibleCount === 0);
+
+        // once someone's filtering/searching, "Load more" (which only
+        // ever reveals rows 6-7 by index) doesn't make sense anymore
+        const loadMoreBtn = document.querySelector('[data-load-more]');
+        if (loadMoreBtn) {
+            const isFiltering = activeCategory !== 'All Announcements' || query.length > 0;
+            loadMoreBtn.style.display = isFiltering ? 'none' : '';
+        }
+    }
+
+    if (tabsWrap) {
+        tabsWrap.addEventListener('click', (e) => {
+            const btn = e.target.closest('[data-filter-tab]');
+            if (!btn) return;
+            activeCategory = btn.dataset.filterTab;
+            tabsWrap.querySelectorAll('.ps-tab').forEach((t) => t.classList.toggle('active', t === btn));
+            applyFilters();
+        });
+    }
+
+    if (searchInput) {
+        searchInput.addEventListener('input', applyFilters);
+    }
+})();
+
+
+/**
+ * "Load more" on the All Announcements list -- reveals the rows PHP
+ * already rendered with class="is-hidden" (index 5+), then disables
+ * itself since there's nothing further to reveal from a hardcoded
+ * array. A real paginated version would fetch + append instead.
+ */
+(function initLoadMore() {
+    const btn = document.querySelector('[data-load-more]');
+    if (!btn) return;
+
+    btn.addEventListener('click', () => {
+        const hiddenRows = document.querySelectorAll('[data-announcement-row].is-hidden');
+        hiddenRows.forEach((row) => row.classList.remove('is-hidden'));
+        btn.textContent = 'No more announcements';
+        btn.disabled = true;
+    });
+})();
+
+
+/**
+ * Bookmark/save toggle on each announcement row. Purely visual --
+ * there's no database yet to persist a "saved announcements" list to,
+ * and it resets on page reload. Swap this for a real fetch() POST to
+ * a save-announcement.php endpoint once accounts exist.
+ */
+(function initBookmarkToggles() {
+    document.querySelectorAll('[data-bookmark-btn]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+            btn.classList.toggle('is-saved');
+        });
+    });
+})();
+
+
+/**
+ * calendar.php: "All Categories" dropdown hides/shows the .cal-event
+ * entries already rendered in the month grid by matching each one's
+ * data-category against the select's value. Same "filter what's
+ * already in the DOM" approach as the announcements page's tabs --
+ * there are only ever ~30 events on screen at once, no reason to
+ * refetch anything for that.
+ */
+(function initCalendarCategoryFilter() {
+    const select = document.querySelector('[data-category-filter]');
+    const scope = document.querySelector('[data-category-scope]');
+    if (!select || !scope) return;
+
+    select.addEventListener('change', () => {
+        const chosen = select.value; // '' = All Categories
+        scope.querySelectorAll('.cal-event').forEach((ev) => {
+            const show = !chosen || ev.dataset.category === chosen;
+            ev.classList.toggle('is-filtered-out', !show);
+        });
+    });
+})();
+
+
+/**
+ * calendar.php: Month/Week/Day segmented control. Only "Month" is
+ * actually built right now (see calendar.php's comment on
+ * data-view-switch) -- this just swaps which button LOOKS active so
+ * the control doesn't feel dead. Wiring up real Week/Day rendering
+ * later means adding an actual view-switch branch here instead of
+ * just toggling .active.
+ */
+(function initCalendarViewSwitch() {
+    const group = document.querySelector('[data-view-switch]');
+    if (!group) return;
+
+    group.addEventListener('click', (e) => {
+        const btn = e.target.closest('button[data-view]');
+        if (!btn) return;
+        group.querySelectorAll('button').forEach((b) => b.classList.toggle('active', b === btn));
+    });
+})();
+
+
+/**
+ * Any multi-step request form whose NEXT step genuinely isn't built
+ * yet -- currently wedding-request-step2.php's own "Save and
+ * Continue" (Step 3, Review & Send, doesn't exist). Letting the form
+ * actually submit would just 404, a bad look for what's visually the
+ * page's main call-to-action. Instead we validate with the browser's
+ * normal HTML5 validation (required/pattern/type all still work via
+ * reportValidity()), and if that passes, show an inline notice
+ * explaining the next step isn't built instead of navigating anywhere.
+ * Once a step's "next" page is real (like Step 1 -> Step 2 now is),
+ * drop the data-wizard-step-form attribute from that form so it goes
+ * back to submitting normally -- see wedding-request.php's comment.
+ */
+(function initWizardStepForm() {
+    const form = document.querySelector('[data-wizard-step-form]');
+    if (!form) return;
+
+    const notice = form.querySelector('[data-wizard-notice]');
+
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        if (!form.reportValidity()) return; // let the browser show its normal field errors
+        if (notice) {
+            notice.hidden = false;
+            notice.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    });
+})();
+
+
+/**
+ * wedding-request-step2.php's file uploads. Browsers can't enforce a
+ * max file size purely through HTML attributes, so this checks
+ * `file.size` against each input's data-max-size-mb on change and, if
+ * it's too big, clears the input and shows an inline error right next
+ * to that row instead of letting an oversized file silently sit there
+ * until a server that doesn't exist yet would've rejected it. Generic
+ * by design (matches on the data attribute, not a specific page) so
+ * any future upload form -- baptism/funeral documents, etc. -- gets
+ * the same behavior for free just by adding the attribute.
+ */
+(function initFileUploadValidation() {
+    // id-based lookup first (an input id="foo" pairs with an error
+    // element id="fooError", same convention setAuthFieldError uses),
+    // falling back to the structural search wedding-request-step2.php's
+    // rows still rely on (no matching id on those error spans) --
+    // works for both without every existing file input needing an
+    // id+"Error" pair retrofitted.
+    function findFileErrorElement(input) {
+        if (input.id) {
+            const byId = document.getElementById(input.id + 'Error');
+            if (byId) return byId;
+        }
+        return input.closest('.wr-req-upload, .ps-field')?.querySelector('[data-file-error]') || null;
+    }
+
+    document.querySelectorAll('input[type="file"][data-max-size-mb]').forEach((input) => {
+        input.addEventListener('change', () => {
+            const maxMb = parseFloat(input.dataset.maxSizeMb);
+            const errorEl = findFileErrorElement(input);
+            const file = input.files && input.files[0];
+            if (!file) return;
+
+            const tooBig = file.size > maxMb * 1024 * 1024;
+            if (errorEl) {
+                errorEl.hidden = !tooBig;
+                errorEl.textContent = tooBig
+                    ? `"${file.name}" is too large (max ${maxMb}MB). Please choose a smaller file.`
+                    : '';
+            }
+            if (tooBig) input.value = '';
+        });
+    });
+})();
+
+
+/**
+ * wedding-request-step3.php's "I confirm" toggle. Starts unchecked
+ * (see that page's file header for why we deviated from the reference
+ * image showing it pre-switched-on), so the Submit button starts
+ * disabled and only becomes clickable once the user actually flips
+ * the toggle themselves. Generic on the data attributes, not the
+ * page, so any future "you must agree before submitting" form gets
+ * the same behavior for free.
+ */
+(function initConfirmToggle() {
+    const toggle = document.querySelector('[data-confirm-toggle]');
+    const submitBtn = document.querySelector('[data-confirm-submit]');
+    if (!toggle || !submitBtn) return;
+
+    const sync = () => { submitBtn.disabled = !toggle.checked; };
+    toggle.addEventListener('change', sync);
+    sync();
+})();
+(function initMobileMenu() {
+    const toggle = document.querySelector('[data-mobile-menu-toggle]');
+    const menu = document.querySelector('[data-mobile-menu]');
+    if (!toggle || !menu) return;
+
+    function setOpen(isOpen) {
+        menu.hidden = !isOpen;
+        toggle.setAttribute('aria-expanded', String(isOpen));
+    }
+
+    toggle.addEventListener('click', () => setOpen(menu.hidden));
+    menu.addEventListener('click', (e) => {
+        if (e.target.closest('a')) setOpen(false);
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !menu.hidden) setOpen(false);
+    });
+})();
+(function initPasswordToggles() {
+    document.querySelectorAll('[data-password-toggle]').forEach((btn) => {
+        const input = btn.closest('.ps-field-icon')?.querySelector('input[type="password"], input[type="text"]');
+        if (!input) return;
+
+        btn.addEventListener('click', () => {
+            const showing = input.type === 'text';
+            input.type = showing ? 'password' : 'text';
+            btn.setAttribute('aria-pressed', String(!showing));
+            btn.setAttribute('aria-label', showing ? 'Show password' : 'Hide password');
+        });
+    });
+})();
+
+(function initLoginForm() {
+    const form = document.querySelector('[data-login-form]');
+    if (!form) return;
+
+    const emailInput = document.getElementById('loginEmail');
+    const passwordInput = document.getElementById('loginPassword');
+    const alertBox = document.querySelector('[data-auth-alert]');
+    const submitBtn = document.querySelector('[data-login-submit]');
+    const submitLabel = submitBtn ? submitBtn.querySelector('[data-submit-label]') : null;
+    if (!emailInput || !passwordInput) return;
+
+    function validateEmail() {
+        const value = emailInput.value.trim();
+        if (!value) { setAuthFieldError(emailInput, 'Please enter your email address.'); return false; }
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+            setAuthFieldError(emailInput, 'Please enter a valid email address.');
+            return false;
+        }
+        setAuthFieldError(emailInput, null);
+        return true;
+    }
+
+    function validatePassword() {
+        if (!passwordInput.value) { setAuthFieldError(passwordInput, 'Please enter your password.'); return false; }
+        setAuthFieldError(passwordInput, null);
+        return true;
+    }
+    emailInput.addEventListener('blur', validateEmail);
+    passwordInput.addEventListener('blur', validatePassword);
+    emailInput.addEventListener('input', () => {
+        if (emailInput.closest('.auth-field').classList.contains('has-error')) validateEmail();
+    });
+    passwordInput.addEventListener('input', () => {
+        if (passwordInput.closest('.auth-field').classList.contains('has-error')) validatePassword();
+    });
+
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        if (alertBox) alertBox.hidden = true;
+
+        const emailOk = validateEmail();
+        const passwordOk = validatePassword();
+
+        if (!emailOk) { emailInput.focus(); return; }
+        if (!passwordOk) { passwordInput.focus(); return; }
+        if (submitBtn) { submitBtn.disabled = true; submitBtn.classList.add('is-loading'); }
+        if (submitLabel) submitLabel.textContent = 'Logging inâ€¦';
+
+        window.setTimeout(() => {
+            if (submitBtn) { submitBtn.disabled = false; submitBtn.classList.remove('is-loading'); }
+            if (submitLabel) submitLabel.textContent = 'Log In';
+            passwordInput.value = '';
+
+            if (alertBox) {
+                alertBox.querySelector('[data-auth-message]').textContent = 'Sign-in is not available yet.';
+                alertBox.hidden = false;
+                alertBox.focus();
+            }
+        }, 650);
+    });
+})();
+
+(function initRegisterForm() {
+    const form = document.querySelector('[data-register-form]');
+    if (!form) return;
+
+    const fields = {
+        firstName: document.getElementById('firstName'),
+        lastName: document.getElementById('lastName'),
+        dateOfBirth: document.getElementById('dateOfBirth'),
+        gender: document.getElementById('gender'),
+        email: document.getElementById('registerEmail'),
+        mobileNumber: document.getElementById('mobileNumber'),
+        password: document.getElementById('registerPassword'),
+        confirmPassword: document.getElementById('confirmPassword'),
+        agreeTruthful: document.getElementById('agreeTruthful'),
+    };
+    if (Object.values(fields).some((el) => !el)) return;
+
+    const alertBox = document.querySelector('[data-auth-alert]');
+    const submitBtn = document.querySelector('[data-register-submit]');
+    const submitLabel = submitBtn ? submitBtn.querySelector('[data-submit-label]') : null;
+
+    const validators = {
+        firstName: () => {
+            if (!fields.firstName.value.trim()) { setAuthFieldError(fields.firstName, 'Please enter your first name.'); return false; }
+            setAuthFieldError(fields.firstName, null); return true
+        },
+        lastName: () => {
+            if (!fields.lastName.value.trim()) { setAuthFieldError(fields.lastName, 'Please enter your last name.'); return false; }
+            setAuthFieldError(fields.lastName, null); return true;
+        },
+        dateOfBirth: () => {
+            if (!fields.dateOfBirth.value) { setAuthFieldError(fields.dateOfBirth, 'Please enter your date of birth.'); return false; }
+            setAuthFieldError(fields.dateOfBirth, null); return true;
+        },
+        gender: () => {
+            if (!fields.gender.value) { setAuthFieldError(fields.gender, 'Please select your gender.'); return false; }
+            setAuthFieldError(fields.gender, null); return true;
+        },
+        email: () => {
+            const value = fields.email.value.trim();
+            if (!value) { setAuthFieldError(fields.email, 'Please enter your email address.'); return false; }
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) { setAuthFieldError(fields.email, 'Please enter a valid email address.'); return false; }
+            setAuthFieldError(fields.email, null); return true;
+        },
+        mobileNumber: () => {
+        const value = fields.mobileNumber.value.trim();
+        if (!value) { setAuthFieldError(fields.mobileNumber, 'Please enter your mobile number.'); return false; }
+        if (!/^09\d{9}$/.test(value)) { setAuthFieldError(fields.mobileNumber, 'Please enter a valid 11-digit mobile number (e.g. 09XXXXXXXXX).'); return false; }
+        setAuthFieldError(fields.mobileNumber, null); return true;
+        },
+        password: () => {
+            if (!fields.password.value) { setAuthFieldError(fields.password, 'Please create a password.'); return false; }
+            if (fields.password.value.length < 8) { setAuthFieldError(fields.password, 'Password must be at least 8 characters.'); return false; }
+            setAuthFieldError(fields.password, null); return true;
+        },
+        confirmPassword: () => {
+            if (!fields.confirmPassword.value) { setAuthFieldError(fields.confirmPassword, 'Please confirm your password.'); return false; }
+            if (fields.confirmPassword.value !== fields.password.value) { setAuthFieldError(fields.confirmPassword, 'Passwords do not match.'); return false; }
+            setAuthFieldError(fields.confirmPassword, null); return true;
+        },
+        agreeTruthful: () => {
+            if (!fields.agreeTruthful.checked) { setAuthFieldError(fields.agreeTruthful, 'Please confirm that the information provided is true and correct.'); return false; }
+            setAuthFieldError(fields.agreeTruthful, null); return true;
+        },
+    };
+
+    const order = ['firstName', 'lastName', 'dateOfBirth', 'gender', 'email', 'mobileNumber', 'password', 'confirmPassword', 'agreeTruthful'];
+
+    order.forEach((key) => {
+        const el = fields[key];
+        const evt = el.type === 'checkbox' ? 'change' : (el.tagName === 'SELECT' ? 'change' : 'blur');
+        el.addEventListener(evt, validators[key]);
+
+        if (el.tagName !== 'SELECT' && el.type !== 'checkbox') {
+            el.addEventListener('input', () => {
+                if (el.closest('.auth-field')?.classList.contains('has-error')) validators[key]();
+            });
+        }
+    });
+    fields.password.addEventListener('input', () => {
+        if (fields.confirmPassword.value) validators.confirmPassword();
+    });
+
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        if (alertBox) alertBox.hidden = true;
+
+        let firstInvalid = null;
+        order.forEach((key) => {
+            const ok = validators[key]();
+            if (!ok && !firstInvalid) firstInvalid = fields[key];
+        });
+
+        if (firstInvalid) { firstInvalid.focus(); return; }
+        if (!form.reportValidity()) return;
+
+        if (submitBtn) { submitBtn.disabled = true; submitBtn.classList.add('is-loading'); }
+        if (submitLabel) submitLabel.textContent = 'Creating accountâ€¦';
+
+        form.submit();
+    });
+})();
+
+
+/**
+ * A <select> has no native "placeholder" concept the way a text input
+ * does -- its hint option ("Select suffix", "Select gender") renders
+ * in the exact same color a real chosen answer would, which reads as
+ * already-filled-in and looks inconsistent next to an actual empty
+ * text field's lighter placeholder text right beside it. This just
+ * toggles .is-placeholder while the current value is the empty hint
+ * option; style.css dims the text for exactly that state (see
+ * ".ps-field select.is-placeholder"). Runs on every <select> on the
+ * page, not just form ones -- harmless where no matching CSS rule
+ * exists (e.g. calendar.php's toolbar filter), so it doesn't need to
+ * know which selects "count".
+ */
+(function initSelectPlaceholderStyling() {
+    function sync(select) {
+        select.classList.toggle('is-placeholder', select.value === '');
+    }
+    document.querySelectorAll('select').forEach((select) => {
+        sync(select);
+        select.addEventListener('change', () => sync(select));
+    });
+})();
+
+
+/**
+ * Admin tables (admin-requests.php, admin-donations.php,
+ * admin-announcements.php): type tabs, status select and search box
+ * all filter the rows PHP already rendered -- same "filter what's
+ * already in the DOM" approach as the announcements list above. Re-runs
+ * on 'ps:admin-rows-changed' so a mock status update or delete (see
+ * initAdminModals below) still respects the current filters.
+ */
+(function initAdminTableFilters() {
+    const rows = Array.from(document.querySelectorAll('[data-admin-row]'));
+    if (!rows.length) return;
+
+    const typeTabs = document.querySelector('[data-admin-type-tabs]');
+    const searchInput = document.querySelector('[data-admin-search]');
+    const statusSelect = document.querySelector('[data-admin-status-select]');
+    const emptyMsg = document.querySelector('[data-admin-empty]');
+    let activeType = 'all';
+
+    function applyFilters() {
+        const query = (searchInput ? searchInput.value : '').trim().toLowerCase();
+        const status = statusSelect ? statusSelect.value : '';
+        let visibleCount = 0;
+
+        rows.forEach((row) => {
+            if (!row.isConnected) return; // removed by a mock delete
+            const show = (activeType === 'all' || row.dataset.type === activeType)
+                && (!status || row.dataset.status === status)
+                && (!query || (row.dataset.search || '').includes(query));
+            row.classList.toggle('is-hidden', !show);
+            if (show) visibleCount += 1;
+        });
+
+        if (emptyMsg) emptyMsg.hidden = visibleCount > 0;
+    }
+
+    if (typeTabs) {
+        typeTabs.addEventListener('click', (e) => {
+            const btn = e.target.closest('[data-admin-type-tab]');
+            if (!btn) return;
+            activeType = btn.dataset.adminTypeTab;
+            typeTabs.querySelectorAll('[data-admin-type-tab]').forEach((t) => t.classList.toggle('active', t === btn));
+            applyFilters();
+        });
+    }
+    if (searchInput) searchInput.addEventListener('input', applyFilters);
+    if (statusSelect) statusSelect.addEventListener('change', applyFilters);
+    document.addEventListener('ps:admin-rows-changed', applyFilters);
+})();
+
+
+/**
+ * Admin modals + mock actions. FRONTEND ONLY, like the admin pages
+ * themselves -- nothing here is persisted:
+ *   - [data-modal-trigger="<id>"] opens that [data-modal] overlay and
+ *     copies the trigger's data-* values into the modal's matching
+ *     [data-modal-field] elements (data-reference -> "reference", ...).
+ *     A data-docs JSON list renders the document checklist.
+ *   - Saving a [data-mock-form] updates the row's status pill on
+ *     screen, closes the modal and toasts the attribute's message.
+ *   - [data-mock-delete] removes its row from view only.
+ */
+(function initAdminModals() {
+    const modals = document.querySelectorAll('[data-modal]');
+    if (!modals.length) return;
+
+    const toast = document.querySelector('[data-toast]');
+    let openModal = null;
+    let activeTrigger = null;
+    let toastTimer = null;
+
+    function showToast(message) {
+        if (!toast || !message) return;
+        toast.querySelector('[data-toast-text]').textContent = message;
+        toast.hidden = false;
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => { toast.hidden = true; }, 3500);
+    }
+
+    function renderDocs(modal) {
+        const wrap = modal.querySelector('[data-modal-docs-wrap]');
+        const list = modal.querySelector('[data-modal-docs]');
+        if (!wrap || !list) return;
+
+        let docs = [];
+        try { docs = JSON.parse(activeTrigger.dataset.docs || '[]'); } catch (_) { /* no checklist */ }
+
+        list.replaceChildren(...docs.map((doc) => {
+            const item = document.createElement('div');
+            item.className = 'admin-doc-item';
+
+            const label = document.createElement('label');
+            label.className = 'admin-doc-check';
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.checked = Boolean(doc.checked);
+            const text = document.createElement('span');
+            text.textContent = doc.label;
+            label.append(checkbox, text);
+            item.append(label);
+
+            if (doc.file) {
+                const link = document.createElement('a');
+                link.className = 'admin-doc-thumb-link';
+                link.href = doc.file;
+                link.target = '_blank';
+                link.rel = 'noopener';
+                const img = document.createElement('img');
+                img.className = 'admin-thumb';
+                img.src = doc.file;
+                img.alt = 'Uploaded ' + doc.label;
+                link.append(img);
+                item.append(link);
+            }
+            return item;
+        }));
+        wrap.hidden = docs.length === 0;
+        syncSeminarNote(modal);
+    }
+
+    // The Pre-Cana note only applies to weddings, once every required
+    // document is checked off.
+    function syncSeminarNote(modal) {
+        const note = modal.querySelector('[data-modal-seminar-wrap]');
+        if (!note || !activeTrigger) return;
+        const isWedding = activeTrigger.closest('[data-admin-row]')?.dataset.type === 'wedding';
+        const boxes = Array.from(modal.querySelectorAll('[data-modal-docs] input[type="checkbox"]'));
+        note.hidden = !(isWedding && boxes.length > 0 && boxes.every((box) => box.checked));
+    }
+
+    function open(modal, trigger) {
+        activeTrigger = trigger;
+        openModal = modal;
+        const form = modal.querySelector('form');
+        if (form) form.reset();
+
+        modal.querySelectorAll('[data-modal-field]').forEach((field) => {
+            const value = trigger.dataset[field.dataset.modalField] || '';
+            if (field.type === 'checkbox') field.checked = Boolean(value);
+            else if (field.matches('input, select, textarea')) field.value = value;
+            else field.textContent = value;
+        });
+        renderDocs(modal);
+
+        modal.hidden = false;
+        document.body.classList.add('ps-modal-open');
+        const firstField = modal.querySelector('input:not([type="file"]), select, textarea') || modal.querySelector('[data-modal-close]');
+        if (firstField) firstField.focus();
+    }
+
+    function close() {
+        if (!openModal) return;
+        openModal.hidden = true;
+        openModal = null;
+        document.body.classList.remove('ps-modal-open');
+        if (activeTrigger && activeTrigger.isConnected) activeTrigger.focus();
+        activeTrigger = null;
+    }
+
+    document.querySelectorAll('[data-modal-trigger]').forEach((trigger) => {
+        const modal = document.getElementById(trigger.dataset.modalTrigger);
+        if (modal) trigger.addEventListener('click', () => open(modal, trigger));
+    });
+
+    modals.forEach((modal) => {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal || e.target.closest('[data-modal-close]')) close();
+        });
+        modal.addEventListener('change', (e) => {
+            if (e.target.closest('[data-modal-docs]')) syncSeminarNote(modal);
+        });
+
+        const form = modal.querySelector('[data-mock-form]');
+        if (!form) return;
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            if (!form.reportValidity()) return;
+
+            const row = activeTrigger ? activeTrigger.closest('[data-admin-row]') : null;
+            const statusField = form.querySelector('select[data-modal-field="status"]');
+            const pill = row ? row.querySelector('[data-row-status]') : null;
+            if (statusField && pill) {
+                pill.className = 'ps-status is-' + statusField.value;
+                pill.textContent = statusField.selectedOptions[0].textContent;
+                row.dataset.status = statusField.value;
+                activeTrigger.dataset.status = statusField.value;
+                document.dispatchEvent(new CustomEvent('ps:admin-rows-changed'));
+            }
+
+            close();
+            showToast(form.dataset.mockForm);
+        });
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && openModal) close();
+    });
+
+    document.querySelectorAll('[data-mock-delete]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+            const row = btn.closest('[data-admin-row]');
+            if (!row) return;
+            const name = row.querySelector('.admin-cell-name strong')?.textContent || 'this item';
+            if (!window.confirm(`Delete "${name}"?`)) return;
+            row.remove();
+            document.dispatchEvent(new CustomEvent('ps:admin-rows-changed'));
+            showToast('Removed from view. (Design preview only -- not connected to a database.)');
+        });
+    });
+})();

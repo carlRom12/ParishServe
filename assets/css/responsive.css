@@ -1,0 +1,147 @@
+/* Load after page styles: shared responsive behavior for all frontend pages. */
+.ps-mobile-header { display: none; }
+/* Keep branding and logout outside the independently scrolling navigation. */
+body .ps-sidebar, body.confirmation-page .ps-sidebar, body.funeral-page .ps-sidebar {
+    display: flex;
+    flex-direction: column;
+    align-self: flex-start;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100dvh;
+    min-height: 0;
+    padding: 20px 12px 14px;
+    overflow: hidden;
+    background: #35121a;
+}
+body .ps-sidebar .ps-logo { flex: 0 0 auto; padding-bottom: 16px; margin-bottom: 12px; }
+body .ps-sidebar .ps-logo-crest { width: 42px; height: 46px; margin-bottom: 10px; }
+body .ps-sidebar .ps-logo-name { font-size: 24px; }
+body .ps-sidebar .ps-logo-eyebrow { font-size: 10px; }
+body .ps-sidebar .ps-logo-sub { font-size: 10px; }
+body .ps-sidebar .ps-nav { flex: 1 1 0; min-height: 0; overflow-y: auto; overflow-x: hidden; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #78545e transparent; }
+body .ps-sidebar .ps-nav-list { gap: 3px; }
+body .ps-sidebar .ps-nav-link { min-height: 40px; padding: 9px 12px; gap: 12px; font-size: 13px; line-height: 1.4; border-radius: 6px; }
+body .ps-sidebar .ps-nav-link svg { width: 18px; height: 18px; flex-shrink: 0; }
+body .ps-sidebar .ps-nav-section { margin: 18px 12px 7px; font-size: 10px; letter-spacing: 0; color: #d5b1b8; }
+body .ps-sidebar .ps-nav-link.active { background: #e3ab3e; color: #35121a; box-shadow: none; }
+body .ps-sidebar .ps-sidebar-art { display: none; }
+body .ps-sidebar .ps-logout-wrap { flex: 0 0 auto; margin-top: 12px; padding-top: 12px; border-top: 1px solid #ffffff26; }
+body .ps-sidebar .ps-logout-btn { min-height: 44px; justify-content: flex-start; padding: 10px 12px; border: 1px solid #ffffff26; border-radius: 6px; font-size: 13px; gap: 12px; }
+body .ps-sidebar a:focus-visible { outline: 2px solid #f1c66a; outline-offset: -2px; }
+@media (min-width: 1025px) {
+    body, body.confirmation-page, body.funeral-page { --sidebar-width: 220px; }
+}
+@media (min-width: 761px) and (max-width: 1024px) {
+    body .ps-sidebar .ps-nav-link, body .ps-sidebar .ps-logout-btn { justify-content: center; padding-inline: 8px; }
+}
+@media (max-height: 650px) {
+    body .ps-sidebar .ps-logo-crest, body .ps-sidebar .ps-logo-eyebrow, body .ps-sidebar .ps-logo-sub { display: none; }
+    body .ps-sidebar .ps-logo { padding-bottom: 10px; margin-bottom: 8px; }
+}
+.ps-nav-backdrop[hidden] { display: none; }
+.ps-table-scroll, .ps-calendar-scroll { max-width: 100%; overflow-x: auto; overscroll-behavior-inline: contain; }
+.ps-table-scroll table { width: 100%; }
+.ps-main, .ps-card, .ann-side, .db-side, .auth-panel, .ps-field,
+.wr3-review-row, .ps-form-row-2 > *, .ps-form-row-3 > *, .ps-form-row-4 > * { min-width: 0; }
+.ps-main p, .ps-main h1, .ps-main h2, .ps-main h3, .auth-card, .ps-main a { overflow-wrap: anywhere; }
+input, select, textarea { max-width: 100%; min-width: 0; }
+.ps-btn { white-space: normal; text-align: center; }
+.ps-card-header, .wr-actions, .cal-toolbar-left, .ps-legend { flex-wrap: wrap; }
+.ps-table-scroll:focus-visible, .ps-calendar-scroll:focus-visible { outline: 2px solid var(--gold-dark); outline-offset: 3px; }
+@media (min-width: 1025px) {
+    body .ps-main { max-width: none; margin-inline: 0; padding-inline: 24px; }
+}
+@media (max-width: 1024px) {
+    .ps-main .ps-form-row-3, .ps-main .ps-form-row-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .ps-main .ps-topbar { position: static; width: 100%; justify-content: flex-end; margin-bottom: 16px; }
+    .conf-topline .ps-topbar, .cg-topline .ps-topbar { width: auto; margin: 0; }
+    .db-hero { flex-wrap: wrap; }
+    .ann-hero { flex-direction: column; align-items: stretch; }
+    .ann-hero > .ps-topbar { position: relative; z-index: 3; padding: 14px 16px 0; }
+    .ann-hero-text { max-width: 100%; }
+    .db-hero-text { min-width: 0; }
+    .db-contact-list li { flex-wrap: wrap; }
+    .ps-anchor-tabs, .ps-tabs { flex-wrap: wrap; }
+}
+@media (max-width: 760px) {
+    body .ps-shell { display: block; }
+    body .ps-main, body.confirmation-page .ps-main, body.funeral-page .ps-main { width: 100%; max-width: none; padding: 18px 16px 32px; margin: 0; }
+    body .ps-sidebar, body.confirmation-page .ps-sidebar, body.funeral-page .ps-sidebar { position: static; width: 100%; min-height: 0; padding: 20px; }
+    body .ps-sidebar .ps-logo-eyebrow, body .ps-sidebar .ps-logo-name, body .ps-sidebar .ps-logo-sub,
+    body .ps-sidebar .ps-nav-section, body .ps-sidebar .ps-nav-link span, body .ps-sidebar .ps-logout-btn span { display: block; }
+    body .ps-sidebar .ps-nav-link { justify-content: flex-start; min-height: 44px; font-size: 14px; }
+    body.ps-has-mobile-nav .ps-sidebar { position: fixed; top: 60px; bottom: 0; left: 0; width: min(300px, 88%); height: calc(100dvh - 60px); min-height: 0; overflow: hidden; overscroll-behavior: contain; z-index: 1001; visibility: hidden; transform: translateX(-100%); }
+    body.ps-nav-open .ps-sidebar { visibility: visible; transform: translateX(0); }
+    body.ps-nav-open { overflow: hidden; }
+    .ps-mobile-header { position: sticky; top: 0; display: flex; align-items: center; gap: 14px; min-height: 60px; padding: 8px 16px; background: var(--maroon-900); color: #fff; z-index: 1002; }
+    .ps-mobile-header > a { font: 600 22px 'Playfair Display', Georgia, serif; }
+    .ps-menu-toggle { display: grid; place-items: center; width: 44px; height: 44px; color: #fff; border: 1px solid #ffffff45; border-radius: 6px; }
+    .ps-menu-symbol, .ps-menu-symbol::before, .ps-menu-symbol::after { display: block; width: 20px; height: 2px; background: currentColor; position: relative; }
+    .ps-menu-symbol::before, .ps-menu-symbol::after { content: ''; position: absolute; left: 0; }
+    .ps-menu-symbol::before { top: -6px; }
+    .ps-menu-symbol::after { top: 6px; }
+    .ps-nav-open .ps-menu-symbol { background: transparent; }
+    .ps-nav-open .ps-menu-symbol::before { top: 0; transform: rotate(45deg); }
+    .ps-nav-open .ps-menu-symbol::after { top: 0; transform: rotate(-45deg); }
+    .ps-nav-backdrop { position: fixed; inset: 60px 0 0; z-index: 1000; background: #0008; }
+    .ps-sidebar-art { display: none; }
+    .ps-main .ps-card { padding: 20px 16px; }
+    .ps-main .ps-form-row-2, .ps-main .ps-form-row-3, .ps-main .ps-form-row-4,
+    .auth-card .ps-form-row-2, .auth-card .ps-form-row-3 { grid-template-columns: minmax(0, 1fr); }
+    .ps-main .ann-grid, .ps-main .db-grid, .ps-main .don-top-grid, .ps-main .cg-layout,
+    .ps-main .wg-row-2, .ps-main .wg-fees-grid, .ps-main .wg-sponsors-grid { grid-template-columns: minmax(0, 1fr); }
+    .ps-main input:not([type=checkbox]):not([type=radio]), .ps-main select, .ps-main textarea,
+    .auth-card input:not([type=checkbox]):not([type=radio]), .auth-card select { font-size: 16px; }
+    .ps-btn, .ps-filter-btn, .ps-round-btn, .ps-notif-btn { min-height: 44px; }
+    .ps-round-btn, .ps-notif-btn { min-width: 44px; }
+    .ps-search { min-width: 0; width: 100%; }
+    .ps-search input { min-width: 0; width: 100%; }
+    .ann-toolbar-right { width: 100%; flex-wrap: wrap; flex-shrink: 1; }
+    .ann-toolbar-right .ps-search { flex: 1 1 180px; }
+    .ann-hero-text { padding: 20px 16px; }
+    .db-greeting { flex-wrap: wrap; font-size: 26px; }
+    .ps-plain-header { padding-right: 0; }
+    .ps-plain-header h1 { font-size: 28px; }
+    .ps-breadcrumb { flex-wrap: wrap; }
+    .wr-stepbar { flex-wrap: wrap; gap: 12px; }
+    .wr-stepbar .wr-step { flex: 1 1 100%; gap: 12px; }
+    .wr-stepbar .wr-step-sep { display: none; }
+    .wr-stepbar .wr-step-num { flex-shrink: 0; }
+    .wr3-review-row { flex-wrap: wrap; gap: 4px 12px; }
+    .wr3-review-row strong { overflow-wrap: anywhere; }
+    .wr-req-row { grid-template-columns: 28px minmax(0, 1fr); }
+    .wr-req-upload { grid-column: 1 / -1; min-width: 0; }
+    .ps-main .wr-actions { flex-direction: column-reverse; align-items: stretch; }
+    .wr-actions > * { width: 100%; }
+    .db-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .db-side { flex-direction: column; }
+    .ps-calendar-scroll .cal-grid, .ps-calendar-scroll .cal-weekday-row { min-width: 700px; }
+    .ps-calendar-scroll .cal-event { display: flex; }
+    .ps-calendar-scroll .cal-cell { padding: 8px; }
+    .ps-calendar-scroll .cal-event-text { -webkit-line-clamp: unset; }
+    .cal-toolbar-left { gap: 8px; }
+    .conf-topline, .cg-topline { min-height: 70px; gap: 12px; }
+    .conf-topline .ps-user-chip, .cg-topline .ps-user-chip { display: none; }
+    .conf-hero-text h1 { font-size: 38px; }
+    .conf-hero-text { max-width: 100%; }
+    .conf-quicklinks { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .auth-shell { min-height: 100dvh; grid-template-columns: minmax(0, 1fr); }
+    .auth-panel { padding: 24px 16px 32px; }
+    .auth-card, .auth-card-wide { width: 100%; max-width: 100%; padding: 24px 18px; }
+    .auth-footer-inner { flex-wrap: wrap; gap: 16px; }
+    .pub-navbar-inner { flex-wrap: wrap; }
+    .pub-hero-content { max-width: 100%; }
+}
+@media (max-width: 420px) {
+    body .ps-main, body.confirmation-page .ps-main, body.funeral-page .ps-main { padding-inline: 12px; }
+    .ps-main .ps-card { padding: 16px 12px; }
+    .conf-quicklinks, .wr-intent-options, .pub-feature-strip-inner { grid-template-columns: minmax(0, 1fr); }
+    .conf-hero-text h1 { font-size: 32px; }
+    .conf-banner { flex-direction: column; align-items: flex-start; }
+    .conf-banner-quote { flex-basis: auto; }
+    .db-stats { gap: 10px; }
+    .ps-main .db-stat { padding: 14px 10px; }
+    .ann-row-main { align-items: flex-start; }
+    .ann-row-main img { width: 56px; flex-shrink: 0; }
+}
