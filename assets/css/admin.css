@@ -1,0 +1,209 @@
+/* ---------------------------------------------------------------------
+ * admin.css
+ * Shared styling for the admin portal (admin-dashboard.php, admin-
+ * requests.php, admin-donations.php, admin-announcements.php). Loaded
+ * after style.css via $pageCss, same convention as every other page's
+ * per-page stylesheet. Reuses the existing --maroon/--gold/--radius/
+ * --shadow tokens from style.css rather than introducing new ones.
+ * ------------------------------------------------------------------- */
+
+/* Compact admin hero: no decorative photo banner (this is a back-
+   office screen, not the parishioner-facing dashboard) -- just the
+   greeting + topbar, so the important content (stats, activity)
+   starts much higher on the page. */
+.admin-hero {
+    min-height: auto;
+    margin-bottom: 20px;
+}
+
+/* Two-column layout for the dashboard's Recent Activity + Quick Links
+   -- deliberately NOT dashboard.php's 3-column .db-grid, which assumes
+   three children (today/requests/side); using it with only two here
+   left the columns mismatched and the page stretched out. */
+.admin-dash-grid {
+    display: grid;
+    grid-template-columns: 1.7fr 1fr;
+    gap: 20px;
+    align-items: start;
+    margin-bottom: 26px;
+}
+@media (max-width: 900px) {
+    .admin-dash-grid { grid-template-columns: 1fr; }
+}
+
+/* Toolbar: type tabs + status filter + search, all in one row above
+   a table. Wraps on narrow viewports. */
+.admin-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+}
+.admin-toolbar .ps-search { flex: 1 1 220px; max-width: 320px; }
+.admin-toolbar-spacer { flex: 1 1 auto; }
+
+/* Row-based "table" — same CSS-grid-row technique announcements.php
+   uses for .ann-table, generalized with a --admin-cols custom property
+   per page so the head and body rows always line up. */
+.admin-table { display: flex; flex-direction: column; }
+.admin-table-head,
+.admin-row {
+    display: grid;
+    grid-template-columns: var(--admin-cols, 1fr);
+    align-items: center;
+    gap: 12px;
+    padding: 14px 10px;
+}
+.admin-table-head {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .03em;
+    text-transform: uppercase;
+    color: var(--text-body);
+    border-bottom: 1px solid var(--card-border);
+}
+.admin-row { border-bottom: 1px solid var(--card-border); font-size: 14px; transition: opacity .15s; }
+.admin-row:last-child { border-bottom: none; }
+.admin-row:hover { background: var(--cream); }
+.admin-row.is-hidden { display: none; }
+
+.admin-cell-name strong { display: block; color: var(--text-dark); }
+.admin-cell-name small { display: block; color: var(--text-body); font-size: 12.5px; margin-top: 2px; }
+.admin-cell-actions { text-align: right; }
+
+.admin-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 48px 20px;
+    color: var(--text-body);
+    text-align: center;
+}
+.admin-empty svg { width: 32px; height: 32px; opacity: .5; }
+.admin-empty[hidden] { display: none; }
+
+.admin-proof-link { display: inline-flex; align-items: center; gap: 6px; color: var(--gold-dark); font-weight: 600; }
+.admin-proof-link svg { width: 15px; height: 15px; }
+.admin-proof-none { color: var(--text-body); font-size: 12.5px; font-style: italic; }
+
+/* Documents-received badge in the requests table + the checklist
+   inside the Update modal (wedding/baptism/confirmation/funeral only
+   -- tracks what's come in, final verification still happens on-site
+   per the paper's Scope & Limitations). */
+.admin-doc-count {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--status-pending-text);
+}
+.admin-doc-count svg { width: 15px; height: 15px; }
+.admin-doc-count.is-complete { color: var(--status-approved-text); }
+
+.admin-doc-list { display: flex; flex-direction: column; gap: 10px; }
+.admin-doc-item { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 4px 0; }
+.admin-doc-check { display: flex; align-items: center; gap: 10px; font-size: 13.5px; color: var(--text-dark); font-weight: normal; min-width: 0; }
+.admin-doc-check input { width: 16px; height: 16px; accent-color: var(--gold-dark); flex-shrink: 0; }
+.admin-doc-thumb-link { flex-shrink: 0; display: block; line-height: 0; }
+.admin-doc-hint { display: block; margin-top: 8px; color: var(--text-body); font-size: 12px; }
+
+.admin-thumb {
+    width: 44px; height: 44px; border-radius: var(--radius-sm);
+    object-fit: cover; background: var(--cream-deep); flex-shrink: 0;
+}
+
+/* ---------------------------------------------------------------------
+ * Modal (net new component — nothing in style.css does this yet)
+ * ------------------------------------------------------------------- */
+.ps-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(61, 15, 31, .45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 1000;
+}
+.ps-modal-overlay[hidden] { display: none; }
+body.ps-modal-open { overflow: hidden; }
+
+.ps-modal-card {
+    background: var(--card-bg);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card-hover);
+    width: 100%;
+    max-width: 480px;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 26px 28px 24px;
+    position: relative;
+}
+
+.ps-modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 50%;
+    background: var(--cream);
+    color: var(--text-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+.ps-modal-close svg { width: 16px; height: 16px; }
+.ps-modal-close:hover { background: var(--cream-deep); }
+
+.ps-modal-title { font-size: 19px; margin: 0 32px 4px 0; color: var(--text-dark); }
+.ps-modal-sub { font-size: 13px; color: var(--text-body); margin: 0 0 20px; }
+.ps-modal-field { margin-bottom: 16px; }
+.ps-modal-field label { display: block; font-size: 13px; font-weight: 600; color: var(--text-dark); margin-bottom: 6px; }
+.ps-modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 22px; }
+
+.ps-modal-field textarea,
+.ps-modal-field input[type="text"],
+.ps-modal-field input[type="number"],
+.ps-modal-field input[type="date"] {
+    width: 100%;
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    font: inherit;
+    color: var(--text-dark);
+    resize: vertical;
+    box-sizing: border-box;
+}
+.ps-modal-field textarea:focus,
+.ps-modal-field input:focus { outline: none; border-color: var(--gold); }
+.ps-modal-field .ps-select { width: 100%; }
+.ps-modal-checkbox { display: flex; align-items: center; gap: 10px; }
+
+/* ---------------------------------------------------------------------
+ * Toast (net new component) — purely a client-side confirmation shown
+ * after a mock Save/Delete click, no server round-trip this pass.
+ * ------------------------------------------------------------------- */
+.ps-toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 13px 18px;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-card-hover);
+    font-size: 13.5px;
+    font-weight: 600;
+    z-index: 1100;
+    background: var(--status-completed-bg);
+    color: var(--status-completed-text);
+}
+.ps-toast svg { width: 17px; height: 17px; }
+.ps-toast[hidden] { display: none; }
