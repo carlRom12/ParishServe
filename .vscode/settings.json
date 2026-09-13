@@ -1,0 +1,14 @@
+{
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.expand": false,
+  "explorer.fileNesting.patterns": {
+    "baptism.html": "baptism-*.html",
+    "wedding.html": "wedding-*.html",
+    "confirmation.html": "confirmation-*.html",
+    "funeral.html": "funeral-*.html",
+    "counseling.html": "counseling-*.html",
+    "mass-intention.html": "mass-intention-*.html",
+    "donations.html": "donation-*.html",
+    "login.html": "register.html, verify-otp.html, login_register.php, verify-otp.php, auth-state.php"
+  }
+}

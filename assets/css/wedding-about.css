@@ -1,0 +1,19 @@
+.wedding-about-page .co-hero > img { object-fit: cover; }
+.wedding-about-page .co-hero::after { background: linear-gradient(90deg, #301018ed, #301018a6 45%, transparent 85%); }
+.wedding-about-page .co-hero-copy { max-width: 780px; }
+.wedding-about-page .co-hero h1 { font-size: 52px; }
+.wa-intro { display: grid; grid-template-columns: minmax(0, 2.2fr) minmax(180px, 1fr); gap: 24px; align-items: center; }
+.wa-reflection { margin: 0; padding: 24px 16px; background: #faf6ef; border-radius: 8px; text-align: center; }
+.wa-reflection img { display: block; margin: 0 auto 16px; }
+.wa-reflection blockquote, .wa-quote { font: italic 18px/1.5 Georgia, serif; color: #760d2c; }
+.wa-reflection figcaption, .wa-quote cite { display: block; margin-top: 8px; font: 12px/1.5 'Poppins', sans-serif; color: #566074; }
+.wedding-about-page .ca-benefits { margin-top: 16px; text-align: center; }
+.wedding-about-page .ca-benefits .co-icon { margin-inline: auto; }
+.wa-photo { width: 100%; height: 180px; object-fit: cover; object-position: right center; border-radius: 8px; margin-top: 12px; }
+.wa-quote { margin: 12px 0 0; text-align: center; }
+.wedding-about-page .ca-contact { margin-top: 14px; }
+.wa-office { margin-top: 20px; padding-top: 16px; border-top: 1px solid #eee8e4; }
+.wa-office h3 { font-size: 17px; margin-bottom: 6px; }
+.wedding-about-page .mi-note a { color: #760d2c; text-decoration: underline; }
+@media (max-width: 1100px) { .wedding-about-page .ca-side { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 760px) { .wa-intro, .wedding-about-page .ca-side { grid-template-columns: 1fr; } .wedding-about-page .co-hero h1 { font-size: 38px; } .wedding-about-page .co-hero-copy { padding: 28px 24px; } }

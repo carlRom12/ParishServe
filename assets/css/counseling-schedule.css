@@ -1,0 +1,18 @@
+/* Reuse the Confirmation calendar components with the Counseling page shell. */
+.counseling-schedule-page .conf-req-grid { grid-template-columns: minmax(0, 1.75fr) minmax(0, 1fr); margin-inline: 0; gap: 18px; }
+.counseling-schedule-page .conf-sched-card { min-width: 0; }
+.counseling-schedule-page .conf-sched-head h2 { font-size: 25px; }
+.counseling-schedule-page .fg-tabs [aria-current] { background: #fbeef1; }
+.counseling-schedule-page .conf-sched-day { min-height: 62px; }
+.counseling-schedule-page .conf-req-note { margin-top: 18px; }
+.counseling-schedule-page .conf-req-side-card .ps-btn { width: 100%; border-radius: 28px; margin-top: 16px; }
+.counseling-schedule-demo { font-size: 12px; color: #7c7378; margin-bottom: 14px; }
+@media (max-width: 1100px) { .counseling-schedule-page .conf-req-grid { grid-template-columns: 1fr; } }
+@media (max-width: 520px) { .counseling-schedule-page .conf-sched-day { min-height: 48px; padding: 5px; } .counseling-schedule-page .conf-sched-grid { gap: 4px; } }
+
+.counseling-schedule-page .co-hero-copy { max-width: 740px; padding-bottom: 70px; }
+.counseling-schedule-page .ca-tabs [aria-current] { background: #faedf1; }
+.counseling-schedule-page .conf-req-grid { margin: 0 5px; }
+.counseling-schedule-page .conf-req-side-card > p { font-size: 13px; line-height: 1.6; margin-top: 8px; }
+.counseling-schedule-page .conf-sched-event-item.is-highlighted { background: #fff; border-color: #eee8e4; }
+@media(max-width:760px) { .counseling-schedule-page .co-hero-copy { padding-bottom: 28px; } }

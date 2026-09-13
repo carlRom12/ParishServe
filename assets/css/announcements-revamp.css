@@ -1,0 +1,32 @@
+
+.parish-announcements-page { background:#faf8f4; }
+.parish-announcements-page .ann-toolbar { display:flex; flex-wrap:wrap; gap:16px; margin:20px 0; justify-content:space-between; }
+.parish-announcements-page .ps-tabs { display:flex; flex-wrap:wrap; gap:8px; border:0; }
+.parish-announcements-page .ps-tab { border:1px solid #eee4d8; border-radius:24px; padding:10px 16px; background:white; font-size:12px; }
+.parish-announcements-page .ps-tab.active { background:#760d2c; color:white; }
+.parish-announcements-page .ann-toolbar-right { display:flex; gap:12px; align-items:center; }
+.parish-announcements-page .ps-search { border-radius:24px; background:#fff; }
+.an-sort { display:flex; align-items:center; gap:8px; font-size:12px; }
+.an-sort select { padding:10px; border:1px solid #eee4d8; border-radius:20px; color:#760d2c; background:white; }
+.parish-announcements-page .ann-grid { grid-template-columns:minmax(0,3fr) minmax(270px,1fr); gap:18px; }
+.parish-announcements-page .ps-card { border:1px solid #eee4d8; border-radius:10px; padding:18px; box-shadow:0 3px 12px #54221805; }
+.parish-announcements-page .ann-featured { padding:10px; }
+.ann-featured > .ps-card-header { display:none; }
+.parish-announcements-page .ann-slide { background:#faf3e7; border-radius:8px; overflow:hidden; }
+.parish-announcements-page .ann-slide-body { padding:24px; }
+.parish-announcements-page .ann-slide h3 { font:600 26px/1.3 'Playfair Display',serif; }
+.parish-announcements-page .ann-slide p { font-size:14px; line-height:1.6; }
+.parish-announcements-page .ann-table-head { display:none; }
+.parish-announcements-page .ann-row { border:1px solid #eee4d8; border-radius:8px; padding:12px; margin-top:8px; gap:14px; }
+.parish-announcements-page .ann-row-main { min-width:0; }
+.parish-announcements-page .ann-row-main img { width:94px; height:66px; object-fit:cover; border-radius:6px; }
+.parish-announcements-page .ann-row-text strong { font-size:14px; }
+.parish-announcements-page .ann-row-text small { font-size:12px; line-height:1.5; }
+.parish-announcements-page .ann-row-date { font-size:12px; }
+.parish-announcements-page .ps-tag { font-size:11px; border-radius:20px; }
+.parish-announcements-page [hidden] { display:none!important; }
+@media(max-width:1100px){.parish-announcements-page .ann-grid { grid-template-columns:1fr; }}
+@media(max-width:600px){.parish-announcements-page .ann-toolbar-right { flex-wrap:wrap; }.parish-announcements-page .ann-row { display:flex; flex-wrap:wrap; }.parish-announcements-page .ann-row-main { width:100%; }.parish-announcements-page .ann-slide-body { padding:18px; }}
+
+.parish-announcements-page .ann-slide-image img { width:100%; height:100%; object-fit:cover; object-position:75% center; }
+.parish-announcements-page .ann-row-main img { object-position:75% center; }

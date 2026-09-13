@@ -1,0 +1,27 @@
+
+.parish-calendar-page { background:#faf8f4; }
+.pc-hero { display:flex; align-items:center; justify-content:space-between; gap:32px; padding:36px 28px 48px; background:linear-gradient(90deg,#faf6eef5,#faf6eef0 55%,#faf6ee99),url('../images/wedding-hero.png') center/cover; border-radius:10px; }
+.pc-hero .co-eyebrow { color:#a57828; }
+.pc-hero h1 { font-size:48px; color:#641a30; margin:12px 0 8px; }
+.pc-hero p { font-size:15px; color:#69646a; }
+.pc-hero blockquote { max-width:280px; margin:0; font:italic 19px/1.5 Georgia,serif; }
+.pc-hero cite { display:block; font:13px 'Poppins',sans-serif; margin-top:12px; text-align:right; }
+.pc-calendar { position:relative; margin-top:-16px; padding:24px; background:#fff; border:1px solid #eee4d8; border-radius:10px; }
+.cal-toolbar,.pc-controls,.ps-legend,.ps-legend-item { display:flex; align-items:center; gap:16px; }
+.cal-toolbar { justify-content:space-between; flex-wrap:wrap; margin-bottom:22px; }
+.cal-month-label { font-size:32px; min-width:200px; text-align:center; margin:0; color:#641a30; }
+.pc-controls .ps-round-btn { width:42px; height:42px; font-size:24px; border-radius:9px; }
+.ps-legend-item { gap:8px; font-size:12px; }
+.ps-dot { display:inline-block; width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+.cat-mass { background:#760d2c; }.cat-sacrament { background:#216399; }.cat-event { background:#157449; }
+.cal-weekday-row,.cal-grid { display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); }
+.cal-weekday-row { padding-bottom:12px; text-align:center; font-size:12px; font-weight:600; }
+.cal-grid { border-top:1px solid #eadcca; border-left:1px solid #eadcca; border-radius:8px; overflow:hidden; }
+.cal-cell { min-height:110px; padding:12px; border-right:1px solid #eadcca; border-bottom:1px solid #eadcca; }
+.cal-cell.is-muted { background:#faf7f1; color:#afa79e; }
+.cal-cell-day { display:inline-block; font-size:13px; font-weight:600; margin-bottom:8px; }
+.cal-cell-day.is-today { background:#760d2c; color:white; border-radius:50%; padding:2px 7px; }
+.cal-event { display:flex; gap:6px; align-items:baseline; font-size:12px; line-height:1.5; margin-bottom:5px; color:#59575a; background:transparent; }
+.cal-event-more { font-size:12px; }
+.pc-note { background:#f5ecdc; padding:14px 16px; border-radius:8px; margin:14px 0 0; font-size:12px; }
+@media(max-width:900px){.pc-hero { flex-direction:column; align-items:flex-start; }.pc-hero blockquote { max-width:none; }.pc-scroll { overflow-x:auto; }.cal-grid,.cal-weekday-row { min-width:800px; }.pc-calendar { padding:16px; }.pc-controls { gap:8px; flex-wrap:wrap; }.cal-month-label { font-size:24px; min-width:160px; }}

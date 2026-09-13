@@ -1,0 +1,12 @@
+/* Shared service back links. */
+body .ps-main a.service-back {display:inline-flex;align-items:center;gap:8px;padding:0;margin:0 8px 14px;min-height:24px;color:#35121a;background:transparent;border:0;border-radius:0;font:500 14px/1.5 'Poppins',sans-serif;letter-spacing:normal;text-transform:none;text-decoration:none;vertical-align:middle;}
+body .ps-main a.service-back svg {display:block;width:18px;height:18px;flex:0 0 18px;margin:0;}
+body .ps-main a.service-back:hover {color:#35121a;text-decoration:underline;}
+body .ps-main a.service-back:focus-visible {outline:2px solid #8a2642;outline-offset:4px;}
+body .ps-main :is(.conf-topline,.fg-topline) a.service-back {margin:0;}
+
+/* Back link and account controls occupy one consistent header row. */
+body .ps-main .service-topline {display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:64px;padding:8px 0;margin:0;box-sizing:border-box;flex-wrap:nowrap;}
+body .ps-main .service-topline a.service-back {margin:0;flex-shrink:0;}
+body .ps-main .service-topline .ps-topbar {position:static;display:flex;align-items:center;margin-left:auto;gap:12px;}
+@media(max-width:600px){body .ps-main .service-topline{gap:10px;flex-wrap:wrap;}body .ps-main .service-topline a.service-back{font-size:13px;}}

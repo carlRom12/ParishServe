@@ -1,0 +1,18 @@
+
+.donation-request-page .don-top-grid {gap:20px;margin-bottom:20px;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr)}
+.donation-request-page .don-top-grid>div:first-child {display:grid;gap:20px;align-content:start}
+.donation-request-page .wr-section {margin:0 0 20px;padding:22px}
+.donation-request-page .don-top-grid .wr-section {margin:0}
+.donation-request-page .wr-section-heading {font-size:26px;margin-bottom:10px}
+.donation-request-page .ps-field label {display:block;margin-bottom:7px;font-size:13px}
+.donation-request-page .ps-field :is(input:not([type=checkbox]):not([type=file]),select) {min-height:46px;box-sizing:border-box;font:400 13px/1.5 'Poppins',sans-serif}
+.donation-request-page #donationPurpose {display:block;width:100%;height:46px;padding:10px 12px;border:1px solid #e7dfda;border-radius:7px;color:#494950;background:#fff}
+.donation-request-page #donationPurpose:focus-visible {outline:2px solid #8a2642;outline-offset:2px}
+.donation-request-page .ps-main>form>.ps-info-banner {margin-bottom:20px;font-size:13px;line-height:1.6}
+.donation-request-page .don-payment-grid {grid-template-columns:1fr;gap:20px}
+.donation-request-page .don-qr-block img {max-width:180px}
+.don-qr-placeholder-label {font-size:12px;color:#8a2642;margin-bottom:8px}
+.donation-request-page .wr-actions {gap:16px;margin-top:20px}
+.donation-request-page .wr-actions .ps-btn {min-height:44px;border-radius:7px;font-size:13px}
+@media(max-width:1100px){.donation-request-page .don-top-grid{grid-template-columns:1fr}.donation-request-page .don-payment-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:640px){.donation-request-page .don-payment-grid{grid-template-columns:1fr}.donation-request-page .wr-section{padding:18px}}

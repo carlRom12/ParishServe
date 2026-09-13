@@ -1,0 +1,64 @@
+/* Mass Intention Request wizard: a single-file data-step wizard (like
+   counseling-request.html) reusing the same modern frame as
+   mass-intention-about.html/guidelines/types (.co-hero/.ca-tabs/
+   .ca-layout/.ca-side/.co-card) plus the site's existing wizard kit
+   (wedding-request.css's .wr-stepbar/.wr-form, confirmation-layout.css's
+   .conf-apply-steps-list). Only the back-link's margin needs adjusting
+   here, since mass-about.css's .ma-back was written for a standalone
+   line below the topline -- this page folds it into the same flex row
+   as .ps-topbar instead (matching the current convention). */
+.mass-intention-request-page .ma-back { margin: 0; }
+
+.mass-intention-request-page .wr-stepbar { margin: 0 5px 14px; }
+
+/* .ps-btn sets display:inline-flex, which (being an author rule) beats
+   the UA stylesheet's [hidden]{display:none} at equal specificity --
+   without this, JS-toggled hidden on #mrBack/#mrCancel has no visible
+   effect. Matches counseling-request.css's .cr-form [hidden] fix. */
+.mass-intention-request-page .wr-form [hidden] { display: none !important; }
+
+/* wedding-request.css spaces these with direct-child (.wr-form > ...)
+   selectors; wrapping each step's fields in a <section data-step> for
+   the JS-driven wizard puts a level between them and .wr-form, so the
+   spacing needs restating here at the new depth. */
+.mass-intention-request-page .wr-form section > .ps-form-row-2,
+.mass-intention-request-page .wr-form section > .ps-form-row-3 { margin-bottom: 22px; }
+.mass-intention-request-page .wr-form section > .ps-field { margin-bottom: 8px; }
+.mass-intention-request-page .wr-form section > .ps-info-banner { margin: 18px 0; }
+
+@media (max-width: 1100px) {
+    .mass-intention-request-page .ca-layout { grid-template-columns: 1fr; }
+    .mass-intention-request-page .ca-side { grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: start; }
+}
+@media (max-width: 760px) {
+    .mass-intention-request-page .ca-side { grid-template-columns: 1fr; }
+}
+
+/* Scheduling uses equal native controls without nested input borders. */
+.mass-intention-request-page .mr-schedule-fields { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;align-items:start; }
+.mass-intention-request-page [data-step="1"] .ps-field label { display:block;font-size:13px;line-height:1.5;margin-bottom:7px; }
+.mass-intention-request-page [data-step="1"] :is(input,select,textarea) { box-sizing:border-box;width:100%;border:1px solid #e7dfda;border-radius:7px;padding:11px 14px;color:#494950;background:#fff;font:400 13px/1.5 'Poppins',sans-serif; }
+.mass-intention-request-page [data-step="1"] :is(input,select) { height:46px; }
+.mass-intention-request-page [data-step="1"] textarea { min-height:110px;resize:vertical; }
+.mass-intention-request-page [data-step="1"] .ps-form-hint { display:block;margin-top:6px;font-size:12px; }
+.mass-intention-request-page [data-step="1"] .ps-info-banner { padding:14px 16px;font-size:13px;line-height:1.6; }
+.mass-intention-request-page .wr-actions { gap:16px;margin-top:22px;padding-top:20px; }
+.mass-intention-request-page .wr-actions .ps-btn { min-height:44px;font-size:13px;border-radius:7px; }
+@media(max-width:600px){.mass-intention-request-page .mr-schedule-fields{grid-template-columns:1fr;gap:16px;}}
+
+/* Review cards share one spacing scale and stretch to equal heights. */
+.mass-intention-request-page [data-step="2"] .wr3-review-grid { grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;align-items:stretch; }
+.mass-intention-request-page [data-step="2"] .wr3-review-card { min-width:0;padding:20px;margin:0;border:1px solid #eee8e4;border-radius:8px;box-shadow:none; }
+.mass-intention-request-page [data-step="2"] .wr3-review-card-full { margin-top:20px; }
+.mass-intention-request-page [data-step="2"] .wr3-review-card-header { gap:12px;margin-bottom:14px;min-height:38px; }
+.mass-intention-request-page [data-step="2"] .wr3-review-card-header h3 { font-size:18px;line-height:1.4; }
+.mass-intention-request-page [data-step="2"] .wr3-review-row { display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:start;gap:16px;min-height:40px;padding:10px 0;font-size:13px;line-height:1.6; }
+.mass-intention-request-page [data-step="2"] .wr3-review-row :is(span,strong) { min-width:0;overflow-wrap:anywhere; }
+.mass-intention-request-page [data-step="2"] .wr3-review-row strong { text-align:right;white-space:pre-wrap;font-weight:600; }
+.mass-intention-request-page [data-step="2"] .ps-info-banner { margin:20px 0;padding:14px 16px;border-radius:8px;line-height:1.6;font-size:13px; }
+.mass-intention-request-page [data-step="2"] .wr3-confirm-bar { display:flex;flex-wrap:nowrap;gap:20px;padding:20px;margin:0;border-radius:8px;box-shadow:none; }
+.mass-intention-request-page [data-step="2"] .wr3-confirm-text { flex:1;min-width:0;align-items:flex-start;gap:14px; }
+.mass-intention-request-page [data-step="2"] .wr3-confirm-text small { display:block;line-height:1.6;margin-top:3px; }
+.mass-intention-request-page [data-step="2"] .ps-toggle { flex-shrink:0; }
+@media(max-width:1100px){.mass-intention-request-page [data-step="2"] .wr3-review-grid{grid-template-columns:1fr;}}
+@media(max-width:640px){.mass-intention-request-page [data-step="2"] .wr3-review-card{padding:16px;}.mass-intention-request-page [data-step="2"] .wr3-review-row{grid-template-columns:1fr;gap:4px;}.mass-intention-request-page [data-step="2"] .wr3-review-row strong{text-align:left;}.mass-intention-request-page [data-step="2"] .wr3-confirm-bar{flex-direction:column;align-items:flex-start;padding:16px;}}

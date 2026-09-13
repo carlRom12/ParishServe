@@ -1,0 +1,19 @@
+
+/* Shared parish navigation: identical icon scale and active treatment. */
+.ps-sidebar { background:radial-gradient(ellipse at 0% 0%,#a54b3940 0%,transparent 48%),radial-gradient(ellipse at 100% 65%,#81283b33 0%,transparent 55%),linear-gradient(160deg,#601d2d 0%,#421320 42%,#290c16 100%); border-right:1px solid #b78a4140; }
+.ps-sidebar .ps-logo { border-bottom:1px solid #c59a514d; }
+.ps-sidebar .ps-logo-crest { color:#edc66e; }
+.ps-sidebar .ps-logo-name { color:#f0c867; }
+.ps-sidebar .ps-nav-link { gap:12px; min-height:42px; border:1px solid transparent; border-radius:8px; color:#fff4df; }
+.ps-sidebar .ps-nav-link>svg { width:21px; height:21px; flex:0 0 21px; stroke-width:1.7; }
+.ps-sidebar .ps-nav-link:hover { background:#ffffff0d; transform:none; }
+.ps-sidebar .ps-nav-link:hover svg { transform:none; }
+.ps-sidebar .ps-nav-link.active { color:#36131a; background:linear-gradient(110deg,#ffd766,#e6ab40); border-color:#ffe398; box-shadow:0 2px 8px #10050a30; }
+.ps-sidebar .ps-nav-link.active::after { content:''; width:6px; height:6px; border-top:1.7px solid currentColor; border-right:1.7px solid currentColor; transform:rotate(45deg); margin-left:auto; flex-shrink:0; }
+.ps-sidebar .ps-nav-section { display:flex; align-items:center; gap:12px; color:#e9c575; letter-spacing:1.6px; }
+.ps-sidebar .ps-nav-section::after { content:''; height:1px; background:#c99d5c40; flex:1; }
+.ps-sidebar .ps-logout-btn { border:1px solid #a749605c; border-radius:8px; color:#fff0df; }
+.ps-sidebar .ps-logout-btn>svg { width:21px; height:21px; color:#da8a94; }
+.ps-sidebar .ps-nav-link:focus-visible,.ps-sidebar .ps-logout-btn:focus-visible { outline:2px solid #f0c867; outline-offset:2px; }
+
+.service-topline.utility-topline { justify-content: flex-end; }

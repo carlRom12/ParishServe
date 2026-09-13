@@ -9,20 +9,20 @@
         events.set(dateKey(new Date(2026, 3, 26 + index)), Array.from(cell.querySelectorAll('.cal-event, .cal-event-more')).map(event => event.cloneNode(true)));
     });
     const params = new URLSearchParams(location.search);
-    const month = Number(params.get('month') || 5);
-    const year = Number(params.get('year') || 2026);
-    const valid = Number.isInteger(month) && Math.abs(month) <= 1200 && Number.isInteger(year) && year >= 100 && year <= 9998;
-    const current = valid ? new Date(year, month - 1, 1) : new Date(2026, 4, 1);
     const today = new Date();
+    const month = Number(params.get('month'));
+    const year = Number(params.get('year'));
+    const valid = Number.isInteger(month) && month >= 1 && month <= 12 && Number.isInteger(year) && year >= 100 && year <= 9998;
+    const current = valid ? new Date(year, month - 1, 1) : new Date(today.getFullYear(), today.getMonth(), 1);
     const label = current.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
     document.querySelector('.cal-month-label').textContent = label;
-    document.querySelector('.cal-mini-head strong').textContent = label;
+    const miniLabel = document.querySelector('.cal-mini-head strong'); if (miniLabel) miniLabel.textContent = label;
     const link = date => `calendar.html?month=${date.getMonth() + 1}&year=${date.getFullYear()}`;
     document.querySelectorAll('[aria-label="Previous month"]').forEach(a => a.href = link(new Date(current.getFullYear(), current.getMonth() - 1, 1)));
     document.querySelectorAll('[aria-label="Next month"]').forEach(a => a.href = link(new Date(current.getFullYear(), current.getMonth() + 1, 1)));
     document.querySelector('.cal-toolbar .ps-filter-btn').href = link(today);
     grid.replaceChildren();
-    mini.replaceChildren();
+    mini?.replaceChildren();
     for (let index = 0; index < 42; index++) {
         const date = new Date(current.getFullYear(), current.getMonth(), 1 - current.getDay() + index);
         const muted = date.getMonth() !== current.getMonth() ? ' is-muted' : '';
@@ -37,6 +37,6 @@
         const miniDay = document.createElement('span');
         miniDay.className = 'cal-mini-cell' + muted + active;
         miniDay.textContent = date.getDate();
-        mini.append(miniDay);
+        mini?.append(miniDay);
     }
 })();

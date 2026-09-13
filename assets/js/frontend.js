@@ -1,6 +1,6 @@
 (function () {
     const page = location.pathname.split('/').pop();
-    const flow = page.startsWith('mass-intention-request') ? 'mass-intention' : page.startsWith('wedding-request') ? 'wedding' : page.startsWith('baptism-request') ? 'baptism' : page.startsWith('confirmation-request') ? 'confirmation' : null;
+    const flow = page.startsWith('wedding-request') ? 'wedding' : page.startsWith('baptism-request') ? 'baptism' : page.startsWith('confirmation-request') ? 'confirmation' : null;
     const key = 'parishserve-draft-' + flow;
     let draft = {};
     try { draft = JSON.parse(sessionStorage.getItem(key) || '{}'); } catch (_) { /* Storage may be disabled. */ }
@@ -19,7 +19,7 @@
         };
         form.addEventListener('input', save);
         form.addEventListener('change', save);
-        if (!form.hasAttribute('data-wizard-step-form')) {
+        if (!form.hasAttribute('data-wizard-step-form') && !form.hasAttribute('data-baptism-upload')) {
             form.addEventListener('submit', event => {
                 event.preventDefault();
                 if (!form.reportValidity()) return;
@@ -60,20 +60,6 @@
         });
         validate();
     });
-
-    if (page === 'mass-intention-request-step3.html') {
-        const fields = ['intentionType', 'intentionSubject', 'occasion', 'intentionDetails', 'requesterName', 'mobileNumber', 'emailAddress', 'preferredDate', 'preferredTime', 'massType', 'schedulingNotes'];
-        const types = { regular: 'Regular Parish Mass', special: 'Special / Subject to Parish Confirmation' };
-        document.querySelectorAll('.wr3-review-row strong').forEach((value, index) => {
-            const field = fields[index];
-            let text = draft[field] || 'Not provided';
-            if (field === 'massType') text = types[draft[field]] || 'Not provided';
-            if (field === 'preferredDate' && /^\d{4}-\d{2}-\d{2}$/.test(draft[field] || '')) {
-                text = new Date(draft[field] + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
-            }
-            value.textContent = text;
-        });
-    }
 
     if (page === 'confirmation-request-step4.html') {
         const fullName = [draft.candidateFirstName, draft.candidateMiddleName, draft.candidateLastName, draft.candidateSuffix].filter(Boolean).join(' ');

@@ -1,0 +1,27 @@
+.baptism-about-page .wr-stepbar{margin:0 8px 18px}.baptism-about-page .ps-main>form{margin-inline:8px}.baptism-about-page .wr-section,.baptism-about-page .wr-form{border-radius:8px;box-shadow:none}.baptism-about-page .wr-section-heading{font-size:26px}@media(max-width:760px){.baptism-about-page .wr-stepbar,.baptism-about-page .ps-main>form{margin-inline:0}}
+/* Uniform field boxes and section rhythm for both request steps. */
+.baptism-about-page .ps-main>form .wr-section {padding:24px;margin-bottom:20px;}
+.baptism-about-page .ps-main>form .wr-section-heading {font-size:26px;line-height:1.3;margin:0 0 16px;}
+.baptism-about-page .ps-main>form .wr-section-sub {margin:-6px 0 20px;font-size:13px;line-height:1.6;}
+.baptism-about-page .ps-main>form :is(.ps-form-row-2,.ps-form-row-3,.ps-form-row-4) {gap:20px;align-items:start;margin-bottom:22px;}
+.baptism-about-page .ps-main>form .ps-field {min-width:0;}
+.baptism-about-page .ps-main>form .ps-field>label {display:block;font:500 13px/1.5 'Poppins',sans-serif;margin-bottom:7px;}
+.baptism-about-page .ps-main>form .ps-field :is(input:not([type=radio]):not([type=checkbox]):not([type=file]),select) {box-sizing:border-box;width:100%;height:46px;min-height:46px;padding:11px 14px;border:1px solid #e7dfda;border-radius:7px;background:#fff;color:#494950;font:400 13px/1.5 'Poppins',sans-serif;}
+.baptism-about-page .ps-main>form .ps-select {display:block;padding:0;border:0;background:none;border-radius:0;box-shadow:none;}
+.baptism-about-page .ps-main>form .ps-select>svg {display:none;}
+.baptism-about-page .ps-main>form .ps-select select {appearance:auto;}
+.baptism-about-page .ps-main>form .ps-datepicker-field {display:block;padding:0;border:0;background:none;}
+.baptism-about-page .ps-main>form .ps-datepicker-field:has(input[type=date]) .ps-datepicker-toggle {display:none;}
+.baptism-about-page .ps-main>form .ps-field :is(input,select,textarea):focus-visible {outline:2px solid #8a2642;outline-offset:2px;}
+.baptism-about-page .ps-main>form .wr-section .ps-form-row-4+.wr-section-heading {border-top:1px solid #eee8e4;padding-top:22px;margin-top:6px;}
+.baptism-about-page .ps-main>form .wr-actions {margin-top:20px;padding-top:20px;gap:16px;}
+@media(max-width:1000px){.baptism-about-page .ps-main>form .ps-form-row-4{grid-template-columns:repeat(2,minmax(0,1fr));}}
+@media(max-width:600px){.baptism-about-page .ps-main>form .wr-section{padding:18px;}.baptism-about-page .ps-main>form .wr-section-heading{font-size:23px;}.baptism-about-page .ps-main>form :is(.ps-form-row-2,.ps-form-row-3,.ps-form-row-4){grid-template-columns:1fr;gap:16px;}}
+
+[data-baptism-upload] [hidden]{display:none!important}.baptism-review dl{display:grid;grid-template-columns:1fr 2fr;gap:12px;margin:20px 0}.baptism-review dd{margin:0;overflow-wrap:anywhere}.baptism-review p{margin-top:18px;font-size:13px}.baptism-review label{display:block;line-height:1.6}
+
+.baptism-file-preview{margin-top:16px;padding:16px;border:1px solid #eee8e4;border-radius:8px;background:#fcfaf7}.baptism-file-preview strong{display:block;margin-bottom:12px;color:#760d2c}.baptism-file-preview img{display:block;max-width:100%;max-height:480px;object-fit:contain;margin:0 auto 12px}.baptism-file-preview iframe{display:block;width:100%;height:480px;border:1px solid #eee8e4;border-radius:6px;margin-bottom:12px;background:white}.baptism-file-preview a{color:#8a2642;text-decoration:underline;font-weight:600}.baptism-file-preview p{font-size:12px;line-height:1.6;margin-top:8px}
+
+.baptism-preview-header{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:14px}.baptism-preview-header>div{min-width:0}.baptism-preview-header strong{margin-bottom:4px}.baptism-preview-header span{font-size:12px;overflow-wrap:anywhere}.baptism-preview-header button{flex-shrink:0;font-size:12px;border-radius:6px;padding:8px 14px}.baptism-file-preview{margin-top:0}@media(max-width:520px){.baptism-preview-header{align-items:flex-start;flex-direction:column}}
+
+.baptism-review .br-review-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;margin-top:20px}.baptism-review .br-review-card{padding:20px;border:1px solid #eee8e4;border-radius:8px;background:#fff;min-width:0;margin-bottom:20px}.baptism-review .br-review-card h3{font:600 18px/1.4 "Playfair Display",Georgia,serif;color:#760d2c;margin:0 0 16px}.baptism-review .br-review-card dl{display:grid;grid-template-columns:1fr 1fr;gap:0;margin:0;font-size:13px}.br-review-card dt,.br-review-card dd{padding:10px 0;border-bottom:1px solid #eee8e4;line-height:1.6}.baptism-review .br-review-card dd{text-align:right;font-weight:600;color:#760d2c;padding-left:14px;overflow-wrap:anywhere}.br-document{display:flex;justify-content:space-between;gap:16px;font-size:13px;overflow-wrap:anywhere}.br-document a{color:#8a2642;text-decoration:underline;flex-shrink:0}.baptism-review .br-reminder{padding:16px;background:#e4edf8;border-radius:8px;font-size:13px;line-height:1.6}.baptism-review .br-confirm{display:flex;align-items:center;gap:14px;padding:20px;background:#e0f1e5;border-radius:8px;margin-top:20px;font-size:13px}.br-confirm strong,.br-confirm span>span{display:block}.br-confirm input{accent-color:#28783e;width:20px;height:20px;flex-shrink:0}@media(max-width:700px){.baptism-review .br-review-grid{grid-template-columns:1fr;gap:0}}
