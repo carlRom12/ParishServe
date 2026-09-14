@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Enter Reset Code · ParishServe</title>
+<meta name="description" content="Enter the password reset code sent to your email.">
+<link rel="stylesheet" href="assets/css/style.css">
+<link rel="stylesheet" href="assets/css/login.css">
+<link rel="stylesheet" href="assets/css/responsive.css?v=3">
+</head>
+<body>
+
+<div class="auth-shell">
+
+    <div class="auth-visual">
+        <div class="auth-visual-media">
+            <img src="assets/images/parish-login.svg" alt="Our Lady of the Gate Parish church at golden hour">
+        </div>
+
+        <div class="auth-brand">
+            <span class="auth-brand-crest"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2c1.6 1.6 3.5 2.2 5.5 2.2v6.3C17.5 15 15.3 19 12 21c-3.3-2-5.5-6-5.5-10.5V4.2C8.5 4.2 10.4 3.6 12 2z"/><path d="M12 8.5v6M9 11.5h6"/></svg></span>
+            <span class="auth-brand-text">
+                <strong>Our Lady<br>of the Gate Parish</strong>
+                <em>ParishServe</em>
+            </span>
+        </div>
+
+        <div class="auth-welcome">
+            <div class="ps-heading-ornament"><span></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v18"/><path d="M7 8h10"/></svg><span></span></div>
+            <h2>Check Your Email</h2>
+            <p>We've sent a password reset code to your email. Enter it to choose a new password.</p>
+        </div>
+    </div>
+
+    <div class="auth-panel">
+        <div class="auth-card">
+
+            <div class="ps-heading-ornament auth-card-ornament"><span></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v18"/><path d="M7 8h10"/></svg><span></span></div>
+            <h1>Enter Reset Code</h1>
+            <p class="auth-sub">We sent a 6-digit code to <strong data-pending-email>your email address</strong></p>
+
+            <div class="auth-alert" data-auth-alert role="alert" tabindex="-1" hidden><span data-auth-message></span></div>
+            <form action="verify-reset-otp.php" method="post" data-otp-form>
+                <div class="ps-field auth-field">
+                    <label for="otp">Reset Code</label>
+                    <input type="text" id="otp" name="otp" class="otp-input"
+                        maxlength="6" inputmode="numeric" pattern="\d{6}"
+                        placeholder="000000" autocomplete="one-time-code" autofocus required>
+                    <small class="ps-form-hint">The code expires 3 minutes after it was sent.</small>
+                </div>
+
+                <button type="submit" name="verify" class="ps-btn ps-btn-primary auth-submit">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg> Verify Code
+                </button>
+            </form>
+
+            <div class="auth-divider"><span>or</span></div>
+
+            <form action="verify-reset-otp.php" method="post" data-otp-form>
+                <button type="submit" name="resend" class="ps-btn ps-btn-outline auth-submit">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg> Resend Code
+                </button>
+            </form>
+
+            <p class="auth-switch">Wrong email? <a href="forgot-password.html">Start over</a></p>
+            <p class="auth-privacy-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg> Your privacy and security are important to us.</p>
+
+        </div>
+    </div>
+
+</div>
+
+<script src="assets/js/auth.js"></script>
+<script src="assets/js/frontend.js"></script>
+<script src="assets/js/main.js"></script>
+<script src="assets/js/responsive.js?v=1"></script>
+</body>
+</html>

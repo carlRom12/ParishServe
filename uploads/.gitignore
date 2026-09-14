@@ -1,0 +1,4 @@
+# Parishioners' uploaded documents are personal data -- never commit them.
+*
+!.htaccess
+!.gitignore

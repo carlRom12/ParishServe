@@ -1,0 +1,4 @@
+# Uploaded request documents and proofs of payment are private. Nothing in
+# this folder is served directly -- staff open files through admin-file.php,
+# which checks the signed-in role first.
+Require all denied
