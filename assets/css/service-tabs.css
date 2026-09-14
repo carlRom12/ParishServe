@@ -1,0 +1,62 @@
+/* Shared service navigation. Load after each page's component styles. */
+body .ps-main :is(.conf-tabs, .fg-tabs, .ca-tabs) {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+    padding: 8px;
+    margin: 0 8px 22px;
+    background: #fff;
+    border: 1px solid #eee8e4;
+    border-radius: 8px;
+    overflow: visible;
+}
+body .ps-main :is(.conf-tabs, .fg-tabs, .ca-tabs) > :is(a, button) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-width: 0;
+    min-height: 50px;
+    box-sizing: border-box;
+    padding: 14px 18px;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    border-radius: 7px;
+    background: transparent;
+    color: #7c7378;
+    font: 600 13px/1.5 'Poppins', sans-serif;
+    letter-spacing: normal;
+    text-align: center;
+    text-decoration: none;
+    white-space: normal;
+    cursor: pointer;
+}
+body .ps-main :is(.conf-tabs, .fg-tabs, .ca-tabs) > :is(a, button) svg {
+    width: 17px;
+    height: 17px;
+    flex: 0 0 17px;
+}
+body .ps-main :is(.conf-tabs, .fg-tabs, .ca-tabs) > :is(a, button):hover {
+    background: #fcf5f7;
+    color: #570e25;
+}
+body .ps-main :is(.conf-tabs, .fg-tabs, .ca-tabs) > :is(.active, [aria-current="page"]) {
+    background: #fbeef1;
+    color: #8a2642;
+    border-bottom-color: #8a2642;
+}
+body .ps-main :is(.conf-tabs, .fg-tabs, .ca-tabs) > :focus-visible {
+    outline: 2px solid #8a2642;
+    outline-offset: 2px;
+}
+@media (max-width: 760px) {
+    body .ps-main :is(.conf-tabs, .fg-tabs, .ca-tabs) {
+        margin-inline: 0;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    body .ps-main :is(.conf-tabs, .fg-tabs, .ca-tabs) > :is(a, button) {
+        padding: 12px 8px;
+        font-size: 12px;
+    }
+}

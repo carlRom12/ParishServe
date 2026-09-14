@@ -1,10 +1,5 @@
 /* Funeral requirements: shared navigation with the About page. */
 .funeral-requirements-page { color: #4d6078; }
-.funeral-requirements-page .fg-topline { min-height: 76px; }
-.fr-greeting { display: flex; align-items: center; gap: 12px; }
-.fr-greeting img { border-radius: 50%; object-fit: cover; }
-.fr-greeting strong { display: block; color: #202026; font-size: 16px; }
-.funeral-requirements-page .fg-back { color: #8a1232; margin: 0 10px 14px; }
 .fr-banner { border-radius: 12px; overflow: hidden; background: #26140d; margin-bottom: 16px; }
 /* Shared hero keeps the full crucifix visible and the text at the upper left. */
 .fr-banner .fg-hero-image { display: block; }
@@ -45,4 +40,4 @@
 .fr-quote p { color: #74112d; font: italic 17px/1.5 Georgia, serif; }
 .fr-quote cite { display: block; margin-top: 6px; font-size: 12px; font-style: normal; }
 @media (max-width: 1100px) { .fr-columns { grid-template-columns: 1fr; } .fr-side { grid-template-columns: 1fr 1fr; } .fr-quote { grid-column: 1 / -1; } }
-@media (max-width: 600px) { .fr-side { grid-template-columns: 1fr; } .fr-main { padding: 20px 16px; } .fr-notes { padding: 16px; gap: 12px; } .fr-office, .fr-help { gap: 14px; } .fr-icon { width: 50px; height: 50px; } .fr-document { gap: 14px; padding: 16px 12px; } .fr-card h2 { font-size: 21px; } .funeral-requirements-page .fg-topline { min-height: 70px; } }
+@media (max-width: 600px) { .fr-side { grid-template-columns: 1fr; } .fr-main { padding: 20px 16px; } .fr-notes { padding: 16px; gap: 12px; } .fr-office, .fr-help { gap: 14px; } .fr-icon { width: 50px; height: 50px; } .fr-document { gap: 14px; padding: 16px 12px; } .fr-card h2 { font-size: 21px; } }

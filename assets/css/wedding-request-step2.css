@@ -177,3 +177,18 @@
     .wr-actions { flex-direction: column-reverse; }
     .wr-cancel, .wr-submit { width: 100%; flex: none; }
 }
+
+/* Shared document-upload presentation used by the sacrament requests. */
+.wr-req-list .wr-req-row { grid-template-columns: 34px minmax(180px, 0.8fr) minmax(0, 1.6fr); gap: 16px; padding: 24px 0; }
+.wr-req-list .wr-req-row:first-child { padding-top: 0; }
+.wr-req-list .wr-req-upload { min-width: 0; width: 100%; }
+.wr-document-dropzone { position: relative; display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 24px 16px; border: 2px dashed #eee8e4; border-radius: 8px; text-align: center; }
+.wr-document-dropzone > svg { width: 30px; height: 30px; }
+.wr-document-dropzone p { margin: 0; color: #760d2c; font-size: 14px; }
+.wr-document-dropzone > span, .wr-document-dropzone > small { font-size: 12px; color: #777; }
+.wr-document-dropzone .ps-btn { min-height: 40px; padding: 10px 18px; cursor: pointer; }
+.wr-document-dropzone .wr-document-input { position: absolute; width: 1px; height: 1px; opacity: 0; padding: 0; overflow: hidden; }
+.wr-document-dropzone:focus-within { outline: 2px solid #760d2c; outline-offset: 3px; }
+.wr-req-upload .ps-form-hint { display: block; margin-top: 8px; text-align: center; }
+.wr-req-upload .service-upload-preview { margin-top: 0; }
+@media(max-width: 900px) { .wr-req-list .wr-req-row { grid-template-columns: 34px minmax(0, 1fr); } .wr-req-list .wr-req-upload { grid-column: 2; } }

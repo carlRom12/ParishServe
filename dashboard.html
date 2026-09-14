@@ -3,14 +3,24 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard · ParishServe</title>
+<title>Dashboard | ParishServe</title>
 
-<link rel="stylesheet" href="assets/css/style.css">
+<link rel="stylesheet" href="assets/css/style.css?v=confirmation-2">
 
-<link rel="stylesheet" href="assets/css/dashboard.css">
+<link rel="stylesheet" href="assets/css/confirmation-layout.css?v=12">
+<link rel="stylesheet" href="assets/css/funeral-layout.css?v=1">
 <link rel="stylesheet" href="assets/css/responsive.css?v=3">
+<link rel="stylesheet" href="assets/css/counseling.css?v=2">
+<link rel="stylesheet" href="assets/css/mass-intention.css?v=1">
+<link rel="stylesheet" href="assets/css/service-cards.css?v=1">
+
+<link rel="stylesheet" href="assets/css/counseling-about.css?v=1">
+<link rel="stylesheet" href="assets/css/wedding-about.css?v=1">
+<link rel="stylesheet" href="assets/css/service-tabs.css?v=1">
+<link rel="stylesheet" href="assets/css/service-back.css?v=2">
+<link rel="stylesheet" href="assets/css/calendar-revamp.css?v=1"><link rel="stylesheet" href="assets/css/dashboard.css"><link rel="stylesheet" href="assets/css/dashboard-revamp.css?v=1"><link rel="stylesheet" href="assets/css/sidebar-refined.css?v=2">
 </head>
-<body>
+<body class="funeral-page mass-intention-page dashboard-revamp">
 <div class="ps-shell">
 <aside class="ps-sidebar">
 
@@ -24,8 +34,7 @@
     <nav class="ps-nav">
                                 <ul class="ps-nav-list">
                                     <li>
-                        <a class="ps-nav-link active"
-                           href="dashboard.html">
+                        <a class="ps-nav-link active" aria-current="page" href="dashboard.html">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11.5 12 4l8 7.5"/><path d="M6 10v9a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-9"/><path d="M10 20v-6h4v6"/></svg>                            <span>Dashboard</span>
                         </a>
                     </li>
@@ -36,8 +45,7 @@
                         </a>
                     </li>
                                     <li>
-                        <a class="ps-nav-link"
-                           href="calendar.html">
+                        <a class="ps-nav-link" href="calendar.html">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18"/><path d="M8 3v4"/><path d="M16 3v4"/></svg>                            <span>Parish Calendar</span>
                         </a>
                     </li>
@@ -45,26 +53,23 @@
                                     <span class="ps-nav-section">Sacraments</span>
                         <ul class="ps-nav-list">
                                     <li>
-                        <a class="ps-nav-link"
-                           href="wedding.html">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="15" r="5"/><path d="M9.5 10 12 4l2.5 6"/></svg>                            <span>Wedding</span>
+                        <a class="ps-nav-link" href="wedding.html">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="14" r="6"/><circle cx="16" cy="14" r="6"/><path d="m6 5 2-2 2 2-2 3-2-3Zm8 0 2-2 2 2-2 3-2-3Z"/></svg>                            <span>Wedding</span>
                         </a>
                     </li>
                                     <li>
-                        <a class="ps-nav-link"
-                           href="baptism.html">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3c3 4 6 8.2 6 11.5A6 6 0 0 1 6 14.5C6 11.2 9 7 12 3z"/></svg>                            <span>Baptism</span>
+                        <a class="ps-nav-link" href="baptism.html">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2S5 11 5 15a7 7 0 0 0 14 0c0-4-7-13-7-13Z"/><path d="M15 15a3 3 0 0 1-3 3"/></svg>                            <span>Baptism</span>
                         </a>
                     </li>
                                     <li>
                         <a class="ps-nav-link"
                            href="confirmation.html">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21c3.3 0 6-2.4 6-6 0-3-2-5-3-7 .3 2-1 3-2 2-1-.8-1-2.4 0-4-3 2-5 5-5 8 0 .8.2 1.5.5 2C7.6 15 7 15.8 7 17c0 2.5 2.2 4 5 4z"/></svg>                            <span>Confirmation</span>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5c3 1 4 4 7 5l3-4 3 1 2-2 3 2-3 3c-1 5-4 8-9 8l-5 3-2-3 4-3C3 12 2 9 3 5Z"/><path d="m7 11 5 3m4-6h.01"/></svg>                            <span>Confirmation</span>
                         </a>
                     </li>
                                     <li>
-                        <a class="ps-nav-link"
-                           href="funeral.html">
+                        <a class="ps-nav-link" href="funeral.html">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v18"/><path d="M7 8h10"/></svg>                            <span>Burial / Funeral</span>
                         </a>
                     </li>
@@ -72,15 +77,13 @@
                                     <span class="ps-nav-section">Parish Services</span>
                         <ul class="ps-nav-list">
                                     <li>
-                        <a class="ps-nav-link"
-                           href="counseling.html">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8.5" cy="9" r="3"/><circle cx="16" cy="10" r="2.5"/><path d="M3 20c0-3.3 2.5-6 5.5-6s5.5 2.7 5.5 6"/><path d="M14 15.2c2.4.3 4 2.3 4 4.8"/></svg>                            <span>Counseling</span>
+                        <a class="ps-nav-link" href="counseling.html">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="7" r="3"/><path d="M5 21v-2a7 7 0 0 1 14 0v2M4 5a3 3 0 0 0 0 6m16-6a3 3 0 0 1 0 6M2 19v-2a5 5 0 0 1 3-4m17 6v-2a5 5 0 0 0-3-4"/></svg>                            <span>Counseling</span>
                         </a>
                     </li>
                                     <li>
-                        <a class="ps-nav-link"
-                           href="mass-intention.html">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4h10"/><path d="M7 4c0 4.5 2 7 5 7s5-2.5 5-7"/><path d="M12 11v6"/><path d="M8 20h8"/><path d="M9.5 17h5l-.5 3h-4z"/></svg>                            <span>Mass Intention</span>
+                        <a class="ps-nav-link" href="mass-intention.html">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3h14v3a7 7 0 0 1-14 0V3Zm7 10v5m-5 3h10l-2-3H9l-2 3Z"/></svg>                            <span>Mass Intention</span>
                         </a>
                     </li>
                                     <li>
@@ -92,7 +95,7 @@
                                     <li>
                         <a class="ps-nav-link"
                            href="donations.html">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7-4.4-9.5-9C1 8 2.5 4.5 6 4.5c2 0 3.5 1.2 4 2.5.5-1.3 2-2.5 4-2.5 3.5 0 5 3.5 3.5 6.5C19 15.6 12 20 12 20z"/></svg>                            <span>Donate</span>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z"/></svg>                            <span>Donate</span>
                         </a>
                     </li>
                             </ul>
@@ -116,8 +119,8 @@
     <div class="ps-sidebar-art"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v3M10.5 4h3M4 21V11l8-6 8 6v10"/><path d="M4 21h16"/><path d="M9 21v-6h6v6"/><path d="M9 12h.01M15 12h.01"/></svg></div>
 
     <div class="ps-logout-wrap">
-        
-        <a href="index.html" class="ps-logout-btn">
+
+        <a href="landingpage.html" class="ps-logout-btn">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>            <span>Log out</span>
         </a>
     </div>
@@ -125,9 +128,9 @@
 </aside>
 <main class="ps-main">
 
-    <section class="db-hero">
+    <div class="conf-topline service-topline"><span>Welcome back, <strong>Juan Dela Cruz</strong></span>
         <div class="ps-topbar">
-    
+
     <button type="button" class="ps-notif-btn" aria-label="Notifications">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 4 1.5 5.5 2 6.5H4c.5-1 2-2.5 2-6.5z"/><path d="M10 19a2 2 0 0 0 4 0"/></svg>                    <span class="ps-notif-badge">3</span>
             </button>
@@ -135,64 +138,16 @@
     <div class="ps-user-chip">
         <span class="ps-user-avatar">J</span>
         <span class="ps-user-info">
-            <strong>Juan</strong>
+            <strong>Juan Dela Cruz</strong>
             <small>Parishioner</small>
         </span>
         <svg class="ps-user-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>    </div>
 </div>
-        <div class="db-hero-text">
-            <h1 class="db-greeting">Good morning, Juan <span class="db-wave">👋</span></h1>
-            <p class="db-subtitle">Welcome back! Here's what's happening in your parish community.</p>
-        </div>
-        <div class="db-hero-image">
-            <img src="assets/images/hero-banner.svg" alt="Our Lady of the Gate altar">
-        </div>
-    </section>
+    </div>
 
-    <section class="db-stats">
-                    <div class="stat-card">
-                <div class="stat-icon tint-amber">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>                </div>
-                <div class="stat-body">
-                    <span class="stat-count">2</span>
-                    <span class="stat-label">Pending</span>
-                    <span class="stat-sub">awaiting review</span>
-                </div>
-            </div>
-                    <div class="stat-card">
-                <div class="stat-icon tint-green">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.5 2.5L16 9.5"/></svg>                </div>
-                <div class="stat-body">
-                    <span class="stat-count">2</span>
-                    <span class="stat-label">Approved</span>
-                    <span class="stat-sub">requests</span>
-                </div>
-            </div>
-                    <div class="stat-card">
-                <div class="stat-icon tint-maroon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18"/><path d="M8 3v4"/><path d="M16 3v4"/><path d="M8.5 14.5l2 2 4.5-4.5"/></svg>                </div>
-                <div class="stat-body">
-                    <span class="stat-count">2</span>
-                    <span class="stat-label">Scheduled</span>
-                    <span class="stat-sub">upcoming</span>
-                </div>
-            </div>
-                    <div class="stat-card">
-                <div class="stat-icon tint-blue">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h7l4 4v14a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M14 3v4h4"/><path d="M9 13h6M9 16.5h6M9 9.5h3"/></svg>                </div>
-                <div class="stat-body">
-                    <span class="stat-count">2</span>
-                    <span class="stat-label">Completed</span>
-                    <span class="stat-sub">requests</span>
-                </div>
-            </div>
-            </section>
-
-    <section class="db-grid">
-
-        <div class="ps-card db-today">
+<section class="dv-hero"><div><span class="co-eyebrow">Parish Portal</span><h1 id="dvGreeting">Welcome back, Juan!</h1><p>Stay connected and be part of our parish community.</p></div><blockquote>With Mary,<br>we journey in faith<br>as one community.</blockquote></section><div class="dv-top"><div class="ps-card db-today">
             <div class="ps-card-header">
-                <span class="ps-card-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18"/><path d="M8 3v4"/><path d="M16 3v4"/></svg> Today at Our Lady of the Gate</span>
+                <span class="ps-card-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18"/><path d="M8 3v4"/><path d="M16 3v4"/></svg> Today at the Parish</span>
             </div>
             <ul class="db-timeline">
                                     <li class="db-timeline-item" data-time="08:00">
@@ -229,9 +184,14 @@
                     </li>
                             </ul>
             <a href="calendar.html" class="ps-link-more">View full calendar <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a>
-        </div>
-
-        <div class="ps-card db-requests">
+        </div><section class="ps-card"><h2>Parish Calendar</h2><div class="dv-month"><button id="dvPrev" aria-label="Previous month">&#8249;</button><strong id="dvMonth"></strong><button id="dvNext" aria-label="Next month">&#8250;</button></div><div class="dv-calendar" id="dvCalendar"></div><a class="dv-link" href="calendar.html">View full calendar &rarr;</a></section><section class="ps-card"><h2>Upcoming Events</h2><p class="dv-muted">Explore parish celebrations and activities.</p><a class="dv-event" href="calendar.html"><span>Mass</span><div><strong>Parish Mass Schedules</strong><small>Main Church</small></div></a><a class="dv-event" href="wedding-schedule.html"><span>Faith</span><div><strong>Sacrament Schedules</strong><small>Coordinate with the parish office</small></div></a><a class="dv-event" href="announcements.html"><span>News</span><div><strong>Community Activities</strong><small>See the latest parish announcements</small></div></a><a class="dv-link" href="calendar.html">View all events &rarr;</a></section></div><div class="dv-bottom"><section class="ps-card"><h2>Parish Updates</h2><div class="db-update-feature">
+                    <img src="assets/images/mass-intention-hero.png" alt="">
+                    <div class="db-update-feature-text">
+                        <strong>Feast Day Celebration this Sunday!</strong>
+                        <p>Join us this coming Sunday for the Feast of the Assumption of Mary. There will be a solemn Mass at 9:00 AM followed by a community gathering.</p>
+                        <a href="announcements.html" class="ps-link-more">Read more <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a>
+                    </div>
+                </div><a class="dv-link" href="announcements.html">View all announcements &rarr;</a></section><div class="ps-card db-requests">
             <div class="ps-card-header">
                 <span class="ps-card-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h7l4 4v14a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M14 3v4h4"/><path d="M9 13h6M9 16.5h6M9 9.5h3"/></svg> My Requests</span>
                 <a href="my-requests.html" class="ps-link-more">View all <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a>
@@ -289,93 +249,4 @@
                         </div>
                                     </div>
             </div>
-        </div>
-
-        <div class="db-side">
-            <div class="ps-card db-update">
-                <div class="ps-card-header">
-                    <span class="ps-card-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10v4h3l6 4V6L6 10H3z"/><path d="M14 9c1.2 1 1.2 5 0 6"/><path d="M17 7c2 2 2 8 0 10"/></svg> Parish Updates</span>
-                </div>
-                <div class="db-update-feature">
-                    <img src="assets/images/announcements/feast-day.svg" alt="">
-                    <div class="db-update-feature-text">
-                        <strong>Feast Day Celebration this Sunday!</strong>
-                        <p>Join us this coming Sunday for the Feast of the Assumption of Mary. There will be a solemn Mass at 9:00 AM followed by a community gathering.</p>
-                        <a href="announcements.html" class="ps-link-more">Read more <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="ps-card db-contacts" id="parish-contacts">
-                <div class="ps-card-header">
-                    <span class="ps-card-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8.5" cy="9" r="3"/><circle cx="16" cy="10" r="2.5"/><path d="M3 20c0-3.3 2.5-6 5.5-6s5.5 2.7 5.5 6"/><path d="M14 15.2c2.4.3 4 2.3 4 4.8"/></svg> Parish Contacts</span>
-                </div>
-                <ul class="db-contact-list">
-                                            <li>
-                            <span class="db-contact-text">
-                                <strong>Parish Office</strong>
-                                                            </span>
-                            <a href="tel:0524801234" class="db-contact-phone">
-                                (052) 480-1234 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h3.5l1.3 4-2.1 1.6a12 12 0 0 0 5.7 5.7l1.6-2.1 4 1.3V18a2 2 0 0 1-2.2 2C9.6 19.4 4.6 14.4 3 7.2A2 2 0 0 1 5 4z"/></svg>                            </a>
-                        </li>
-                                            <li>
-                            <span class="db-contact-text">
-                                <strong>Parish Priest</strong>
-                                <small>Fr. Juan Dela Cruz</small>                            </span>
-                            <a href="tel:0524801234" class="db-contact-phone">
-                                (052) 480-1234 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h3.5l1.3 4-2.1 1.6a12 12 0 0 0 5.7 5.7l1.6-2.1 4 1.3V18a2 2 0 0 1-2.2 2C9.6 19.4 4.6 14.4 3 7.2A2 2 0 0 1 5 4z"/></svg>                            </a>
-                        </li>
-                                            <li>
-                            <span class="db-contact-text">
-                                <strong>Counseling Office</strong>
-                                                            </span>
-                            <a href="tel:0524805678" class="db-contact-phone">
-                                (052) 480-5678 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h3.5l1.3 4-2.1 1.6a12 12 0 0 0 5.7 5.7l1.6-2.1 4 1.3V18a2 2 0 0 1-2.2 2C9.6 19.4 4.6 14.4 3 7.2A2 2 0 0 1 5 4z"/></svg>                            </a>
-                        </li>
-                                    </ul>
-                <a href="contacts.html" class="ps-link-more">View all contacts <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a>
-            </div>
-        </div>
-
-    </section>
-
-    <section class="ps-card db-announcements">
-        <div class="ps-card-header">
-            <span class="ps-card-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10v4h3l6 4V6L6 10H3z"/><path d="M14 9c1.2 1 1.2 5 0 6"/><path d="M17 7c2 2 2 8 0 10"/></svg> Recent Announcements</span>
-            <a href="announcements.html" class="ps-link-more">View all <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a>
-        </div>
-        <div class="db-announcement-grid">
-                            <a href="announcements.html" class="db-announcement-card">
-                    <img src="assets/images/announcements/adoration.svg" alt="">
-                    <div class="db-announcement-text">
-                        <strong>Adoration Every Friday</strong>
-                        <p>Eucharistic Adoration is held every Friday after the 6:00 PM Mass.</p>
-                        <small>May 10, 2026</small>
-                    </div>
-                </a>
-                            <a href="announcements.html" class="db-announcement-card">
-                    <img src="assets/images/announcements/mass-intentions.svg" alt="">
-                    <div class="db-announcement-text">
-                        <strong>Mass Intentions Now Open</strong>
-                        <p>You can now submit your Mass intention requests for June.</p>
-                        <small>May 9, 2026</small>
-                    </div>
-                </a>
-                            <a href="announcements.html" class="db-announcement-card">
-                    <img src="assets/images/announcements/cleaning-drive.svg" alt="">
-                    <div class="db-announcement-text">
-                        <strong>Church Cleaning Drive</strong>
-                        <p>Let&#039;s keep our church clean and beautiful. See you there!</p>
-                        <small>May 8, 2026</small>
-                    </div>
-                </a>
-                    </div>
-    </section>
-
-</main>
-</div>
-<script src="assets/js/frontend.js"></script>
-<script src="assets/js/main.js"></script>
-<script src="assets/js/responsive.js?v=1"></script>
-</body>
-</html>
+        </div><section class="ps-card" id="parish-contacts"><h2>Parish Office</h2><div class="dv-office"><div><strong>Monday &ndash; Saturday</strong><p>8:00 AM &ndash; 5:00 PM</p></div><div><strong>Our Lady of the Gate Parish</strong><p>Daraga, Albay, Philippines</p></div><div><strong>Contact the Parish Office</strong><a href="tel:0524801234">(052) 480-1234</a></div></div></section><blockquote class="dv-quote">&ldquo;Let all things be done in love.&rdquo;<cite>&mdash; 1 Corinthians 16:14</cite></blockquote></div></main></div><script src="assets/js/dashboard-revamp.js?v=1"></script><script src="assets/js/responsive.js?v=1"></script></body></html>

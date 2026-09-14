@@ -1,0 +1,37 @@
+/* About Counseling keeps the shared banner's gold underline below its label. */
+.counseling-about-page .co-hero-copy { max-width: 740px; padding-bottom: 70px; }
+.ca-tabs { position: relative; display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); padding: 0 24px; margin: -34px 5px 18px; background: #fff; border: 1px solid #eee8e4; border-radius: 7px; }
+.ca-tabs a,.ca-tabs button { display: flex; align-items: center; justify-content: center; gap: 14px; padding: 15px 8px; border: 0; border-bottom: 2px solid transparent; background: transparent; color: #566074; font: 500 13px/1.5 'Poppins',sans-serif; }
+.ca-tabs svg { width: 25px; height: 25px; flex-shrink: 0; }
+.ca-tabs [aria-current] { color: #760d2c; border-bottom-color: #760d2c; }
+.ca-tabs a:hover,.ca-tabs button:hover { background: #fcf5ee; }
+.ca-layout { display: grid; grid-template-columns: minmax(0,2.35fr) minmax(280px,1fr); gap: 14px; margin: 0 5px; align-items: start; }
+.ca-main { padding: 18px 22px; }
+.ca-main h2 { font-size: 28px; margin-bottom: 10px; }
+.ca-main p { font-size: 14px; line-height: 1.55; }
+.ca-main p + p { margin-top: 12px; }
+.ca-main section + section { border-top: 1px solid #eee8e4; padding-top: 14px; margin-top: 16px; }
+.ca-benefits { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); }
+.ca-benefits article { padding: 0 15px; border-right: 1px solid #eee8e4; }
+.ca-benefits article:first-child { padding-left: 0; }
+.ca-benefits article:last-child { border: 0; padding-right: 0; }
+.ca-benefits .co-icon { width: 62px; height: 62px; color: #760d2c; margin-bottom: 10px; }
+.ca-benefits h3 { font-size: 16px; line-height: 1.3; margin-bottom: 5px; }
+.ca-benefits p { font-size: 12.5px; }
+.ca-note { display: flex; gap: 18px; background: #fbf4e9; border: 1px solid #f3ece3; padding: 14px; border-radius: 8px; margin-top: 15px; }
+.ca-note > svg { width: 28px; height: 28px; flex-shrink: 0; color: #760d2c; }
+.ca-note h3 { font-size: 17px; }
+.ca-note p { font-size: 12px; }
+.ca-side { display: grid; gap: 12px; }
+.ca-side .co-card { padding: 16px; }
+.ca-side h2 { font-size: 21px; margin-bottom: 7px; }
+.ca-room { display: block; width: 100%; height: auto; border-radius: 6px; margin-top: 10px; }
+.ca-scripture { text-align: center; background: #fcf9f4; }
+.ca-scripture p { font: italic 20px/1.4 Georgia,serif; }
+.ca-scripture cite { display: block; font-size: 12px; font-style: normal; margin-top: 10px; }
+.ca-side .co-card-head { gap: 14px; }
+.ca-side .co-card-head p { font-size: 11px; }
+.ca-contact { width: 100%; padding: 12px; font-size: 13px; }
+@media(max-width:1100px) { .ca-layout { grid-template-columns: 1fr; } .ca-side { grid-template-columns: repeat(3,minmax(0,1fr)); align-items: start; } }
+@media(max-width:760px) { .ca-tabs { margin-top: 0; padding-inline: 4px; } .ca-tabs a,.ca-tabs button { gap: 6px; font-size: 11px; } .ca-tabs svg { width: 18px; } .ca-side { grid-template-columns: 1fr; } .ca-benefits { grid-template-columns: 1fr 1fr; gap: 20px 0; } .ca-benefits article:nth-child(2) { border: 0; } .ca-benefits article:nth-child(3) { padding-left: 0; } .counseling-about-page .co-hero-copy { padding-bottom: 28px; } }
+@media(max-width:520px) { .ca-tabs { grid-template-columns: 1fr 1fr; } .ca-main h2 { font-size: 24px; } .ca-main { padding: 18px; } }

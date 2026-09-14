@@ -16,7 +16,7 @@
         symbol.setAttribute('aria-hidden', 'true');
         button.append(symbol);
         const brand = document.createElement('a');
-        brand.href = sidebar.querySelector('.ps-nav-link')?.getAttribute('href') || 'dashboard.html';
+        brand.href = 'dashboard.html';
         brand.textContent = 'ParishServe';
         header.append(button, brand);
         document.body.prepend(header);

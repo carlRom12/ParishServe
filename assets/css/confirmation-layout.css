@@ -14,12 +14,7 @@
 .confirmation-page .ps-nav-link.active { background: #e3ab3e; color: #35121a; }
 .confirmation-page .ps-sidebar-art { margin-top: auto; padding-top: 30px; height: 160px; }
 .conf-topline { display: flex; align-items: center; justify-content: space-between; min-height: 84px; gap: 18px; }
-.conf-greeting { display: flex; align-items: center; gap: 14px; }
-.conf-greeting-icon { display: grid; place-items: center; width: 36px; height: 36px; background: #ece8dc; color: #897049; border-radius: 50%; }
-.conf-greeting-icon svg { width: 20px; height: 20px; }
-.conf-greeting-text small { display: block; font-size: 12px; }
-.conf-greeting-text strong { display: block; color: #520e24; font: 600 17px 'Playfair Display', Georgia, serif; }
-.conf-topline .ps-topbar { position: static; display: flex; gap: 12px; }
+.conf-topline .ps-topbar { position: static; display: flex; gap: 12px; margin-left: auto; }
 .conf-topline .ps-user-chip { background: #fff; box-shadow: 0 3px 18px #35121a08; }
 .conf-hero { position: relative; width: 100%; min-height: 360px; aspect-ratio: 2.7; overflow: hidden; border-radius: 12px 12px 0 0; }
 .conf-hero-image { position: absolute; inset: 0; }
@@ -36,7 +31,7 @@
 
 /* ---- "Back to Confirmation" link, sub-pages only (About Confirmation
    itself has no page above it to go back to) ------------------------- */
-.conf-back-link { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; color: #8a2642; margin: 0 8px 14px; }
+.conf-back-link { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; color: #8a2642; }
 .conf-back-link svg { width: 16px; height: 16px; }
 .conf-back-link:hover { text-decoration: underline; }
 
@@ -80,10 +75,6 @@
 .conf-req-quote img { width: 38px; height: 38px; flex-shrink: 0; }
 .conf-req-quote p { font: italic 14px/1.5 Georgia, serif; color: #520e24; }
 .conf-req-quote cite { display: block; margin-top: 6px; font-size: 12px; font-style: normal; color: #494950; }
-
-/* ---- greeting avatar as a real photo instead of an icon circle
-   (About Confirmation uses a small round parish photo) ------------------ */
-.conf-greeting img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
 
 /* ---- About Confirmation page: one main card with 3 divided
    subsections (What is Confirmation? / Importance of Confirmation /
@@ -306,8 +297,7 @@
     .confirmation-page .ps-logo-crest { width: 34px; }
     .confirmation-page .ps-main { padding: 0 10px 28px; }
     .conf-topline { min-height: 76px; gap: 8px; }
-    .conf-greeting-icon, .conf-topline .ps-user-chip { display: none; }
-    .conf-greeting-text strong { font-size: 14px; }
+    .conf-topline .ps-user-chip { display: none; }
     .conf-hero { min-height: 350px; aspect-ratio: auto; }
     .conf-hero-image img { object-position: 55% center; }
     .conf-hero-image::after { background: linear-gradient(90deg, #190d0ab3, #190d0a38); }

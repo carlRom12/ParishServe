@@ -1,0 +1,19 @@
+(async function () {
+ const review=document.getElementById('weddingReview');
+ let draft={};try{draft=JSON.parse(sessionStorage.getItem('parishserve-draft-wedding')||'{}');}catch(_){}
+ const date=v=>v?new Date(v+'T00:00:00').toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}):'';
+ if(review){
+ const name=p=>['FirstName','MiddleName','LastName','Suffix'].map(k=>draft[p+k]).filter(Boolean).join(' ');
+ const groups=[['1. The Couple',[['Groom',name('groom')],['Bride',name('bride')],['Contact mobile number',draft.mobileNumber],['Contact email address',draft.emailAddress]]],['2. Preferred Schedule',[['Wedding date',date(draft.weddingDate)],['Seminar date',date(draft.seminarDate)],['Seminar time',draft.seminarTime],['Seminar location',draft.seminarLocation]]]];
+ for(const [title,rows] of groups){const card=document.createElement('section');card.className='wr3-review-card';const h=document.createElement('h3');h.textContent=title;card.append(h);for(const [label,value] of rows){const row=document.createElement('div');row.className='wr3-review-row';const l=document.createElement('span'),v=document.createElement('strong');l.textContent=label;v.textContent=value||'Not provided';row.append(l,v);card.append(row);}review.append(card);}
+ document.getElementById('weddingReviewForm').addEventListener('submit',e=>{e.preventDefault();document.getElementById('weddingSubmitStatus').textContent='Your details have been reviewed. Online submission is not connected yet; please contact the parish office to complete your request.';});
+ }
+ try {
+ let token=sessionStorage.getItem('wedding-document-token');if(!token){token=crypto.randomUUID();sessionStorage.setItem('wedding-document-token',token);}
+ const db=await new Promise((resolve,reject)=>{const r=indexedDB.open('parishserve-wedding-documents',1);r.onupgradeneeded=()=>r.result.createObjectStore('files');r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);});
+ const read=()=>new Promise((resolve,reject)=>{const r=db.transaction('files').objectStore('files').get(token);r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);});
+ const form=document.querySelector('form[enctype]');
+ if(form){form.addEventListener('submit',async e=>{e.preventDefault();e.stopImmediatePropagation();if(!form.reportValidity())return;const files=Array.from(form.querySelectorAll('input[type=file]')).map(i=>({name:i.name,file:i.files[0]})).filter(x=>x.file);try{await new Promise((resolve,reject)=>{const tx=db.transaction('files','readwrite');tx.objectStore('files').put({files,expires:Date.now()+3600000},token);tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);});location.href='wedding-request-step3.html';}catch(_){alert('Unable to preserve your files. Please try again.');}},true);}
+ if(review){const saved=await read(),list=document.getElementById('weddingReviewFiles'),urls=[];if(saved&&saved.expires>Date.now()){for(const {file} of saved.files){const li=document.createElement('li'),name=document.createElement('span'),a=document.createElement('a');name.className='wr3-doc-name';name.textContent=file.name;a.href=URL.createObjectURL(file);urls.push(a.href);a.target='_blank';a.rel='noopener';a.textContent='View file';li.append(name,a);list.append(li);}}if(!list.children.length){list.textContent='No files available for preview. Return to Requirements to select your documents.';}window.addEventListener('pagehide',()=>urls.forEach(u=>URL.revokeObjectURL(u)));}
+ }catch(_){if(review)document.getElementById('weddingReviewFiles').textContent='File preview unavailable. Return to Requirements to select your documents.';}
+})();

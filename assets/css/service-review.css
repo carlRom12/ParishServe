@@ -1,0 +1,20 @@
+
+/* Shared review card dimensions, typography, and document links. */
+body .ps-main :is(.wr3-review-grid,.br-review-grid){display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;align-items:stretch;}
+body .ps-main :is(.wr3-review-card,.br-review-card,.cr-review-group){padding:20px;border:1px solid #eee8e4;border-radius:8px;background:#fff;box-shadow:none;min-width:0;}
+body .ps-main :is(.wr3-review-card,.br-review-card,.cr-review-group) h3{font:600 18px/1.4 'Playfair Display',Georgia,serif;color:#760d2c;}
+body .ps-main .wr3-review-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;padding:10px 0;font-size:13px;line-height:1.6;align-items:start;}
+body .ps-main .wr3-review-row :is(span,strong){min-width:0;overflow-wrap:anywhere;}
+body .ps-main .wr3-review-row strong{text-align:right;}
+body .ps-main :is(.wr3-doc-list li,.br-document){display:flex;align-items:center;justify-content:space-between;gap:16px;min-width:0;padding:12px 0;font-size:13px;}
+body .ps-main .wr3-doc-name{white-space:normal;overflow-wrap:anywhere;flex:1;min-width:0;}
+body .ps-main :is(.wr3-doc-list,.br-document) a{color:#8a2642;font-size:13px;font-weight:600;text-decoration:underline;flex-shrink:0;}
+body .ps-main :is(.wr3-confirm-bar,.br-confirm){padding:20px;border-radius:8px;box-shadow:none;gap:16px;}
+@media(max-width:760px){body .ps-main :is(.wr3-review-grid,.br-review-grid){grid-template-columns:1fr;}body .ps-main .wr3-review-row{grid-template-columns:1fr;gap:4px;}body .ps-main .wr3-review-row strong{text-align:left;}}
+
+/* One confirmation control across all request reviews. */
+body .ps-main .service-confirm { display:block; margin-top:20px; padding:20px; border:0; border-radius:8px; background:#dff0e3; box-shadow:none; color:#50515b; font:400 13px/1.6 'Poppins',sans-serif; }
+body .ps-main .service-confirm label, body .ps-main label.service-confirm { display:flex; align-items:baseline; gap:4px; cursor:pointer; }
+body .ps-main .service-confirm input[type=checkbox] { position:static; appearance:auto; opacity:1; width:13px; height:13px; margin:0; flex-shrink:0; accent-color:#641a30; }
+body .ps-main .service-confirm strong { display:inline; color:inherit; font:600 13px/1.6 'Poppins',sans-serif; }
+body .ps-main .service-confirm span { display:inline; }

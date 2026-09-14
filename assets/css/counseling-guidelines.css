@@ -1,0 +1,28 @@
+.counseling-guidelines-page .co-hero-copy { max-width: 760px; padding-bottom: 70px; }
+.counseling-guidelines-page .ca-tabs [aria-current] { background: #faedf1; }
+.cg-layout { display: grid; grid-template-columns: minmax(0,1.75fr) minmax(300px,1fr); gap: 18px; margin: 0 5px; align-items: start; }
+.cg-main { padding: 22px; }
+.cg-main h2 { font-size: 28px; margin-bottom: 8px; }
+.cg-main > p { font-size: 14px; line-height: 1.6; }
+.cg-accordions { display: grid; gap: 12px; margin-top: 22px; }
+.cg-item { border: 1px solid #e7e1df; border-radius: 8px; overflow: hidden; }
+.cg-item summary { display: flex; align-items: center; gap: 18px; min-height: 56px; padding: 6px 16px 6px 10px; cursor: pointer; color: #760d2c; font-size: 13px; font-weight: 600; list-style: none; }
+.cg-item summary::-webkit-details-marker { display: none; }
+.cg-item summary > svg { width: 18px; height: 18px; margin-left: auto; flex-shrink: 0; transition: transform .2s; }
+.cg-item[open] summary > svg { transform: rotate(180deg); }
+.cg-item summary:hover,.cg-item[open] summary { background: #fdf7f8; }
+.cg-icon { display: grid; place-items: center; width: 42px; height: 42px; flex-shrink: 0; border-radius: 50%; background: #faedf1; }
+.cg-icon svg { width: 24px; height: 24px; }
+.cg-item ul { margin: 0; padding: 12px 24px 18px 46px; font-size: 13px; line-height: 1.7; border-top: 1px solid #eee8e4; }
+.cg-item li + li { margin-top: 6px; }
+.cg-side { display: grid; gap: 14px; }
+.cg-support { display: flex; gap: 20px; padding: 22px; }
+.cg-support > div { min-width: 0; flex: 1; }
+.cg-support h2 { margin-bottom: 8px; }
+.cg-support blockquote { margin-top: 14px; font: italic 17px/1.5 Georgia,serif; color: #47343b; }
+.cg-support cite { display: block; margin-top: 5px; color: #566074; font: normal 12px/1.5 'Poppins',sans-serif; }
+.cg-contact { width: 100%; margin-top: 16px; padding: 12px 8px; font-size: 13px; }
+.cg-item summary:focus-visible,.ca-tabs a:focus-visible,.ca-tabs button:focus-visible { outline: 2px solid #b97b1f; outline-offset: -3px; }
+@media(max-width:1100px) { .cg-layout { grid-template-columns: 1fr; } .cg-side { grid-template-columns: repeat(2,minmax(0,1fr)); } }
+@media(max-width:760px) { .cg-side { grid-template-columns: 1fr; } .counseling-guidelines-page .co-hero-copy { padding-bottom: 28px; } .cg-main,.cg-support { padding: 18px; } .cg-main h2 { font-size: 24px; } .cg-support { gap: 14px; } .cg-item summary { gap: 10px; } }
+@media(prefers-reduced-motion:reduce) { .cg-item summary > svg { transition: none; } }

@@ -1,4 +1,20 @@
 <?php
+/**
+ * admin-dashboard.php
+ * ---------------------------------------------------------------------
+ * Admin landing page. FRONTEND ONLY, same as dashboard.php: everything
+ * below is hardcoded sample data shaped like what a real query would
+ * return (numbers mirror database/schema.sql's seed rows so this looks
+ * the same once it's wired up), not a live DB read.
+ *
+ * WHAT WOULD CHANGE WHEN A BACKEND IS ADDED:
+ *   - $adminFirstName -> $_SESSION['full_name'] once admin login exists
+ *   - $stats           -> COUNT(*) grouped by status, UNIONed across all
+ *                         8 request-ish tables (schema.sql's own notes
+ *                         already call for this exact query shape)
+ *   - $recentActivity   -> UNION ALL ... ORDER BY created_at DESC LIMIT 8
+ * ---------------------------------------------------------------------
+ */
 
 $adminFirstName = 'Parish';
 
@@ -11,7 +27,8 @@ if ($hour < 12) {
     $greeting = 'Good evening';
 }
 
-
+// Mirrors the seed data in database/schema.sql exactly (4 pending, 2
+// approved, 2 scheduled, 2 completed across the 8 request tables).
 $stats = [
     ['icon' => 'clock',          'label' => 'Pending',   'sub' => 'awaiting review', 'count' => 4, 'tint' => 'amber'],
     ['icon' => 'check-circle',   'label' => 'Approved',  'sub' => 'requests',        'count' => 2, 'tint' => 'green'],
