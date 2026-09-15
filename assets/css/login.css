@@ -152,6 +152,9 @@ body { background: var(--cream); }
 }
 .auth-alert svg { width: 16px; height: 16px; flex-shrink: 0; margin-top: 1px; stroke: currentColor; }
 .auth-alert[hidden] { display: none; }
+/* success flash ("account verified", "password reset", "logged out") --
+   auth.js adds .is-success when the message isn't an error */
+.auth-alert.is-success { background: var(--status-approved-bg); color: var(--status-approved-text); }
 
 .auth-field { margin-bottom: 18px; }
 .auth-field label { display: block; margin-bottom: 7px; }
@@ -198,6 +201,26 @@ body { background: var(--cream); }
 
 .auth-submit { width: 100%; justify-content: center; margin-top: 2px; }
 .auth-submit.is-loading { opacity: 0.75; }
+
+/* Big, spaced-out digits on the 6-digit code screens (verify-otp.html,
+   verify-reset-otp.html) so the code is easy to compare with the email. */
+.otp-input {
+    font-size: 28px;
+    text-align: center;
+    letter-spacing: 10px;
+    font-weight: 600;
+}
+
+/* "Wrong email? Start over" / "Back to Log In" line under the auth cards */
+.auth-switch {
+    text-align: center;
+    font-size: 13px;
+    color: var(--text-body);
+    margin-top: 18px;
+}
+.auth-switch a { color: var(--maroon-700); font-weight: 700; }
+.auth-switch a:hover { text-decoration: underline; }
+.auth-switch a:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; border-radius: 4px; }
 
 .auth-divider {
     display: flex;

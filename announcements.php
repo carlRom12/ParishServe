@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Baptism Request | ParishServe</title>
+<title>Announcements | ParishServe</title>
 
 <link rel="stylesheet" href="assets/css/style.css?v=confirmation-2">
 
@@ -13,18 +13,14 @@
 <link rel="stylesheet" href="assets/css/counseling.css?v=2">
 <link rel="stylesheet" href="assets/css/mass-intention.css?v=1">
 <link rel="stylesheet" href="assets/css/service-cards.css?v=1">
-<link rel="stylesheet" href="assets/css/baptism-home.css?v=1">
+
 <link rel="stylesheet" href="assets/css/counseling-about.css?v=1">
-<link rel="stylesheet" href="assets/css/baptism-about.css?v=1">
+<link rel="stylesheet" href="assets/css/wedding-about.css?v=1">
 <link rel="stylesheet" href="assets/css/service-tabs.css?v=1">
 <link rel="stylesheet" href="assets/css/service-back.css?v=2">
-<link rel="stylesheet" href="assets/css/wedding-request.css">
-<link rel="stylesheet" href="assets/css/baptism-request-step2.css">
-<link rel="stylesheet" href="assets/css/baptism-request-layout.css?v=5">
-<link rel="stylesheet" href="assets/css/service-review.css?v=2">
-<link rel="stylesheet" href="assets/css/sidebar-refined.css?v=2">
+<link rel="stylesheet" href="assets/css/calendar-revamp.css?v=1"><link rel="stylesheet" href="assets/css/announcements.css"><link rel="stylesheet" href="assets/css/announcements-revamp.css?v=2"><link rel="stylesheet" href="assets/css/sidebar-refined.css?v=2">
 </head>
-<body class="funeral-page mass-intention-page baptism-home-page baptism-about-page">
+<body class="funeral-page mass-intention-page parish-announcements-page">
 <div class="ps-shell">
 <aside class="ps-sidebar">
 
@@ -44,14 +40,12 @@
                         </a>
                     </li>
                                     <li>
-                        <a class="ps-nav-link"
-                           href="announcements.html">
+                        <a class="ps-nav-link active" aria-current="page" href="announcements.html">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10v4h3l6 4V6L6 10H3z"/><path d="M14 9c1.2 1 1.2 5 0 6"/><path d="M17 7c2 2 2 8 0 10"/></svg>                            <span>Announcements</span>
                         </a>
                     </li>
                                     <li>
-                        <a class="ps-nav-link"
-                           href="calendar.html">
+                        <a class="ps-nav-link" href="calendar.html">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18"/><path d="M8 3v4"/><path d="M16 3v4"/></svg>                            <span>Parish Calendar</span>
                         </a>
                     </li>
@@ -59,13 +53,12 @@
                                     <span class="ps-nav-section">Sacraments</span>
                         <ul class="ps-nav-list">
                                     <li>
-                        <a class="ps-nav-link"
-                           href="wedding.html">
+                        <a class="ps-nav-link" href="wedding.html">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="14" r="6"/><circle cx="16" cy="14" r="6"/><path d="m6 5 2-2 2 2-2 3-2-3Zm8 0 2-2 2 2-2 3-2-3Z"/></svg>                            <span>Wedding</span>
                         </a>
                     </li>
                                     <li>
-                        <a class="ps-nav-link active" aria-current="page" href="baptism.html">
+                        <a class="ps-nav-link" href="baptism.html">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2S5 11 5 15a7 7 0 0 0 14 0c0-4-7-13-7-13Z"/><path d="M15 15a3 3 0 0 1-3 3"/></svg>                            <span>Baptism</span>
                         </a>
                     </li>
@@ -84,7 +77,7 @@
                                     <span class="ps-nav-section">Parish Services</span>
                         <ul class="ps-nav-list">
                                     <li>
-                        <a class="ps-nav-link" href="counseling.html" aria-current="page">
+                        <a class="ps-nav-link" href="counseling.html">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="7" r="3"/><path d="M5 21v-2a7 7 0 0 1 14 0v2M4 5a3 3 0 0 0 0 6m16-6a3 3 0 0 1 0 6M2 19v-2a5 5 0 0 1 3-4m17 6v-2a5 5 0 0 0-3-4"/></svg>                            <span>Counseling</span>
                         </a>
                     </li>
@@ -127,7 +120,7 @@
 
     <div class="ps-logout-wrap">
 
-        <a href="landingpage.html" class="ps-logout-btn">
+        <a href="logout.php" class="ps-logout-btn" data-session-auth-link>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>            <span>Log out</span>
         </a>
     </div>
@@ -135,103 +128,120 @@
 </aside>
 <main class="ps-main">
 
-    <div class="conf-topline service-topline"><a class="service-back" href="baptism.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M19 12H5m6-6-6 6 6 6"/></svg>Back to Baptism</a>
+    <div class="conf-topline service-topline utility-topline">
         <div class="ps-topbar">
 
     <button type="button" class="ps-notif-btn" aria-label="Notifications">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 4 1.5 5.5 2 6.5H4c.5-1 2-2.5 2-6.5z"/><path d="M10 19a2 2 0 0 0 4 0"/></svg>                    <span class="ps-notif-badge">3</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 4 1.5 5.5 2 6.5H4c.5-1 2-2.5 2-6.5z"/><path d="M10 19a2 2 0 0 0 4 0"/></svg>                    
             </button>
 
     <div class="ps-user-chip">
-        <span class="ps-user-avatar">J</span>
+        <span class="ps-user-avatar" data-session-initial>G</span>
         <span class="ps-user-info">
-            <strong>Juan Dela Cruz</strong>
-            <small>Parishioner</small>
+            <strong data-session-name>Guest</strong>
+            <small data-session-role>Not signed in</small>
         </span>
         <svg class="ps-user-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>    </div>
 </div>
     </div>
 
-<section class="co-hero" aria-labelledby="baptism-title"><img src="assets/images/baptism-hero.png" alt="Baptismal font with water, a white cloth with a gold cross, and candles in a church"><div class="co-hero-copy"><span class="co-eyebrow">Sacraments</span><h1 id="baptism-title">Request Baptism</h1><p>Provide your child&rsquo;s details and prepare your baptism request.</p><blockquote>&ldquo;Let the little children come to me.&rdquo;<cite>&mdash; Mark 10:14</cite></blockquote></div></section><nav class="ca-tabs" id="baptism-tabs" aria-label="Baptism sections"><a href="baptism-about.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v16M12 5C9 3 5 3 2 5v16c3-2 7-2 10 0 3-2 7-2 10 0V5c-3-2-7-2-10 0Z"/></svg>About Baptism</a><a href="baptism-requirements.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H5v20h14V7l-5-5Zm0 0v6h5M8 12h8M8 16h8"/></svg>Requirements</a><a href="baptism-schedule.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 2v6m8-6v6"/></svg>Schedule</a><a href="baptism-request.html" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 3 6 6-12 12H3v-6L15 3Zm-2 2 6 6"/></svg>Request</a></nav><div class="ps-card wr-stepbar">
-                    <div class="wr-step is-done">
-            <span class="wr-step-num">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>                            </span>
-            <span class="wr-step-text">
-                <strong>Baptism Details</strong>
-                <small>Tell us about the child</small>
-            </span>
+<section class="pc-hero"><div><span class="co-eyebrow">Announcements</span><h1>Stay Informed</h1><p>Latest news, notices, and activities from our parish community.</p></div><blockquote>&ldquo;Let all things be done in love.&rdquo;<cite>&mdash; 1 Corinthians 16:14</cite></blockquote></section><div class="ann-toolbar">
+        <div class="ps-tabs" data-filter-tabs>
+                            <button type="button" class="ps-tab active" data-filter-tab="All Announcements">
+                    All Announcements                </button>
+                            <button type="button" class="ps-tab" data-filter-tab="Parish News">
+                    Parish News                </button>
+                            <button type="button" class="ps-tab" data-filter-tab="Events">
+                    Events                </button>
+                            <button type="button" class="ps-tab" data-filter-tab="Mass &amp; Liturgical">
+                    Mass &amp; Liturgical                </button>
+                            <button type="button" class="ps-tab" data-filter-tab="Wedding Banns">
+                    Wedding Banns                </button>
+                            <button type="button" class="ps-tab" data-filter-tab="Reminders">
+                    Reminders                </button>
+                            <button type="button" class="ps-tab" data-filter-tab="Notices">
+                    Notices                </button>
+                    </div>
+        <div class="ann-toolbar-right">
+            <label class="ps-search">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M20 20l-4.8-4.8"/></svg>                <input type="text" id="announcementSearch" name="announcementSearch" placeholder="Search announcements..." data-announcement-search>
+            </label>
+            <label class="an-sort">Sort <select id="announcementSort" aria-label="Sort announcements"><option value="latest">Latest</option><option value="oldest">Oldest</option></select></label>
         </div>
-                    <svg class="wr-step-sep" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>                            <div class="wr-step is-current">
-            <span class="wr-step-num">
-                                    2                            </span>
-            <span class="wr-step-text">
-                <strong>Requirement</strong>
-                <small>Submit document</small>
-            </span>
-        </div>
-                    <svg class="wr-step-sep" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>                            <div class="wr-step">
-            <span class="wr-step-num">
-                                    3                            </span>
-            <span class="wr-step-text">
-                <strong>Review &amp; Submit</strong>
-                <small>Review and submit</small>
-            </span>
-        </div>
+    </div>
+
+    <section class="ann-grid">
+
+        <div class="ann-main">
+
+            
+            <div class="ps-card ann-featured" data-announcements-featured hidden>
+                <div class="ps-card-header">
+                    <span class="ps-card-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l2.6 5.6 6.1.7-4.5 4.2 1.2 6-5.4-3-5.4 3 1.2-6-4.5-4.2 6.1-.7z"/></svg> Featured Announcement</span>
+                </div>
+
+                <div class="ann-carousel" data-carousel>
+<div class="ann-carousel-track" data-announcements-slides></div><div class="ann-carousel-nav">
+                        <button type="button" class="ps-round-btn" data-carousel-prev aria-label="Previous announcement"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg></button>
+                        <button type="button" class="ps-round-btn" data-carousel-next aria-label="Next announcement"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></button>
+                    </div>
+                    <div class="ann-carousel-dots" data-carousel-dots></div>
+                </div>
             </div>
 
-    <form class="ps-card wr-form" action="baptism-request-step3.html" method="post" enctype="multipart/form-data" data-baptism-upload novalidate>
+            
+            <div class="ps-card ann-list-card">
+                <div class="ps-card-header">
+                    <span class="ps-card-title">All Announcements</span>
+                </div>
 
-        <h2>Step 2 of 3: Requirement</h2>
-        <p class="wr-form-sub">Please upload the required document for the baptism request.</p>
+                <div class="ann-table">
+                    <div class="ann-table-head">
+                        <span>Announcement</span><span>Category</span><span>Date</span><span></span>
+                    </div><p class="ann-empty is-visible" data-announcement-empty>No announcements have been posted yet.</p>
+                </div>
 
-        <div class="bap2-upload-row">
-            <div class="bap2-upload-label">
-                <strong>Birth Certificate</strong>
-                <small>Original or PSA copy</small>
+                <button type="button" class="ann-load-more" data-load-more hidden>
+                    Load more <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>                </button>
             </div>
 
-            <div class="ps-field">
-                <span class="ps-dropzone" data-dropzone>
-                    <input type="file" id="birthCertificate" name="birthCertificate"
-                           accept=".pdf,.jpg,.jpeg,.png" data-max-size-mb="5"
-                           data-dropzone-input required>
-                    <span class="ps-dropzone-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17a4.5 4.5 0 0 1-1-8.9A5.5 5.5 0 0 1 16.5 8H17a4 4 0 0 1 1 7.9"/><path d="M12 12v7"/><path d="M9 15l3-3 3 3"/></svg></span>
-                    <span class="ps-dropzone-text">Drag and drop your file here</span>
-                    <span class="ps-dropzone-or">or</span>
-                    <span class="ps-dropzone-btn">Choose File</span>
-                    <span class="ps-dropzone-filename" data-dropzone-filename>No file chosen</span>
-                </span>
-                <small class="wr-file-error" id="birthCertificateError" data-file-error hidden></small>
+        </div>
+
+        
+        <div class="ann-side">
+
+            <div class="ps-card">
+                <div class="ps-card-header">
+                    <span class="ps-card-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18"/><path d="M8 3v4"/><path d="M16 3v4"/></svg> Upcoming Parish Events</span>
+                    <a href="calendar.html" class="ps-link-more">View full calendar <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></a>
+                </div>
+                <ul class="ann-event-list" data-announcements-events></ul>
             </div>
+
+            <div class="ps-card">
+                <div class="ps-card-header">
+                    <span class="ps-card-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 4 1.5 5.5 2 6.5H4c.5-1 2-2.5 2-6.5z"/><path d="M10 19a2 2 0 0 0 4 0"/></svg> Important Notices</span>
+                </div>
+                <ul class="ann-notice-list" data-announcements-notices></ul>
+            </div>
+
+            <div class="ps-card ann-contact-box">
+                <div class="ann-contact-art"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7-4.4-9.5-9C1 8 2.5 4.5 6 4.5c2 0 3.5 1.2 4 2.5.5-1.3 2-2.5 4-2.5 3.5 0 5 3.5 3.5 6.5C19 15.6 12 20 12 20z"/></svg></div>
+                <h3>Have questions?</h3>
+                <p>We're here to help. Contact the parish office during office hours.</p>
+                <a href="dashboard.html#parish-contacts" class="ps-btn ps-btn-primary">Contact Us</a>
+            </div>
+
         </div>
 
-        <div class="ps-info-banner bap2-note">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5"/><path d="M12 7.8h.01"/></svg>            <span>This is the only required document. Please make sure the birth certificate is readable and complete before uploading.</span>
-        </div>
-
-        <div class="ps-info-banner bap2-note">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h7l4 4v14a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M14 3v4h4"/><path d="M9 13h6M9 16.5h6M9 9.5h3"/></svg>            <span>Allowed file types: PDF, JPG, PNG</span>
-        </div>
-
-        <div class="ps-field wr-notes-field">
-            <label for="officeNotes">Additional note <span class="wr-optional">(optional)</span></label>
-            <textarea id="officeNotes" name="officeNotes" rows="3" maxlength="500" placeholder="Add any details the parish office should know..."></textarea>
-            <small class="ps-form-hint bap2-counter" id="officeNotesCount">0 / 500</small>
-        </div>
-
-        <div class="wr-actions">
-            <a href="baptism-request.html" class="ps-btn wr-cancel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg> Back</a>
-            <button type="submit" class="ps-btn ps-btn-primary wr-submit">Save and Continue <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></button>
-        </div>
-
-        <p id="baptismStatus" role="status" hidden></p>
-
-    </form>
+    </section>
 
 </main>
 </div>
 <script src="assets/js/frontend.js"></script>
 <script src="assets/js/main.js"></script>
+<script src="assets/js/session-user.js"></script>
 <script src="assets/js/responsive.js?v=1"></script>
-<script src="assets/js/baptism-request-tab.js?v=1"></script><script src="assets/js/baptism-upload.js?v=5"></script></body>
+<script src="assets/js/announcements.js"></script>
+<script src="assets/js/announcements-revamp.js?v=1"></script></body>
 </html>

@@ -121,7 +121,7 @@
 
     <div class="ps-logout-wrap">
 
-        <a href="landingpage.html" class="ps-logout-btn">
+        <a href="logout.php" class="ps-logout-btn" data-session-auth-link>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>            <span>Log out</span>
         </a>
     </div>
@@ -135,14 +135,14 @@
         <div class="ps-topbar">
 
     <button type="button" class="ps-notif-btn" aria-label="Notifications">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 4 1.5 5.5 2 6.5H4c.5-1 2-2.5 2-6.5z"/><path d="M10 19a2 2 0 0 0 4 0"/></svg>                    <span class="ps-notif-badge">3</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 4 1.5 5.5 2 6.5H4c.5-1 2-2.5 2-6.5z"/><path d="M10 19a2 2 0 0 0 4 0"/></svg>                    
             </button>
 
     <div class="ps-user-chip">
-        <span class="ps-user-avatar">J</span>
+        <span class="ps-user-avatar" data-session-initial>G</span>
         <span class="ps-user-info">
-            <strong>Juan Dela Cruz</strong>
-            <small>Parishioner</small>
+            <strong data-session-name>Guest</strong>
+            <small data-session-role>Not signed in</small>
         </span>
         <svg class="ps-user-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>    </div>
 </div>
@@ -154,4 +154,5 @@
 <section><h2>How Counseling Can Help</h2><div class="ca-benefits"><article><span class="co-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 2h4v6h6v4h-6v10h-4V12H4V8h6V2Z"/></svg></span><h3>Spiritual Guidance</h3><p>Find clarity and direction through faith and prayer.</p></article><article><span class="co-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21S2 15 2 8a5 5 0 0 1 10-1A5 5 0 0 1 22 8c0 7-10 13-10 13Z"/></svg></span><h3>Emotional Support</h3><p>Receive a listening heart and compassionate support.</p></article><article><span class="co-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3-3-1-4 8-2 9 4 3 5-7 5 7 4-3-2-9-4-8-3 1Zm0 0v12M9 6l-2 6m8-6 2 6"/></svg></span><h3>Prayer &amp; Reflection</h3><p>Be accompanied in prayer during life&rsquo;s challenges.</p></article><article><span class="co-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="7" r="3"/><circle cx="4" cy="10" r="2"/><circle cx="20" cy="10" r="2"/><path d="M6 21v-3a6 6 0 0 1 12 0v3H6ZM1 20v-4l3-2m19 6v-4l-3-2"/></svg></span><h3>Family or Personal Concerns</h3><p>Support for individuals, couples, parents, youth, and families.</p></article></div></section>
 <section><h2>Who May Request Counseling?</h2><p>Parishioners, as well as individuals, couples, parents, youth, and families, may request counseling. Sessions are subject to parish availability and are facilitated by our parish priest or designated pastoral counselors.</p><div class="ca-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6m0-10v.1"/></svg><div><h3>Additional Notes</h3><p>Details regarding counseling sessions, availability, and process may vary by parish. If you are experiencing a life-threatening emergency, please contact the appropriate emergency services.</p></div></div></section></div>
 <aside class="ca-side" aria-label="Pastoral support"><section class="co-card"><h2>A Safe and Compassionate Space</h2><p>You are welcome here. Whatever you are going through, you will be heard with respect, without judgment, and in confidence. Our parish is committed to walking with you in faith, hope, and love.</p><img class="ca-room" src="assets/images/counseling-hero.png" alt="A welcoming parish room with comfortable chairs, a Bible, candle, and wooden cross"></section><blockquote class="co-card ca-scripture"><p>&ldquo;Cast all your anxiety on him<br>because he cares for you.&rdquo;</p><cite>&mdash; 1 Peter 5:7</cite></blockquote><section class="co-card"><div class="co-card-head"><span class="co-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 13v-2a8 8 0 0 1 16 0v7a4 4 0 0 1-4 4h-2"/><rect x="3" y="12" width="4" height="8" rx="2"/><rect x="17" y="12" width="4" height="8" rx="2"/></svg></span><div><h2>Need Help?</h2><p>For more information or to discuss your needs, please contact our parish office.</p></div></div><a class="ps-btn ps-btn-primary ca-contact" href="dashboard.html#parish-contacts">Contact Parish Office</a></section></aside></div>
-</main></div><script src="assets/js/counseling.js?v=1"></script><script src="assets/js/responsive.js?v=1"></script></body></html>
+</main></div><script src="assets/js/counseling.js?v=1"></script><script src="assets/js/session-user.js"></script>
+<script src="assets/js/responsive.js?v=1"></script></body></html>

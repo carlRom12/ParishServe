@@ -1,3 +1,7 @@
+<?php
+require_once __DIR__ . '/includes/request-forms.php';
+ps_handle_request_form('donation');
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -128,7 +132,7 @@
 
     <div class="ps-logout-wrap">
 
-        <a href="landingpage.html" class="ps-logout-btn">
+        <a href="logout.php" class="ps-logout-btn" data-session-auth-link>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>            <span>Log out</span>
         </a>
     </div>
@@ -141,21 +145,21 @@
         <div class="ps-topbar">
 
     <button type="button" class="ps-notif-btn" aria-label="Notifications">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 4 1.5 5.5 2 6.5H4c.5-1 2-2.5 2-6.5z"/><path d="M10 19a2 2 0 0 0 4 0"/></svg>                    <span class="ps-notif-badge">3</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 4 1.5 5.5 2 6.5H4c.5-1 2-2.5 2-6.5z"/><path d="M10 19a2 2 0 0 0 4 0"/></svg>                    
             </button>
 
     <div class="ps-user-chip">
-        <span class="ps-user-avatar">J</span>
+        <span class="ps-user-avatar" data-session-initial>G</span>
         <span class="ps-user-info">
-            <strong>Juan Dela Cruz</strong>
-            <small>Parishioner</small>
+            <strong data-session-name>Guest</strong>
+            <small data-session-role>Not signed in</small>
         </span>
         <svg class="ps-user-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>    </div>
 </div>
     </div>
 
 
-<section class="co-hero" aria-labelledby="donation-title"><img src="assets/images/donation-hero.png" alt="A wooden donation box with a cross beside a candle in a warmly lit church"><div class="co-hero-copy"><span class="co-eyebrow">Parish Services</span><h1 id="donation-title">Give Now</h1><p>Support our parish mission. Share your offering and donation details with the parish.</p><blockquote>&ldquo;God loves a cheerful giver.&rdquo;<cite>&mdash; 2 Corinthians 9:7</cite></blockquote></div></section><nav class="ca-tabs" aria-label="Donation sections"><a href="donation-about.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v16M12 5C9 3 5 3 2 5v16c3-2 7-2 10 0 3-2 7-2 10 0V5c-3-2-7-2-10 0Z"/></svg>About Donations</a><a href="donation-guidelines.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H5v20h14V7l-5-5Zm0 0v6h5M8 12h8M8 16h8"/></svg>Guidelines</a><a href="donation-how.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H5v20h14V7l-5-5Zm0 0v6h5M8 12h8M8 16h8"/></svg>How to Donate</a><a href="donation-request.html" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21S2 15 2 8a5 5 0 0 1 10-1A5 5 0 0 1 22 8c0 7-10 13-10 13Z"/></svg>Give Now</a></nav><div class="dn-alert"><span>The official parish GCash QR is not available on this page yet. Please contact the parish office before sending a donation.</span><button type="button" aria-label="Dismiss notice" id="dnDismiss">&times;</button></div><form action="donation-request.html" method="post" data-wizard-step-form novalidate><div class="dn-checkout"><div class="dn-left"><div class="ps-card wr-section">
+<section class="co-hero" aria-labelledby="donation-title"><img src="assets/images/donation-hero.png" alt="A wooden donation box with a cross beside a candle in a warmly lit church"><div class="co-hero-copy"><span class="co-eyebrow">Parish Services</span><h1 id="donation-title">Give Now</h1><p>Support our parish mission. Share your offering and donation details with the parish.</p><blockquote>&ldquo;God loves a cheerful giver.&rdquo;<cite>&mdash; 2 Corinthians 9:7</cite></blockquote></div></section><nav class="ca-tabs" aria-label="Donation sections"><a href="donation-about.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v16M12 5C9 3 5 3 2 5v16c3-2 7-2 10 0 3-2 7-2 10 0V5c-3-2-7-2-10 0Z"/></svg>About Donations</a><a href="donation-guidelines.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H5v20h14V7l-5-5Zm0 0v6h5M8 12h8M8 16h8"/></svg>Guidelines</a><a href="donation-how.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H5v20h14V7l-5-5Zm0 0v6h5M8 12h8M8 16h8"/></svg>How to Donate</a><a href="donation-request.php" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21S2 15 2 8a5 5 0 0 1 10-1A5 5 0 0 1 22 8c0 7-10 13-10 13Z"/></svg>Give Now</a></nav><div class="dn-alert"><span>The official parish GCash QR is not available on this page yet. Please contact the parish office before sending a donation.</span><button type="button" aria-label="Dismiss notice" id="dnDismiss">&times;</button></div><form action="donation-request.php" method="post" enctype="multipart/form-data" data-wizard-step-form data-upload-flow="donation" novalidate><?php ps_request_form_fields(); ?><div class="dn-checkout"><div class="dn-left"><div class="ps-card wr-section">
                     <h2 class="wr-section-heading"><span class="dn-heading-icon" aria-hidden="true">&#9825;</span>Donation Details</h2>
 
                     <div class="ps-form-row-2">
@@ -172,7 +176,7 @@
                             <label for="donationAmount">Donation Amount</label>
                             <span class="ps-currency-field">
                                 <span class="ps-currency-symbol">&#8369;</span>
-                                <input type="number" id="donationAmount" name="donationAmount" min="0" step="0.01" inputmode="decimal" placeholder="0.00">
+                                <input type="number" id="donationAmount" name="donationAmount" min="0.01" step="0.01" required inputmode="decimal" placeholder="0.00">
                             </span>
                             <small class="ps-form-hint">Enter the amount you sent through GCash.</small>
                         </div>
@@ -183,7 +187,7 @@
 
                     <div class="ps-field">
                         <span class="ps-dropzone" data-dropzone>
-                            <input type="file" id="proofOfPayment" name="proofOfPayment"
+                            <input type="file" id="proofOfPayment" name="proofOfPayment" required
                                    accept=".png,.jpg,.jpeg" data-max-size-mb="5"
                                    data-dropzone-input>
                             <span class="ps-dropzone-icon is-ringed"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17a4.5 4.5 0 0 1-1-8.9A5.5 5.5 0 0 1 16.5 8H17a4 4 0 0 1 1 7.9"/><path d="M12 12v7"/><path d="M9 15l3-3 3 3"/></svg></span>
@@ -220,7 +224,7 @@
                     <small>We will not display your name in any public listing.</small>
                 </label>
             </div>
-        </div><div class="dn-actions"><a class="ps-btn ps-btn-outline" href="donations.html">Cancel</a><button type="submit" class="ps-btn ps-btn-primary">Send Donation Details &rarr;</button></div><p class="wr-next-step-notice" data-wizard-notice hidden>Online submission is not available yet. Your donation details and proof of payment have not been sent. Please contact the parish office for assistance.</p></div><aside class="dn-right"><section class="ps-card wr-section dn-payment"><h2 class="wr-section-heading"><span class="dn-heading-icon" aria-hidden="true">&#9825;</span>Payment Method</h2><p>We currently accept donations through GCash.</p><div class="don-qr-block">
+        </div><div class="dn-actions"><a class="ps-btn ps-btn-outline" href="donations.html">Cancel</a><button type="submit" class="ps-btn ps-btn-primary">Send Donation Details &rarr;</button></div></div><aside class="dn-right"><section class="ps-card wr-section dn-payment"><h2 class="wr-section-heading"><span class="dn-heading-icon" aria-hidden="true">&#9825;</span>Payment Method</h2><p>We currently accept donations through GCash.</p><div class="don-qr-block">
                         <img src="assets/images/gcash-qr-placeholder.svg" alt="Placeholder only - not an official payment QR">
                         <p class="don-qr-placeholder-label">Preview only &mdash; official QR pending</p><div class="don-qr-name">Our Lady of the Gate Parish</div>
                     </div></section><section class="ps-card wr-section"><div class="don-howto">
@@ -255,4 +259,6 @@
                                                                     <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>After sending, please upload your proof of payment.</li>
                                                                     <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>Your donation will be verified by our parish staff.</li>
                                                             </ul>
-                        </div></section><section class="ps-card wr-section dn-help"><div><h3>Need Assistance?</h3><p>For questions or concerns, contact the parish office.</p></div><a class="ps-btn ps-btn-outline" href="dashboard.html#parish-contacts">Contact Parish Office</a></section></aside></div></form></main></div><script src="assets/js/frontend.js"></script><script src="assets/js/main.js"></script><script src="assets/js/responsive.js?v=1"></script><script src="assets/js/donation-checkout.js?v=1"></script><script src="assets/js/upload-preview.js?v=1"></script></body></html>
+                        </div></section><section class="ps-card wr-section dn-help"><div><h3>Need Assistance?</h3><p>For questions or concerns, contact the parish office.</p></div><a class="ps-btn ps-btn-outline" href="dashboard.html#parish-contacts">Contact Parish Office</a></section></aside></div></form></main></div><script src="assets/js/frontend.js"></script><script src="assets/js/main.js"></script><script src="assets/js/session-user.js"></script>
+<script src="assets/js/responsive.js?v=1"></script><script src="assets/js/donation-checkout.js?v=1"></script><script src="assets/js/request-uploads.js"></script>
+<script src="assets/js/upload-preview.js?v=2"></script></body></html>

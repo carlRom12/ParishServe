@@ -1,6 +1,7 @@
 <?php
     session_start();
     require_once 'config.php';
+    require_once 'includes/otp-mailer.php';
 
     // Walang pending registration = walang dapat i-verify dito.
     // Nangyayari ito kung direktang tine-type ang URL, o kung tapos na
@@ -45,9 +46,7 @@
             } elseif (!password_verify($enteredOtp, $user['otp_hash'])) {
                 $error = "Incorrect code. Please try again.";
             } else {
-                // TAMA -- markahan ang account na verified.
-                // Hindi na kailangang i-set ang status dito, 'active' na
-                // agad ito sa INSERT (tingnan ang login_register.html).
+             
                 $stmt = $conn->prepare("UPDATE users SET email_verified = 1, otp_hash = NULL, otp_expires_at = NULL WHERE id = ?");
                 $stmt->bind_param("i", $user_id);
                 $stmt->execute();
@@ -69,7 +68,7 @@
 
         $new_otp        = random_int(100000, 999999);
         $new_otp_hash   = password_hash((string) $new_otp, PASSWORD_DEFAULT);
-        $new_expires_at = date('Y-m-d H:i:s', time() + 180);
+        $new_expires_at = date('Y-m-d H:i:s', time() + PS_OTP_TTL_SECONDS);
 
         $stmt = $conn->prepare("UPDATE users SET otp_hash = ?, otp_expires_at = ? WHERE id = ?");
         $stmt->bind_param("ssi", $new_otp_hash, $new_expires_at, $user_id);

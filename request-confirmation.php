@@ -1,16 +1,5 @@
 <?php
-/**
- * request-confirmation.php
- * ---------------------------------------------------------------------
- * The shared "request received" page for all six public request forms
- * (ps_submit_request_form() in includes/request-forms.php redirects here
- * with ?ref=). It only shows a reference number this browser session
- * actually submitted, so a reference number can't be used to look up
- * someone else's contact details. It also clears that form's
- * sessionStorage draft ([data-clear-draft], frontend.js). Refreshing it
- * is harmless -- it's a plain GET.
- * ---------------------------------------------------------------------
- */
+
 session_start();
 require_once __DIR__ . '/includes/request-forms.php';
 
@@ -28,7 +17,7 @@ $contact = $receipt && $receipt['contact'] !== '' ? $receipt['contact'] : '';
 $navGroups = [
     ['label' => null, 'items' => [['Dashboard', 'home', 'dashboard.html'], ['Announcements', 'megaphone', 'announcements.html'], ['Parish Calendar', 'calendar', 'calendar.html']]],
     ['label' => 'Sacraments', 'items' => [['Wedding', 'ring', 'wedding.html'], ['Baptism', 'droplet', 'baptism.html'], ['Confirmation', 'flame', 'confirmation.html'], ['Burial / Funeral', 'cross', 'funeral.html']]],
-    ['label' => 'Parish Services', 'items' => [['Counseling', 'people', 'counseling.html'], ['Mass Intention', 'chalice', 'mass-intention.html'], ['Facility Reservation', 'building', 'facility-reservation.html'], ['Donate', 'heart', 'donations.php']]],
+    ['label' => 'Parish Services', 'items' => [['Counseling', 'people', 'counseling.html'], ['Mass Intention', 'chalice', 'mass-intention.html'], ['Facility Reservation', 'building', 'facility-reservation.html'], ['Donate', 'heart', 'donations.html']]],
     ['label' => 'Other', 'items' => [['My Profile', 'user', 'profile.html'], ['Settings', 'gear', 'settings.html']]],
 ];
 $activeHref = $form['nav'] ?? '';

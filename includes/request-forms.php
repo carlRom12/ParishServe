@@ -5,7 +5,7 @@
  * Server side of the six public request forms. Each final-step page
  * (wedding-request-step3.php, baptism-request-step2.php,
  * confirmation-request-step4.php, funeral-request-step4.php,
- * mass-intention-request-step3.php, donations.php) starts with
+ * mass-intention-request.php, donation-request.php) starts with
  *     ps_handle_request_form('<flow>');
  * and prints ps_request_form_fields() inside its <form>.
  *
@@ -16,16 +16,19 @@
  *      the browser: earlier steps' answers come from the hidden ps_draft
  *      JSON (copied from sessionStorage by main.js / funeral-request.js),
  *      the submitting page's own fields from the POST itself
- *   3. inserts one row with a server-generated <PREFIX>-<YEAR>-<NNNN>
+ *   3. refuses a requested time that overlaps a booked request
+ *      (ps_request_schedule_errors(); conflict rules in request-types.php)
+ *   4. inserts one row with a server-generated <PREFIX>-<YEAR>-<NNNN>
  *      reference number and moves the staged documents
  *      (includes/uploads.php) into uploads/<type>/<reference>/, recording
  *      them in request_documents (or donations.proof_of_payment)
- *   4. redirects (303) to request-confirmation.php?ref=..., or back to the
+ *   5. redirects (303) to request-confirmation.php?ref=..., or back to the
  *      page, which then lists the problems.
  * What a form collects beyond the table's own columns is kept in the
  * row's `details` JSON ({"Label": "value"}), shown to staff in the admin
  * Update window. No login is needed: requests are tracked by reference
- * number + contact number (database/schema.sql group note #2).
+ * number + contact number -- the request tables have no users.id link
+ * (database/migrations/001-auth-and-requests.sql).
  * ---------------------------------------------------------------------
  */
 require_once __DIR__ . '/../config.php';
@@ -48,6 +51,7 @@ const PS_DONATION_FUNDS = [
  * (PS_REQUEST_TYPES), or 'donation'.
  *   steps        the wizard's pages; the last one is the page that submits
  *   upload_step  which step's page has the document inputs
+ *   schedule_step  which step's page has the date/time a schedule conflict is reported on
  *   nav          sidebar link highlighted on the confirmation page
  *   fields       input name => rule. 'step' (default 0) indexes 'steps'.
  *                type: text (default) | email | mobile | date | time |
@@ -71,10 +75,10 @@ const PS_REQUEST_FORMS = [
             'weddingDate'     => ['label' => 'Preferred wedding date', 'type' => 'date', 'when' => 'future', 'required' => true],
             'mobileNumber'    => ['label' => 'Mobile number', 'type' => 'mobile', 'required' => true],
             'emailAddress'    => ['label' => 'Email address', 'type' => 'email', 'required' => true],
+            'seminarDate'     => ['label' => 'Preferred seminar date', 'type' => 'date', 'when' => 'future', 'required' => true],
+            'seminarTime'     => ['label' => 'Preferred seminar time', 'required' => true, 'options' => ['08:00 AM', '09:00 AM', '01:00 PM', '02:00 PM']],
+            'seminarLocation' => ['label' => 'Preferred seminar location', 'required' => true, 'options' => ['Parish Hall', 'Main Church', 'Function Room']],
             'officeNotes'     => ['label' => 'Notes for the parish office', 'step' => 1, 'max' => 500],
-            'seminarDate'     => ['label' => 'Preferred seminar date', 'step' => 2, 'type' => 'date', 'when' => 'future', 'required' => true],
-            'seminarTime'     => ['label' => 'Preferred seminar time', 'step' => 2, 'required' => true, 'options' => ['08:00 AM', '09:00 AM', '01:00 PM', '02:00 PM']],
-            'seminarLocation' => ['label' => 'Preferred seminar location', 'step' => 2, 'required' => true, 'options' => ['Parish Hall', 'Main Church', 'Function Room']],
             'confirmTruthful' => ['label' => 'Confirmation', 'step' => 2, 'type' => 'checkbox', 'required' => true],
         ],
     ],
@@ -128,7 +132,7 @@ const PS_REQUEST_FORMS = [
     ],
     'funeral' => [
         'label' => 'Funeral Service Request', 'prefix' => 'FUN', 'nav' => 'funeral.html',
-        'draft_key' => 'parishserve-draft-funeral', 'upload_step' => 2,
+        'draft_key' => 'parishserve-draft-funeral', 'upload_step' => 2, 'schedule_step' => 1,
         'steps' => ['funeral-request.html', 'funeral-request-step2.html', 'funeral-request-step3.html', 'funeral-request-step4.php'],
         'fields' => [
             'familyFirstName'         => ['label' => 'Your first name', 'required' => true, 'max' => 80],
@@ -155,7 +159,8 @@ const PS_REQUEST_FORMS = [
     'massintention' => [
         'label' => 'Mass Intention Request', 'prefix' => 'MI', 'nav' => 'mass-intention.html',
         'draft_key' => 'parishserve-draft-mass-intention', 'upload_step' => null,
-        'steps' => ['mass-intention-request.html', 'mass-intention-request-step2.html', 'mass-intention-request-step3.php'],
+        // One page: its three steps are panels of the same form (mass-intention-request.js).
+        'steps' => ['mass-intention-request.php'],
         'fields' => [
             'intentionType'     => ['label' => 'Intention type', 'required' => true, 'options' => ['For the Deceased', 'For the Living', 'Thanksgiving', 'Milestones & Celebrations', 'Special Intention']],
             'intentionSubject'  => ['label' => 'Name of person / family / intention subject', 'required' => true, 'max' => 150],
@@ -164,23 +169,23 @@ const PS_REQUEST_FORMS = [
             'requesterName'     => ['label' => "Requester's full name", 'required' => true, 'max' => 150],
             'mobileNumber'      => ['label' => 'Mobile number', 'type' => 'mobile', 'required' => true],
             'emailAddress'      => ['label' => 'Email address', 'type' => 'email', 'required' => true],
-            'preferredDate'     => ['label' => 'Preferred Mass date', 'step' => 1, 'type' => 'date', 'when' => 'future', 'required' => true],
-            'preferredTime'     => ['label' => 'Preferred Mass time', 'step' => 1, 'required' => true, 'options' => ['6:00 AM', '7:00 AM', '8:30 AM', '10:00 AM (Family Mass)', '12:00 PM (Noon Mass)', '5:00 PM (Anticipated Mass — Saturday only)', '6:00 PM']],
-            'massType'          => ['label' => 'Preferred Mass type', 'step' => 1, 'required' => true, 'options' => ['regular', 'special']],
-            'schedulingNotes'   => ['label' => 'Scheduling notes', 'step' => 1, 'max' => 500],
-            'confirmRespectful' => ['label' => 'Confirmation', 'step' => 2, 'type' => 'checkbox', 'required' => true],
+            'preferredDate'     => ['label' => 'Preferred Mass date', 'type' => 'date', 'when' => 'future', 'required' => true],
+            'preferredTime'     => ['label' => 'Preferred Mass time', 'required' => true, 'options' => ['6:00 AM', '7:00 AM', '8:30 AM', '10:00 AM (Family Mass)', '12:00 PM (Noon Mass)', '5:00 PM (Anticipated Mass — Saturday only)', '6:00 PM']],
+            'schedulingNotes'   => ['label' => 'Scheduling notes', 'max' => 500],
+            'confirmRespectful' => ['label' => 'Confirmation', 'type' => 'checkbox', 'required' => true],
         ],
     ],
     'donation' => [
-        'label' => 'Donation', 'prefix' => 'DON', 'nav' => 'donations.php',
+        'label' => 'Donation', 'prefix' => 'DON', 'nav' => 'donations.html',
         'draft_key' => 'parishserve-draft-donations', 'upload_step' => 0,
-        'steps' => ['donations.php'],
+        'steps' => ['donation-request.php'],
         'fields' => [
             'donationPurpose' => ['label' => 'Donation purpose', 'options' => ['general', 'building', 'outreach', 'sacraments']],
             'donationAmount'  => ['label' => 'Donation amount', 'type' => 'amount', 'required' => true],
             'donorName'       => ['label' => 'Full name', 'max' => 150],
             'donorEmail'      => ['label' => 'Email', 'type' => 'email'],
             'donorContact'    => ['label' => 'Contact number', 'type' => 'mobile'],
+            'donationNote'    => ['label' => 'Note / prayer intention', 'max' => 500],
             'isAnonymous'     => ['label' => 'Remain anonymous', 'type' => 'checkbox'],
         ],
     ],
@@ -296,6 +301,7 @@ function ps_build_wedding(array $v) {
     return [
         'columns' => [
             'contact_number' => $v['mobileNumber'],
+            'contact_email'  => $v['emailAddress'],
             'bride_name'     => ps_clip($bride, 150),
             'groom_name'     => ps_clip($groom, 150),
             'preferred_date' => $v['weddingDate'],
@@ -323,6 +329,7 @@ function ps_build_baptism(array $v) {
     return [
         'columns' => [
             'contact_number' => $v['requestorContact'],
+            'contact_email'  => $v['requestorEmail'] === '' ? null : $v['requestorEmail'],
             'child_name'     => ps_clip($child, 150),
             'preferred_date' => $v['baptismDate'],
         ],
@@ -345,6 +352,7 @@ function ps_build_confirmation(array $v) {
     return [
         'columns' => [
             'contact_number' => $v['candidateMobile'],
+            'contact_email'  => $v['candidateEmail'],
             'applicant_name' => ps_clip($name, 150),
         ],
         'details' => [
@@ -375,6 +383,7 @@ function ps_build_funeral(array $v) {
     return [
         'columns' => [
             'contact_number' => $v['familyMobile'],
+            'contact_email'  => $v['familyEmail'],
             'deceased_name'  => ps_clip($v['deceasedName'], 150),
             'service_date'   => $v['preferredMassDate'],
             'service_time'   => ps_sql_time($v['preferredTime']),
@@ -403,6 +412,7 @@ function ps_build_massintention(array $v) {
     return [
         'columns' => [
             'contact_number' => $v['mobileNumber'],
+            'contact_email'  => $v['emailAddress'],
             'requester_name' => $v['requesterName'],
             'intention_type' => $v['intentionType'],
             'intention_for'  => $v['intentionSubject'],
@@ -413,7 +423,6 @@ function ps_build_massintention(array $v) {
             'Occasion or purpose' => $v['occasion'],
             'Intention details'   => $v['intentionDetails'],
             'Preferred Mass time' => $v['preferredTime'],
-            'Mass type'           => $v['massType'] === 'special' ? 'Special / Subject to Parish Confirmation' : 'Regular Parish Mass',
             'Mobile number'       => $v['mobileNumber'],
             'Email address'       => $v['emailAddress'],
             'Scheduling notes'    => $v['schedulingNotes'],
@@ -430,14 +439,16 @@ function ps_build_donation(array $v) {
     return [
         'columns' => [
             'contact_number' => $v['donorContact'],
+            'contact_email'  => $v['donorEmail'] === '' ? null : $v['donorEmail'],
             'donor_name'     => $v['donorName'] === '' ? 'Anonymous' : $v['donorName'],
             'amount'         => $v['donationAmount'],
             'purpose'        => PS_DONATION_FUNDS[$v['donationPurpose'] === '' ? 'general' : $v['donationPurpose']],
         ],
         'details' => [
-            'Email address'    => $v['donorEmail'],
-            'Contact number'   => $v['donorContact'],
-            'Remain anonymous' => $v['isAnonymous'] === '' ? 'No' : 'Yes',
+            'Email address'           => $v['donorEmail'],
+            'Contact number'          => $v['donorContact'],
+            'Note / prayer intention' => $v['donationNote'],
+            'Remain anonymous'        => $v['isAnonymous'] === '' ? 'No' : 'Yes',
         ],
         'errors' => $errors,
     ];
@@ -449,6 +460,34 @@ function ps_build_donation(array $v) {
 function ps_redirect($location) {
     header('Location: ' . $location, true, 303);
     exit;
+}
+
+/**
+ * A requested date + time that overlaps a request the parish has already
+ * booked, as a form error (no names -- the requester only learns the
+ * time is taken). Forms that don't ask for a time can't clash yet; staff
+ * set the time, and the check runs again, when they approve the request.
+ */
+function ps_request_schedule_errors($flow, array $columns) {
+    global $conn;
+    $type = PS_REQUEST_TYPES[$flow] ?? null;
+    if (!$type || $type['resource'] === null || empty($columns[$type['date']])) {
+        return [];
+    }
+    $date = $columns[$type['date']];
+    $window = ps_booking_window($flow, $columns[$type['time']] ?? null, $type['end'] ? ($columns[$type['end']] ?? null) : null);
+    if (!$window) {
+        return [];
+    }
+    $conflicts = ps_schedule_conflicts($conn, $flow, $date, $window, $type['subtype'] ? ($columns[$type['subtype']] ?? null) : null);
+    if (!$conflicts) {
+        return [];
+    }
+    $taken = implode(', ', array_map(fn($booking) => ps_window_label($booking['window']), $conflicts));
+    return [ps_form_error(
+        PS_REQUEST_FORMS[$flow]['schedule_step'] ?? null,
+        'The parish is already booked on ' . ps_long_date($date) . " from {$taken}. Please choose a different date or time."
+    )];
 }
 
 function ps_form_back($flow, array $errors) {
@@ -534,6 +573,9 @@ function ps_submit_request_form($flow) {
     $built = $errors ? null : call_user_func('ps_build_' . $flow, $values);
     if ($built && $built['errors']) {
         $errors = $built['errors'];
+    }
+    if ($built && !$errors) {
+        $errors = ps_request_schedule_errors($flow, $built['columns']);
     }
     if ($errors) {
         ps_form_back($flow, $errors);

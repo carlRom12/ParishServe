@@ -120,7 +120,7 @@
 
     <div class="ps-logout-wrap">
 
-        <a href="landingpage.html" class="ps-logout-btn">
+        <a href="logout.php" class="ps-logout-btn" data-session-auth-link>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>            <span>Log out</span>
         </a>
     </div>
@@ -134,14 +134,14 @@
         <div class="ps-topbar">
 
     <button type="button" class="ps-notif-btn" aria-label="Notifications">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 4 1.5 5.5 2 6.5H4c.5-1 2-2.5 2-6.5z"/><path d="M10 19a2 2 0 0 0 4 0"/></svg>                    <span class="ps-notif-badge">3</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 4 1.5 5.5 2 6.5H4c.5-1 2-2.5 2-6.5z"/><path d="M10 19a2 2 0 0 0 4 0"/></svg>                    
             </button>
 
     <div class="ps-user-chip">
-        <span class="ps-user-avatar">J</span>
+        <span class="ps-user-avatar" data-session-initial>G</span>
         <span class="ps-user-info">
-            <strong>Juan Dela Cruz</strong>
-            <small>Parishioner</small>
+            <strong data-session-name>Guest</strong>
+            <small data-session-role>Not signed in</small>
         </span>
         <svg class="ps-user-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>    </div>
 </div>
@@ -204,7 +204,7 @@
             </div>
 
             <div class="conf-sched-calendar-panel">
-                <div class="conf-sched-grid" id="confSchedGrid">
+                <div class="conf-sched-grid" id="confSchedGrid" data-service-schedule="confirmation" data-schedule-upcoming="confirmationUpcoming" data-schedule-empty="No approved Confirmation schedules for this month yet.">
                     <span class="conf-sched-weekday">Sun</span>
                     <span class="conf-sched-weekday">Mon</span>
                     <span class="conf-sched-weekday">Tue</span>
@@ -239,43 +239,7 @@
                     <h3>Upcoming Events</h3>
                     <a href="calendar.html" class="conf-sched-view-all">View All</a>
                 </div>
-                <div class="conf-sched-event-list">
-                    <div class="conf-sched-event-item">
-                        <span class="conf-sched-event-date cat-orientation"><strong>06</strong><small>SEP</small></span>
-                        <span class="conf-sched-event-info">
-                            <strong>Confirmation Orientation</strong>
-                            <span>9:00 – 11:00 AM</span>
-                            <span>Parish Hall</span>
-                        </span>
-                    </div>
-                    <div class="conf-sched-event-item">
-                        <span class="conf-sched-event-date cat-recollection"><strong>13</strong><small>SEP</small></span>
-                        <span class="conf-sched-event-info">
-                            <strong>Recollection for Candidates</strong>
-                            <span>8:00 AM – 12:00 PM</span>
-                            <span>Parish Church</span>
-                        </span>
-                    </div>
-                    <div class="conf-sched-event-item is-highlighted">
-                        <span class="conf-sched-event-date cat-mass"><strong>20</strong><small>SEP</small></span>
-                        <span class="conf-sched-event-info">
-                            <strong>Confirmation Mass</strong>
-                            <span>10:00 AM – 12:00 NN</span>
-                            <span>Parish Church</span>
-                        </span>
-                    </div>
-                    <div class="conf-sched-event-item">
-                        <span class="conf-sched-event-date cat-other"><strong>27</strong><small>SEP</small></span>
-                        <span class="conf-sched-event-info">
-                            <strong>Thanksgiving Mass (Confirmands)</strong>
-                            <span>9:00 – 11:00 AM</span>
-                            <span>Parish Church</span>
-                        </span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="conf-req-side-card">
+                <div class="conf-sched-event-list" id="confirmationUpcoming"></div></div><div class="conf-req-side-card">
                 <div class="conf-help-head">
                     <span class="conf-help-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 13a8 8 0 0 1 16 0"/><rect x="3" y="13" width="4" height="7" rx="1.5"/><rect x="17" y="13" width="4" height="7" rx="1.5"/><path d="M20 20a4 4 0 0 1-4 3h-2"/></svg></span>
                     <div>
@@ -293,7 +257,8 @@
 </div>
 <script src="assets/js/frontend.js"></script>
 <script src="assets/js/main.js"></script>
-<script src="assets/js/confirmation-schedule.js"></script>
+<script src="assets/js/service-schedule.js"></script>
+<script src="assets/js/session-user.js"></script>
 <script src="assets/js/responsive.js?v=1"></script>
 </body>
 </html>

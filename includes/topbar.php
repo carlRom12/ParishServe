@@ -3,23 +3,27 @@
  * topbar.php
  * ---------------------------------------------------------------------
  * Notification bell + signed-in user chip, placed inside the page's
- * hero/plain header. Uses what the calling page already set:
- *   $userFirstName, $userRole
- *   $notifCount  optional; the badge is hidden when unset or 0
- * No real session yet -- these are still hardcoded by each page.
+ * hero/plain header. Uses what includes/auth-guard.php already set:
+ *   $userFirstName, $userRole, $conn
+ * The bell counts requests + donations still awaiting review and links
+ * to admin-dashboard.php, whose Waiting for Review card splits that count
+ * by type; initNotificationPoll() in main.js refreshes the badge from
+ * pending-count.php while the page is open.
  * ---------------------------------------------------------------------
  */
+require_once __DIR__ . '/request-types.php';
+
 $topbarName = $userFirstName ?? 'Guest';
 $topbarRole = $userRole ?? '';
-$topbarNotifCount = (int) ($notifCount ?? 0);
+$topbarNotifCount = isset($conn) ? ps_pending_counts($conn)['total'] : 0;
+$topbarNotifLabel = 'Notifications: ' . $topbarNotifCount . ($topbarNotifCount === 1 ? ' item' : ' items') . ' awaiting review';
 ?>
 <div class="ps-topbar">
-    <button type="button" class="ps-notif-btn" aria-label="Notifications">
+    <a href="admin-dashboard.php" class="ps-notif-btn" aria-label="<?php echo htmlspecialchars($topbarNotifLabel); ?>" title="<?php echo htmlspecialchars($topbarNotifLabel); ?>"
+       data-notif-poll="pending-count.php" data-notif-interval="45">
         <?php ps_icon('bell'); ?>
-        <?php if ($topbarNotifCount > 0): ?>
-            <span class="ps-notif-badge"><?php echo $topbarNotifCount; ?></span>
-        <?php endif; ?>
-    </button>
+        <span class="ps-notif-badge" data-notif-badge<?php echo $topbarNotifCount > 0 ? '' : ' hidden'; ?>><?php echo $topbarNotifCount; ?></span>
+    </a>
 
     <div class="ps-user-chip">
         <span class="ps-user-avatar"><?php echo htmlspecialchars(strtoupper(substr($topbarName, 0, 1))); ?></span>

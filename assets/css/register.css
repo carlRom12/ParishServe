@@ -45,16 +45,6 @@
 .auth-checkbox-row span { font-size: 13px; color: var(--text-dark); line-height: 1.5; }
 .auth-checkbox-error { margin: 0 0 14px 28px; }
 
-.auth-switch {
-    text-align: center;
-    font-size: 13px;
-    color: var(--text-body);
-    margin-top: 18px;
-}
-.auth-switch a { color: var(--maroon-700); font-weight: 700; }
-.auth-switch a:hover { text-decoration: underline; }
-.auth-switch a:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; border-radius: 4px; }
-
 /* =====================================================================
    FOOTER
    ===================================================================== */

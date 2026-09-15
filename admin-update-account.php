@@ -1,16 +1,5 @@
 <?php
-/**
- * admin-update-account.php
- * ---------------------------------------------------------------------
- * POST endpoint behind admin-accounts.php's Manage modal. Super Admin
- * only, CSRF-checked. Sets a Parishioner/Admin account's role and
- * Active/Suspended status. Refuses to touch Super Admin accounts
- * (including the caller's own) and only promotes verified emails to
- * Admin, so every staff account can recover its password by email.
- * Same { ok, message, row } / { ok: false, error } shape as
- * admin-update-request.php.
- * ---------------------------------------------------------------------
- */
+
 $psGuardJson = true;
 $psGuardRoles = ['Super Admin'];
 require __DIR__ . '/includes/auth-guard.php';

@@ -63,10 +63,18 @@
     color: var(--text-body);
     border-bottom: 1px solid var(--card-border);
 }
-.admin-row { border-bottom: 1px solid var(--card-border); font-size: 14px; transition: opacity .15s; }
+.admin-row { border-bottom: 1px solid var(--card-border); font-size: 14px; transition: opacity .15s, background .2s ease; }
+/* brief highlight on a row the server just confirmed a save for (main.js applyRowUpdate) */
+.admin-row.is-updated { animation: admin-row-saved 1.6s ease; }
 .admin-row:last-child { border-bottom: none; }
 .admin-row:hover { background: var(--cream); }
 .admin-row.is-hidden { display: none; }
+@media (max-width: 900px) {
+    /* Rows keep their columns; the table scrolls sideways instead of squashing. */
+    .admin-table { overflow-x: auto; }
+    .admin-table-head,
+    .admin-row { min-width: 920px; }
+}
 
 .admin-cell-name strong { display: block; color: var(--text-dark); }
 .admin-cell-name small { display: block; color: var(--text-body); font-size: 12.5px; margin-top: 2px; }
@@ -102,10 +110,16 @@
 }
 .admin-doc-count svg { width: 15px; height: 15px; }
 .admin-doc-count.is-complete { color: var(--status-approved-text); }
+/* both icons are rendered; .is-complete (toggled after a save) picks one */
+.admin-doc-count .admin-doc-icon-complete,
+.admin-doc-count.is-complete .admin-doc-icon-pending { display: none; }
+.admin-doc-count.is-complete .admin-doc-icon-complete { display: inline-block; }
 
 .admin-doc-list { display: flex; flex-direction: column; gap: 10px; }
 .admin-doc-item { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 4px 0; }
 .admin-doc-check { display: flex; align-items: center; gap: 10px; font-size: 13.5px; color: var(--text-dark); font-weight: normal; min-width: 0; }
+/* beats `.ps-modal-field label`, which would stack the box above its text */
+.ps-modal-field .admin-doc-check { display: flex; margin: 0; font-size: 13.5px; font-weight: normal; }
 .admin-doc-check input { width: 16px; height: 16px; accent-color: var(--gold-dark); flex-shrink: 0; }
 .admin-doc-thumb-link { flex-shrink: 0; display: block; line-height: 0; }
 .admin-doc-hint { display: block; margin-top: 8px; color: var(--text-body); font-size: 12px; }
@@ -127,8 +141,13 @@
     justify-content: center;
     padding: 20px;
     z-index: 1000;
+    opacity: 0;
+    transition: opacity .2s ease;
 }
 .ps-modal-overlay[hidden] { display: none; }
+/* psReveal()/psConceal() in main.js toggle .is-open around [hidden] */
+.ps-modal-overlay.is-open { opacity: 1; }
+.ps-modal-overlay:not(.is-open) { pointer-events: none; }
 body.ps-modal-open { overflow: hidden; }
 
 .ps-modal-card {
@@ -141,7 +160,10 @@ body.ps-modal-open { overflow: hidden; }
     overflow-y: auto;
     padding: 26px 28px 24px;
     position: relative;
+    transform: translateY(14px) scale(.98);
+    transition: transform .25s var(--ps-ease);
 }
+.ps-modal-overlay.is-open .ps-modal-card { transform: none; }
 
 .ps-modal-close {
     position: absolute;
@@ -170,7 +192,8 @@ body.ps-modal-open { overflow: hidden; }
 .ps-modal-field textarea,
 .ps-modal-field input[type="text"],
 .ps-modal-field input[type="number"],
-.ps-modal-field input[type="date"] {
+.ps-modal-field input[type="date"],
+.ps-modal-field input[type="time"] {
     width: 100%;
     border: 1px solid var(--card-border);
     border-radius: var(--radius-sm);
@@ -186,8 +209,9 @@ body.ps-modal-open { overflow: hidden; }
 .ps-modal-checkbox { display: flex; align-items: center; gap: 10px; }
 
 /* ---------------------------------------------------------------------
- * Toast (net new component) — purely a client-side confirmation shown
- * after a mock Save/Delete click, no server round-trip this pass.
+ * Toast — confirmation after a save the server accepted (or a mock
+ * announcement action), new-item notices from the bell poll, and
+ * errors (.is-error). Slides in via .is-visible (psShowToast in main.js).
  * ------------------------------------------------------------------- */
 .ps-toast {
     position: fixed;
@@ -204,6 +228,164 @@ body.ps-modal-open { overflow: hidden; }
     z-index: 1100;
     background: var(--status-completed-bg);
     color: var(--status-completed-text);
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity .2s ease, transform .3s var(--ps-ease);
 }
 .ps-toast svg { width: 17px; height: 17px; }
 .ps-toast[hidden] { display: none; }
+.ps-toast.is-visible { opacity: 1; transform: none; }
+.ps-toast.is-error { background: var(--status-rejected-bg); color: var(--status-rejected-text); }
+.ps-toast.is-error svg { display: none; }
+
+/* ---------------------------------------------------------------------
+ * Status-pipeline hint, save errors, proof preview (request/donation
+ * modals) and the Accounts page note.
+ * ------------------------------------------------------------------- */
+.admin-status-hint { display: block; margin-top: 6px; color: var(--text-body); font-size: 12px; line-height: 1.45; }
+.ps-modal-field select option:disabled { color: #b5a89f; }
+
+.admin-modal-error {
+    padding: 10px 12px;
+    border-radius: var(--radius-sm);
+    background: var(--status-rejected-bg);
+    color: var(--status-rejected-text);
+    font-size: 13px;
+    line-height: 1.45;
+}
+.admin-modal-error[hidden] { display: none; }
+
+.admin-proof-preview { display: flex; align-items: center; gap: 12px; }
+.admin-proof-preview[hidden] { display: none; }
+.admin-proof-preview .admin-thumb { width: 64px; height: 64px; }
+.admin-proof-preview .admin-doc-hint { margin-top: 0; }
+
+.admin-note { margin-bottom: 18px; }
+
+/* "Submitted Details" in the Update modals -- what the public form collected (details JSON) */
+.admin-detail-list { display: flex; flex-direction: column; margin: 0; border: 1px solid var(--card-border); border-radius: var(--radius-sm); max-height: 260px; overflow-y: auto; }
+.admin-detail-list div { display: grid; grid-template-columns: 42% 1fr; gap: 10px; padding: 8px 12px; font-size: 13px; }
+.admin-detail-list div + div { border-top: 1px solid var(--card-border); }
+.admin-detail-list dt { color: var(--text-body); }
+.admin-detail-list dd { margin: 0; color: var(--text-dark); font-weight: 600; white-space: pre-line; overflow-wrap: anywhere; }
+.admin-doc-file-link { font-size: 12.5px; font-weight: 600; color: var(--gold-dark); line-height: 1.4; }
+
+/* ---------------------------------------------------------------------
+ * Schedule fields in the request Update window
+ * (includes/admin-request-page.php; conflict preview from main.js)
+ * ------------------------------------------------------------------- */
+.admin-schedule { border: 0; padding: 0; min-width: 0; }
+.admin-schedule legend { display: block; padding: 0; margin-bottom: 6px; font-size: 13px; font-weight: 600; color: var(--text-dark); }
+.admin-schedule-fields { display: grid; grid-template-columns: 1.3fr 1fr; gap: 10px; }
+.admin-schedule-fields.has-end { grid-template-columns: 1.3fr 1fr 1fr; }
+.ps-modal-field .admin-schedule-fields label { margin: 0; font-size: 12px; font-weight: 500; color: var(--text-body); }
+.admin-schedule-fields input { margin-top: 4px; }
+.admin-schedule-fields input:disabled { background: var(--cream); color: var(--text-body); }
+.admin-schedule-result { margin-top: 10px; padding: 10px 12px; border-radius: var(--radius-sm); background: var(--cream); font-size: 12.5px; line-height: 1.5; color: var(--text-body); }
+.admin-schedule-result[hidden] { display: none; }
+.admin-schedule-result strong { display: block; color: var(--text-dark); }
+.admin-schedule-result ul { margin: 6px 0 0; padding-left: 18px; }
+.admin-schedule-result a { color: var(--gold-dark); font-weight: 600; }
+.admin-schedule-result.is-conflict { background: var(--status-rejected-bg); }
+.admin-schedule-result.is-conflict strong,
+.admin-schedule-result li.is-conflict { color: var(--status-rejected-text); }
+.admin-schedule-result li.is-conflict { font-weight: 600; }
+@media (max-width: 520px) {
+    .admin-schedule-fields,
+    .admin-schedule-fields.has-end { grid-template-columns: 1fr; }
+}
+
+/* Dashboard: Recent Activity links + Waiting for Review counts */
+.admin-activity-link { color: inherit; }
+.admin-activity-link:hover { color: var(--gold-dark); text-decoration: underline; }
+.admin-pending-badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 22px; height: 22px; padding: 0 7px; margin-right: 6px;
+    border-radius: 11px; background: var(--status-pending-bg); color: var(--status-pending-text);
+    font-size: 12px; font-weight: 700;
+}
+
+/* ---------------------------------------------------------------------
+ * Admin calendar (admin-calendar.php) -- calendar.css's month grid with
+ * one color per request type
+ * ------------------------------------------------------------------- */
+.admin-type-wedding       { --type-color: #b0475f; }
+.admin-type-baptism       { --type-color: #2b7bb9; }
+.admin-type-confirmation  { --type-color: #7a4fb0; }
+.admin-type-funeral       { --type-color: #5d5552; }
+.admin-type-counseling    { --type-color: #2f8a6b; }
+.admin-type-massintention { --type-color: #a3812f; }
+.admin-type-facility      { --type-color: #c46a2b; }
+
+.admin-cal .cal-toolbar { align-items: flex-start; }
+.admin-cal-month { min-width: 170px; margin: 0; font-size: 20px; text-align: center; color: var(--text-dark); }
+.admin-cal-nav { min-width: 40px; justify-content: center; font-size: 20px; line-height: 1; }
+.admin-cal .ps-legend { gap: 8px 14px; max-width: 560px; }
+.admin-cal-swatch { display: inline-block; width: 14px; height: 10px; border-radius: 3px; background: var(--type-color, var(--card-border)); }
+.admin-cal-swatch.is-pending { background: transparent; border: 1.5px dashed var(--text-body); }
+.admin-cal-swatch.is-conflict { background: var(--status-rejected-bg); border: 1.5px solid var(--status-rejected-text); }
+
+.admin-cal-scroll { overflow-x: auto; }
+.admin-cal-scroll .cal-weekday-row,
+.admin-cal-scroll .cal-grid { min-width: 760px; }
+.admin-cal-scroll .cal-grid { grid-auto-rows: minmax(104px, auto); }
+.admin-cal-event {
+    align-items: center; padding: 2px 5px; border-left: 3px solid var(--type-color);
+    background: var(--cream); color: var(--text-dark); font-size: 11px;
+}
+.admin-cal-event b { font-weight: 700; }
+.admin-cal-event.is-pending { background: transparent; border-left-style: dashed; color: var(--text-body); }
+.admin-cal-event.is-conflict { background: var(--status-rejected-bg); color: var(--status-rejected-text); box-shadow: inset 0 0 0 1px var(--status-rejected-text); }
+.admin-cal-warning { width: 12px; height: 12px; flex-shrink: 0; }
+@media (max-width: 520px) {
+    .admin-cal-scroll .cal-event { display: flex; }
+}
+
+.admin-cal-clashes ul { margin: 0; padding-left: 18px; font-size: 13.5px; line-height: 1.7; color: var(--text-body); }
+.admin-cal-clashes a,
+.admin-report-table a { color: var(--gold-dark); font-weight: 600; }
+.admin-cal-none { display: flex; align-items: center; gap: 8px; margin: 0; font-size: 13.5px; color: var(--status-approved-text); }
+.admin-cal-none svg { width: 17px; height: 17px; }
+
+/* ---------------------------------------------------------------------
+ * Reports (admin-reports.php)
+ * ------------------------------------------------------------------- */
+.admin-report-controls,
+.admin-report-grid > .ps-card { margin-bottom: 0; }
+.admin-report-filters { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px 16px; }
+.admin-report-filters label { display: flex; flex-direction: column; gap: 5px; font-size: 12.5px; font-weight: 600; color: var(--text-dark); }
+.admin-report-filters input[type="date"] {
+    border: 1px solid var(--card-border); border-radius: var(--radius-sm); padding: 9px 12px;
+    font: inherit; font-weight: normal; color: var(--text-dark);
+}
+.admin-report-bar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; margin-top: 16px; }
+.admin-report-presets,
+.admin-report-exports { display: flex; flex-wrap: wrap; gap: 8px; }
+.admin-report-exports .ps-btn svg { width: 16px; height: 16px; }
+.admin-report-range { margin: 14px 0 0; font-size: 12.5px; color: var(--text-body); }
+
+.admin-report-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; margin: 20px 0; }
+.admin-report-stat { display: flex; flex-direction: column; gap: 4px; margin: 0; }
+.admin-report-stat strong { font-size: 24px; color: var(--text-dark); font-variant-numeric: tabular-nums; }
+.admin-report-stat span { font-size: 12.5px; color: var(--text-body); }
+
+.admin-report-grid { display: grid; gap: 20px; margin: 20px 0; }
+.admin-report-grid + .ps-card,
+.ps-card + .admin-report-grid { margin-top: 20px; }
+.admin-report-heading { display: flex; align-items: center; gap: 8px; margin: 0 0 14px; font-size: 17px; color: var(--text-dark); }
+.admin-report-heading svg { width: 18px; height: 18px; color: var(--status-rejected-text); }
+.admin-report-heading small { font-size: 12px; font-weight: 600; color: var(--text-body); }
+.admin-report-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+.admin-report-table th {
+    padding: 8px; border-bottom: 1px solid var(--card-border); text-align: left; white-space: nowrap;
+    font-size: 11.5px; font-weight: 700; letter-spacing: .03em; text-transform: uppercase; color: var(--text-body);
+}
+.admin-report-table td { padding: 9px 8px; border-bottom: 1px solid var(--card-border); color: var(--text-dark); }
+.admin-report-table tfoot td { border-bottom: 0; font-weight: 700; }
+.admin-report-table .is-num { text-align: right; font-variant-numeric: tabular-nums; }
+.admin-report-empty { margin: 0; font-size: 13.5px; color: var(--text-body); }
+
+@keyframes admin-row-saved {
+    from { background: var(--status-approved-bg); }
+    to   { background: transparent; }
+}

@@ -1,3 +1,7 @@
+<?php
+require_once __DIR__ . '/includes/request-forms.php';
+ps_handle_request_form('massintention');
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -128,7 +132,7 @@
 
     <div class="ps-logout-wrap">
 
-        <a href="landingpage.html" class="ps-logout-btn">
+        <a href="logout.php" class="ps-logout-btn" data-session-auth-link>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>            <span>Log out</span>
         </a>
     </div>
@@ -142,14 +146,14 @@
         <div class="ps-topbar">
 
     <button type="button" class="ps-notif-btn" aria-label="Notifications">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 4 1.5 5.5 2 6.5H4c.5-1 2-2.5 2-6.5z"/><path d="M10 19a2 2 0 0 0 4 0"/></svg>                    <span class="ps-notif-badge">3</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 4 1.5 5.5 2 6.5H4c.5-1 2-2.5 2-6.5z"/><path d="M10 19a2 2 0 0 0 4 0"/></svg>                    
             </button>
 
     <div class="ps-user-chip">
-        <span class="ps-user-avatar">J</span>
+        <span class="ps-user-avatar" data-session-initial>G</span>
         <span class="ps-user-info">
-            <strong>Juan Dela Cruz</strong>
-            <small>Parishioner</small>
+            <strong data-session-name>Guest</strong>
+            <small data-session-role>Not signed in</small>
         </span>
         <svg class="ps-user-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>    </div>
 </div>
@@ -157,7 +161,7 @@
 
 <section class="co-hero" aria-labelledby="mass-request-title"><img src="assets/images/mass-intention-hero.png" alt="A golden chalice, open missal, and lit candle on a church altar"><div class="co-hero-copy"><span class="co-eyebrow">Mass Intention</span><h1 id="mass-request-title">Request a Mass Intention</h1><p>Offer prayers of thanksgiving, remembrance, and special intentions through the Holy Mass.</p><blockquote>Join your prayers with the celebration of the Holy Mass.</blockquote></div></section>
 
-<nav class="ca-tabs" aria-label="Mass Intention sections"><a href="mass-intention-about.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v16M12 5C9 3 5 3 2 5v16c3-2 7-2 10 0 3-2 7-2 10 0V5c-3-2-7-2-10 0Z"/></svg>About Mass Intentions</a><a href="mass-intention-guidelines.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H5v20h14V7l-5-5Zm0 0v6h5M8 12h8M8 16h8"/></svg>Guidelines</a><a href="mass-intention-types.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3h9l9 9-9 9-9-9V3Z"/><circle cx="8" cy="8" r="1"/></svg>Types of Intentions</a><a href="mass-intention-request.html" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 3 6 6-12 12H3v-6L15 3Zm-2 2 6 6"/></svg>Request</a></nav>
+<nav class="ca-tabs" aria-label="Mass Intention sections"><a href="mass-intention-about.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v16M12 5C9 3 5 3 2 5v16c3-2 7-2 10 0 3-2 7-2 10 0V5c-3-2-7-2-10 0Z"/></svg>About Mass Intentions</a><a href="mass-intention-guidelines.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H5v20h14V7l-5-5Zm0 0v6h5M8 12h8M8 16h8"/></svg>Guidelines</a><a href="mass-intention-types.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3h9l9 9-9 9-9-9V3Z"/><circle cx="8" cy="8" r="1"/></svg>Types of Intentions</a><a href="mass-intention-request.php" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 3 6 6-12 12H3v-6L15 3Zm-2 2 6 6"/></svg>Request</a></nav>
 
     <div class="ps-card wr-stepbar">
                     <div class="wr-step is-current" data-step-item="0">
@@ -185,7 +189,7 @@
 
     <div class="ca-layout">
 
-        <form id="massIntentionRequest" class="ps-card wr-form">
+        <form id="massIntentionRequest" class="ps-card wr-form" action="mass-intention-request.php" method="post" data-multi-step novalidate><?php ps_request_form_fields(); ?>
 
         <div class="wr-form-header">
             <div>
@@ -351,9 +355,7 @@
 
         <div class="service-confirm"><label><input type="checkbox" id="confirmRespectful" name="confirmRespectful" required><span><strong>I confirm</strong> that the information provided is true and accurate.</span></label></div>
 
-        <p class="wr-next-step-notice" data-wizard-notice hidden>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5"/><path d="M12 7.8h.01"/></svg>            There's no backend yet to actually save this request -- the review above is genuinely what you typed on Steps 1 &amp; 2, but there's no <code>mass_intentions</code> table to insert it into. Once the database is wired up, submitting here will create a real request and generate a reference number.
-        </p>
+        
         </section>
 
         <div class="wr-actions">
@@ -406,7 +408,9 @@
 
 </main>
 </div>
-<script src="assets/js/mass-intention-request.js"></script>
+<script src="assets/js/frontend.js"></script>
+<script src="assets/js/mass-intention-request.js?v=2"></script>
+<script src="assets/js/session-user.js"></script>
 <script src="assets/js/responsive.js?v=1"></script>
 </body>
 </html>

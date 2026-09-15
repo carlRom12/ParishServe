@@ -8,7 +8,6 @@
     const back = document.getElementById('mrBack');
     const cancel = document.getElementById('mrCancel');
     const confirmToggle = document.getElementById('confirmRespectful');
-    const notice = form.querySelector('[data-wizard-notice]');
     const stepHeading = document.getElementById('mrStepHeading');
     const stepSub = document.getElementById('mrStepSub');
     const STEP_COPY = [
@@ -109,10 +108,21 @@
             stepHeading.focus();
             return;
         }
-        if (notice) {
-            notice.hidden = false;
-            notice.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }
+        if (form.dataset.submitting) return;
+        // Every panel goes to the server (ps_handle_request_form() in
+        // includes/request-forms.php), but render() disables the hidden ones.
+        form.querySelectorAll('input, select, textarea').forEach(input => { input.disabled = false; });
+        form.dataset.submitting = 'true';
+        next.classList.add('is-loading');
+        HTMLFormElement.prototype.submit.call(form);
+    });
+
+    // Back from the confirmation page (bfcache): the form is usable again.
+    window.addEventListener('pageshow', event => {
+        if (!event.persisted) return;
+        delete form.dataset.submitting;
+        next.classList.remove('is-loading');
+        render();
     });
 
     back.addEventListener('click', () => {
@@ -126,10 +136,11 @@
     form.addEventListener('input', event => {
         if (event.target !== confirmToggle) {
             confirmToggle.checked = false;
-            if (notice) notice.hidden = true;
             updateSubmitState();
         }
     });
 
     render();
+    // Problems the server found with the last attempt.
+    form.querySelector('[data-form-errors]')?.focus();
 })();

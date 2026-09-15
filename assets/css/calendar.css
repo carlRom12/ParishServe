@@ -93,6 +93,21 @@
 }
 .cal-event-more { font-size: 10px; color: var(--maroon-700); font-weight: 600; padding-left: 14px; }
 
+/* Parish bookings from calendar-events.php (approved / scheduled /
+   completed requests), tinted so they read as "date taken" rather than
+   the regular parish schedule. */
+.cal-event.is-booked { background: rgba(201, 162, 74, 0.14); padding: 1px 4px; margin: 0 -2px; }
+.cal-event.is-booked:hover { background: rgba(201, 162, 74, 0.26); }
+.cal-event.is-arriving { animation: cal-fade-in 0.4s var(--ps-ease) both; }
+.cal-booked-swatch { display: inline-block; width: 16px; height: 10px; border-radius: 3px; background: rgba(201, 162, 74, 0.35); }
+
+/* calendar.js renders each month on load -- ease the grid in */
+.cal-grid.is-entering { animation: cal-fade-in 0.35s var(--ps-ease) both; }
+@keyframes cal-fade-in {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: none; }
+}
+
 /* small round-button variant for the mini calendar's prev/next arrows */
 .ps-round-btn-sm { width: 26px; height: 26px; }
 .ps-round-btn-sm svg { width: 12px; height: 12px; }
@@ -123,6 +138,18 @@
 .cal-mini-cell:hover:not(.is-muted):not(.is-today) { background: var(--cream-deep); transform: scale(1.08); }
 .cal-mini-cell.is-muted { color: #c9bdb4; }
 .cal-mini-cell.is-today { background: var(--maroon-700); color: #fff; font-weight: 700; }
+.cal-mini-cell.has-booking { position: relative; }
+.cal-mini-cell.has-booking::after {
+    content: '';
+    position: absolute;
+    bottom: 2px;
+    left: 50%;
+    width: 4px;
+    height: 4px;
+    margin-left: -2px;
+    border-radius: 50%;
+    background: var(--gold-dark);
+}
 
 .cal-view-full {
     display: flex;

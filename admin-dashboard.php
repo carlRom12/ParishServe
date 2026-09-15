@@ -2,21 +2,16 @@
 /**
  * admin-dashboard.php
  * ---------------------------------------------------------------------
- * Admin landing page. FRONTEND ONLY, same as dashboard.php: everything
- * below is hardcoded sample data shaped like what a real query would
- * return (numbers mirror database/schema.sql's seed rows so this looks
- * the same once it's wired up), not a live DB read.
- *
- * WHAT WOULD CHANGE WHEN A BACKEND IS ADDED:
- *   - $adminFirstName -> $_SESSION['full_name'] once admin login exists
- *   - $stats           -> COUNT(*) grouped by status, UNIONed across all
- *                         8 request-ish tables (schema.sql's own notes
- *                         already call for this exact query shape)
- *   - $recentActivity   -> UNION ALL ... ORDER BY created_at DESC LIMIT 8
+ * Staff landing page after login. The stat cards count the 7 request
+ * tables by status (Pending = submitted + under_review), Recent Activity
+ * lists the newest requests (each linked to its row on its type's page)
+ * and Waiting for Review splits the topbar bell's count by type -- all
+ * straight from the database, so they reflect every change saved on the
+ * request and donation pages.
  * ---------------------------------------------------------------------
  */
-
-$adminFirstName = 'Parish';
+require __DIR__ . '/includes/auth-guard.php';
+require_once __DIR__ . '/includes/request-types.php';
 
 $hour = (int) date('H');
 if ($hour < 12) {
@@ -27,28 +22,18 @@ if ($hour < 12) {
     $greeting = 'Good evening';
 }
 
-// Mirrors the seed data in database/schema.sql exactly (4 pending, 2
-// approved, 2 scheduled, 2 completed across the 8 request tables).
-$stats = [
-    ['icon' => 'clock',          'label' => 'Pending',   'sub' => 'awaiting review', 'count' => 4, 'tint' => 'amber'],
-    ['icon' => 'check-circle',   'label' => 'Approved',  'sub' => 'requests',        'count' => 2, 'tint' => 'green'],
-    ['icon' => 'calendar-check', 'label' => 'Scheduled', 'sub' => 'upcoming',        'count' => 2, 'tint' => 'maroon'],
-    ['icon' => 'document',       'label' => 'Completed', 'sub' => 'requests',        'count' => 2, 'tint' => 'blue'],
-];
+$stats = ps_dashboard_stats(ps_count_requests_by_status($conn));
+$recentActivity = ps_fetch_requests($conn, ['limit' => 6]);
+$pending = ps_pending_counts($conn);
 
-$recentActivity = [
-    ['icon' => 'droplet',  'type' => 'Baptism',              'name' => 'Baby Gabriel Reyes',            'ref' => 'BAP-2026-0002', 'status' => 'submitted',    'statusLabel' => 'Submitted',    'date' => 'Aug 16, 2026'],
-    ['icon' => 'people',   'type' => 'Counseling',           'name' => 'Juan Dela Cruz',                 'ref' => 'CNS-2026-0001', 'status' => 'submitted',    'statusLabel' => 'Submitted',    'date' => 'Aug 15, 2026'],
-    ['icon' => 'ring',     'type' => 'Wedding',              'name' => 'Maria Santos & Juan Dela Cruz',  'ref' => 'WED-2026-0001', 'status' => 'under_review', 'statusLabel' => 'Under Review', 'date' => 'Aug 14, 2026'],
-    ['icon' => 'building', 'type' => 'Facility Reservation', 'name' => 'Angela Reyes',                   'ref' => 'FAC-2026-0002', 'status' => 'under_review', 'statusLabel' => 'Under Review', 'date' => 'Aug 13, 2026'],
-    ['icon' => 'building', 'type' => 'Facility Reservation', 'name' => 'Juan Dela Cruz',                 'ref' => 'FAC-2026-0001', 'status' => 'approved',     'statusLabel' => 'Approved',     'date' => 'Aug 12, 2026'],
-    ['icon' => 'droplet',  'type' => 'Baptism',              'name' => 'Baby Sofia Dela Cruz',           'ref' => 'BAP-2026-0001', 'status' => 'approved',     'statusLabel' => 'Approved',     'date' => 'Aug 10, 2026'],
-];
+$waiting = [];
+foreach (PS_REQUEST_TYPES as $key => $typeInfo) {
+    $waiting[] = ['label' => $typeInfo['plural'], 'href' => $typeInfo['page'], 'count' => $pending['byType'][$key]];
+}
+$waiting[] = ['label' => 'Donations', 'href' => 'admin-donations.php', 'count' => $pending['donations']];
 
 $pageTitle = 'Admin Dashboard';
 $pageCss   = ['dashboard.css', 'admin.css'];
-$userFirstName = $adminFirstName;
-$userRole = 'Admin';
 $activeNav = 'dashboard';
 require __DIR__ . '/includes/header.php';
 require __DIR__ . '/includes/admin-sidebar.php';
@@ -58,7 +43,7 @@ require __DIR__ . '/includes/admin-sidebar.php';
     <section class="db-hero admin-hero">
         <?php require __DIR__ . '/includes/topbar.php'; ?>
         <div class="db-hero-text">
-            <h1 class="db-greeting"><?php echo htmlspecialchars($greeting); ?>, <?php echo htmlspecialchars($adminFirstName); ?> <span class="db-wave">👋</span></h1>
+            <h1 class="db-greeting"><?php echo htmlspecialchars($greeting); ?>, <?php echo htmlspecialchars($userFirstName); ?> <span class="db-wave">👋</span></h1>
             <p class="db-subtitle">Here's what's happening across the parish right now.</p>
         </div>
     </section>
@@ -70,7 +55,7 @@ require __DIR__ . '/includes/admin-sidebar.php';
                     <?php ps_icon($stat['icon']); ?>
                 </div>
                 <div class="stat-body">
-                    <span class="stat-count"><?php echo (int) $stat['count']; ?></span>
+                    <span class="stat-count" data-count-up><?php echo (int) $stat['count']; ?></span>
                     <span class="stat-label"><?php echo htmlspecialchars($stat['label']); ?></span>
                     <span class="stat-sub"><?php echo htmlspecialchars($stat['sub']); ?></span>
                 </div>
@@ -83,40 +68,68 @@ require __DIR__ . '/includes/admin-sidebar.php';
         <div class="ps-card db-requests">
             <div class="ps-card-header">
                 <span class="ps-card-title"><?php ps_icon('document'); ?> Recent Activity</span>
-                <a href="admin-requests.php" class="ps-link-more">View all <?php ps_icon('arrow-right'); ?></a>
+                <a href="admin-calendar.php" class="ps-link-more">Calendar <?php ps_icon('arrow-right'); ?></a>
             </div>
             <ul class="db-request-list">
                 <?php foreach ($recentActivity as $req): ?>
+                    <?php $typeInfo = PS_REQUEST_TYPES[$req['type']]; ?>
                     <li class="db-request-item">
-                        <span class="db-request-icon"><?php ps_icon($req['icon']); ?></span>
+                        <span class="db-request-icon"><?php ps_icon($typeInfo['icon']); ?></span>
                         <span class="db-request-body">
-                            <strong><?php echo htmlspecialchars($req['type']); ?> · <?php echo htmlspecialchars($req['name']); ?></strong>
-                            <small><?php echo htmlspecialchars($req['ref']); ?> · <?php echo htmlspecialchars($req['date']); ?></small>
+                            <strong><a class="admin-activity-link" href="<?php echo htmlspecialchars(ps_request_admin_url($req['type'], $req['reference_no'])); ?>"><?php echo htmlspecialchars($typeInfo['label']); ?> · <?php echo htmlspecialchars($req['name']); ?></a></strong>
+                            <small><?php echo htmlspecialchars($req['reference_no']); ?> · <?php echo htmlspecialchars(date('M j, Y', strtotime($req['created_at']))); ?></small>
                         </span>
-                        <span class="ps-status is-<?php echo htmlspecialchars($req['status']); ?>"><?php echo htmlspecialchars($req['statusLabel']); ?></span>
+                        <span class="ps-status is-<?php echo htmlspecialchars($req['status']); ?>"><?php echo htmlspecialchars(ps_status_label($req['status'])); ?></span>
                     </li>
                 <?php endforeach; ?>
+                <?php if (!$recentActivity): ?>
+                    <li class="db-request-item">
+                        <span class="db-request-body"><small>No requests have been submitted yet.</small></span>
+                    </li>
+                <?php endif; ?>
             </ul>
         </div>
 
         <div class="db-side">
             <div class="ps-card db-update">
                 <div class="ps-card-header">
+                    <span class="ps-card-title"><?php ps_icon('clock'); ?> Waiting for Review</span>
+                </div>
+                <ul class="db-contact-list">
+                    <?php foreach ($waiting as $item): ?>
+                        <li>
+                            <span class="db-contact-text">
+                                <strong><?php echo htmlspecialchars($item['label']); ?></strong>
+                                <small><?php echo $item['count'] ? $item['count'] . ' awaiting review' : 'Nothing waiting'; ?></small>
+                            </span>
+                            <a href="<?php echo htmlspecialchars($item['href']); ?>" class="ps-link-more" aria-label="<?php echo htmlspecialchars($item['label']); ?>">
+                                <?php if ($item['count']): ?><span class="admin-pending-badge"><?php echo (int) $item['count']; ?></span><?php endif; ?>
+                                <?php ps_icon('arrow-right'); ?>
+                            </a>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+
+            <div class="ps-card db-update">
+                <div class="ps-card-header">
                     <span class="ps-card-title"><?php ps_icon('gear'); ?> Quick Links</span>
                 </div>
                 <ul class="db-contact-list">
                     <li>
-                        <span class="db-contact-text"><strong>Requests</strong><small>Review &amp; update sacrament/service requests</small></span>
-                        <a href="admin-requests.php" class="ps-link-more"><?php ps_icon('arrow-right'); ?></a>
-                    </li>
-                    <li>
-                        <span class="db-contact-text"><strong>Donations</strong><small>Verify proof of payment</small></span>
-                        <a href="admin-donations.php" class="ps-link-more"><?php ps_icon('arrow-right'); ?></a>
+                        <span class="db-contact-text"><strong>Reports</strong><small>Summaries by date range, CSV &amp; PDF export</small></span>
+                        <a href="admin-reports.php" class="ps-link-more" aria-label="Reports"><?php ps_icon('arrow-right'); ?></a>
                     </li>
                     <li>
                         <span class="db-contact-text"><strong>Announcements</strong><small>Publish parish updates</small></span>
-                        <a href="admin-announcements.php" class="ps-link-more"><?php ps_icon('arrow-right'); ?></a>
+                        <a href="admin-announcements.php" class="ps-link-more" aria-label="Announcements"><?php ps_icon('arrow-right'); ?></a>
                     </li>
+                    <?php if (ps_is_super_admin()): ?>
+                        <li>
+                            <span class="db-contact-text"><strong>Accounts</strong><small>Manage staff roles &amp; account status</small></span>
+                            <a href="admin-accounts.php" class="ps-link-more" aria-label="Accounts"><?php ps_icon('arrow-right'); ?></a>
+                        </li>
+                    <?php endif; ?>
                 </ul>
             </div>
         </div>

@@ -151,6 +151,13 @@
             });
         });
 
+        // "Remove File" in a page's own preview (upload-preview.js, baptism-upload.js).
+        inputs.forEach((input) => {
+            input.addEventListener('ps:request-remove', () => {
+                if (input.dataset.uploaded) unstage(input);
+            });
+        });
+
         form.addEventListener('submit', (event) => {
             if (pending === 0) return;
             event.preventDefault();

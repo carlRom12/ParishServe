@@ -1,16 +1,5 @@
 <?php
-/**
- * upload-document.php
- * ---------------------------------------------------------------------
- * JSON endpoint behind assets/js/request-uploads.js: stages a request
- * document the moment it's chosen (see includes/uploads.php). Public,
- * like the request forms themselves -- everything is scoped to the
- * visitor's own session.
- *   GET  ?flow=<flow>                  what's been uploaded so far
- *   POST flow, field, file             upload or replace one document
- *   POST flow, field, action=remove    discard one document
- * ---------------------------------------------------------------------
- */
+
 session_start();
 require_once __DIR__ . '/includes/uploads.php';
 

@@ -2,32 +2,20 @@
 /**
  * admin-donations.php
  * ---------------------------------------------------------------------
- * Donation verification: review uploaded proof of payment and move a
- * donation through the same status pipeline as every other request
- * table. FRONTEND ONLY this pass -- see admin-requests.php's docblock
- * for the same note; $donations below is hardcoded (the one seed row
- * from database/schema.sql plus a few extra sample rows so the table
- * doesn't look empty for a design preview).
+ * Donation verification: review the uploaded proof of payment, then move
+ * a donation through the same status pipeline as every other request
+ * table. Rows come from ps_fetch_donations(); the Update modal's Save
+ * POSTs to admin-update-request.php with type=donation (same pipeline
+ * rules as the request pages, and the donor is emailed about the change).
  * ---------------------------------------------------------------------
  */
+require __DIR__ . '/includes/auth-guard.php';
+require_once __DIR__ . '/includes/request-types.php';
 
-$statusOptions = ['submitted', 'under_review', 'approved', 'scheduled', 'completed', 'rejected'];
-$statusLabels = [
-    'submitted' => 'Submitted', 'under_review' => 'Under Review', 'approved' => 'Approved',
-    'scheduled' => 'Scheduled', 'completed' => 'Completed', 'rejected' => 'Rejected',
-];
-
-$donations = [
-    ['id' => 1, 'ref' => 'DON-2026-0001', 'donor' => 'Juan Dela Cruz', 'amount' => 500.00,  'purpose' => 'General fund',   'proof' => null, 'status' => 'completed',    'date' => 'Aug 1, 2026'],
-    ['id' => 2, 'ref' => 'DON-2026-0002', 'donor' => 'Maria Santos',   'amount' => 1500.00, 'purpose' => 'Church repair',  'proof' => 'assets/images/gcash-qr-placeholder.svg', 'status' => 'under_review', 'date' => 'Aug 18, 2026'],
-    ['id' => 3, 'ref' => 'DON-2026-0003', 'donor' => 'Angela Reyes',   'amount' => 250.00,  'purpose' => 'Outreach program', 'proof' => null, 'status' => 'submitted',  'date' => 'Aug 20, 2026'],
-    ['id' => 4, 'ref' => 'DON-2026-0004', 'donor' => 'Pedro Ramos',    'amount' => 1000.00, 'purpose' => 'General fund',   'proof' => 'assets/images/gcash-qr-placeholder.svg', 'status' => 'approved',    'date' => 'Aug 21, 2026'],
-];
+$donations = ps_fetch_donations($conn);
 
 $pageTitle = 'Donations';
 $pageCss   = 'admin.css';
-$userFirstName = 'Parish';
-$userRole = 'Admin';
 $activeNav = 'donations';
 require __DIR__ . '/includes/header.php';
 require __DIR__ . '/includes/admin-sidebar.php';
@@ -49,8 +37,8 @@ require __DIR__ . '/includes/admin-sidebar.php';
             <span class="ps-select">
                 <select data-admin-status-select>
                     <option value="">All statuses</option>
-                    <?php foreach ($statusOptions as $s): ?>
-                        <option value="<?php echo $s; ?>"><?php echo htmlspecialchars($statusLabels[$s]); ?></option>
+                    <?php foreach (PS_STATUS_OPTIONS as $s): ?>
+                        <option value="<?php echo $s; ?>"><?php echo htmlspecialchars(ps_status_label($s)); ?></option>
                     <?php endforeach; ?>
                 </select>
             </span>
@@ -61,26 +49,37 @@ require __DIR__ . '/includes/admin-sidebar.php';
                 <span>Reference</span><span>Donor / Purpose</span><span>Amount</span><span>Proof</span><span>Status</span><span></span>
             </div>
             <?php foreach ($donations as $d): ?>
-                <div class="admin-row" data-admin-row data-status="<?php echo htmlspecialchars($d['status']); ?>" data-search="<?php echo htmlspecialchars(strtolower($d['ref'] . ' ' . $d['donor'])); ?>">
-                    <span><?php echo htmlspecialchars($d['ref']); ?></span>
+                <?php
+                // uploads/ is closed to the web; staff open the proof through admin-file.php.
+                $proof = $d['proof_of_payment'] ? 'admin-file.php?donation=' . (int) $d['id'] : '';
+                $amount = '₱' . number_format((float) $d['amount'], 2);
+                ?>
+                <div class="admin-row" data-admin-row data-status="<?php echo htmlspecialchars($d['status']); ?>" data-search="<?php echo htmlspecialchars(strtolower($d['reference_no'] . ' ' . $d['donor_name'])); ?>">
+                    <span><?php echo htmlspecialchars($d['reference_no']); ?></span>
                     <span class="admin-cell-name">
-                        <strong><?php echo htmlspecialchars($d['donor']); ?></strong>
-                        <small><?php echo htmlspecialchars($d['purpose']); ?></small>
+                        <strong><?php echo htmlspecialchars($d['donor_name']); ?></strong>
+                        <small><?php echo htmlspecialchars((string) $d['purpose']); ?></small>
                     </span>
-                    <span>&#8369;<?php echo number_format($d['amount'], 2); ?></span>
+                    <span><?php echo htmlspecialchars($amount); ?></span>
                     <span>
-                        <?php if ($d['proof']): ?>
-                            <a class="admin-proof-link" href="<?php echo htmlspecialchars($d['proof']); ?>" target="_blank" rel="noopener"><?php ps_icon('photo'); ?> View</a>
+                        <?php if ($proof): ?>
+                            <a class="admin-proof-link" href="<?php echo htmlspecialchars($proof); ?>" target="_blank" rel="noopener"><?php ps_icon('photo'); ?> View</a>
                         <?php else: ?>
                             <span class="admin-proof-none">No proof uploaded</span>
                         <?php endif; ?>
                     </span>
-                    <span class="ps-status is-<?php echo htmlspecialchars($d['status']); ?>" data-row-status><?php echo htmlspecialchars($statusLabels[$d['status']]); ?></span>
+                    <span class="ps-status is-<?php echo htmlspecialchars($d['status']); ?>" data-row-status><?php echo htmlspecialchars(ps_status_label($d['status'])); ?></span>
                     <span class="admin-cell-actions">
                         <button type="button" class="ps-btn ps-btn-outline" data-modal-trigger="donationModal"
-                            data-reference="<?php echo htmlspecialchars($d['ref']); ?>"
-                            data-name="<?php echo htmlspecialchars($d['donor'] . ' — ₱' . number_format($d['amount'], 2)); ?>"
-                            data-status="<?php echo htmlspecialchars($d['status']); ?>">
+                            data-type="donation"
+                            data-id="<?php echo (int) $d['id']; ?>"
+                            data-reference="<?php echo htmlspecialchars($d['reference_no']); ?>"
+                            data-name="<?php echo htmlspecialchars($d['donor_name'] . ' — ' . $amount); ?>"
+                            data-status="<?php echo htmlspecialchars($d['status']); ?>"
+                            data-allowed-statuses="<?php echo htmlspecialchars(implode(',', ps_next_statuses($d['status']))); ?>"
+                            data-remarks="<?php echo htmlspecialchars((string) $d['remarks']); ?>"
+                            data-proof="<?php echo htmlspecialchars($proof); ?>"
+                            data-details='<?php echo htmlspecialchars(json_encode(ps_request_details($d['details'])), ENT_QUOTES); ?>'>
                             Update
                         </button>
                     </span>
@@ -88,39 +87,57 @@ require __DIR__ . '/includes/admin-sidebar.php';
             <?php endforeach; ?>
         </div>
 
-        <div class="admin-empty" data-admin-empty hidden><?php ps_icon('heart'); ?><p>No donations match these filters.</p></div>
+        <div class="admin-empty" data-admin-empty<?php echo $donations ? ' hidden' : ''; ?>><?php ps_icon('heart'); ?><p><?php echo $donations ? 'No donations match these filters.' : 'No donations have been recorded yet.'; ?></p></div>
     </div>
 
 </main>
 
 <div class="ps-modal-overlay" id="donationModal" data-modal hidden>
-    <div class="ps-modal-card">
-        <button type="button" class="ps-modal-close" data-modal-close><?php ps_icon('close'); ?></button>
-        <h2 class="ps-modal-title" data-modal-field="reference"></h2>
+    <div class="ps-modal-card" role="dialog" aria-modal="true" aria-labelledby="donationModalTitle">
+        <button type="button" class="ps-modal-close" data-modal-close aria-label="Close"><?php ps_icon('close'); ?></button>
+        <h2 class="ps-modal-title" id="donationModalTitle" data-modal-field="reference"></h2>
         <p class="ps-modal-sub" data-modal-field="name"></p>
-        <form data-mock-form="Donation updated. (Design preview only -- not connected to a database.)">
+        <form data-admin-form="admin-update-request.php">
+            <input type="hidden" name="type" data-modal-field="type">
+            <input type="hidden" name="id" data-modal-field="id">
+            <div class="ps-modal-field" data-modal-details-wrap hidden>
+                <label>Submitted Details</label>
+                <dl class="admin-detail-list" data-modal-details></dl>
+            </div>
+            <div class="ps-modal-field">
+                <label>Proof of Payment</label>
+                <div class="admin-proof-preview" data-modal-proof-wrap hidden>
+                    <a class="admin-doc-thumb-link" href="#" target="_blank" rel="noopener" data-modal-proof-link>
+                        <img class="admin-thumb" src="data:," alt="Uploaded proof of payment" data-modal-proof-img>
+                    </a>
+                    <small class="admin-doc-hint">Open the full image to check the amount and reference before approving.</small>
+                </div>
+                <span class="admin-proof-none" data-modal-proof-empty>No proof uploaded</span>
+            </div>
             <div class="ps-modal-field">
                 <label for="donationModalStatus">Status</label>
                 <span class="ps-select">
-                    <select id="donationModalStatus" name="status" data-modal-field="status">
-                        <?php foreach ($statusOptions as $s): ?>
-                            <option value="<?php echo $s; ?>"><?php echo htmlspecialchars($statusLabels[$s]); ?></option>
+                    <select id="donationModalStatus" name="status" data-modal-field="status" aria-describedby="donationModalStatusHint">
+                        <?php foreach (PS_STATUS_OPTIONS as $s): ?>
+                            <option value="<?php echo $s; ?>"><?php echo htmlspecialchars(ps_status_label($s)); ?></option>
                         <?php endforeach; ?>
                     </select>
                 </span>
+                <small class="admin-status-hint" id="donationModalStatusHint" data-modal-status-hint></small>
             </div>
             <div class="ps-modal-field">
                 <label for="donationModalRemarks">Remarks</label>
-                <textarea id="donationModalRemarks" name="remarks" rows="3" placeholder="Optional note, visible internally only"></textarea>
+                <textarea id="donationModalRemarks" name="remarks" rows="3" maxlength="2000" data-modal-field="remarks" placeholder="Optional note, visible internally only"></textarea>
             </div>
+            <div class="admin-modal-error" data-modal-error role="alert" hidden></div>
             <div class="ps-modal-actions">
                 <button type="button" class="ps-btn ps-btn-outline" data-modal-close>Cancel</button>
-                <button type="submit" class="ps-btn ps-btn-primary">Save</button>
+                <button type="submit" class="ps-btn ps-btn-primary"><span data-submit-label>Save</span></button>
             </div>
         </form>
     </div>
 </div>
 
-<div class="ps-toast" data-toast hidden><?php ps_icon('check-circle'); ?> <span data-toast-text></span></div>
+<div class="ps-toast" data-toast role="status" aria-live="polite" hidden><?php ps_icon('check-circle'); ?> <span data-toast-text></span></div>
 
 <?php require __DIR__ . '/includes/footer.php'; ?>

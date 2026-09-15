@@ -119,7 +119,7 @@
 
     <div class="ps-logout-wrap">
 
-        <a href="landingpage.html" class="ps-logout-btn">
+        <a href="logout.php" class="ps-logout-btn" data-session-auth-link>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>            <span>Log out</span>
         </a>
     </div>
@@ -131,14 +131,14 @@
         <div class="ps-topbar">
 
     <button type="button" class="ps-notif-btn" aria-label="Notifications">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 4 1.5 5.5 2 6.5H4c.5-1 2-2.5 2-6.5z"/><path d="M10 19a2 2 0 0 0 4 0"/></svg>                    <span class="ps-notif-badge">3</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 4 1.5 5.5 2 6.5H4c.5-1 2-2.5 2-6.5z"/><path d="M10 19a2 2 0 0 0 4 0"/></svg>                    
             </button>
 
     <div class="ps-user-chip">
-        <span class="ps-user-avatar">J</span>
+        <span class="ps-user-avatar" data-session-initial>G</span>
         <span class="ps-user-info">
-            <strong>Juan Dela Cruz</strong>
-            <small>Parishioner</small>
+            <strong data-session-name>Guest</strong>
+            <small data-session-role>Not signed in</small>
         </span>
         <svg class="ps-user-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>    </div>
 </div>
@@ -151,4 +151,5 @@
 <section class="co-card" id="counseling-schedule"><div class="co-card-head"><span class="co-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 2v6m8-6v6"/></svg></span><div><h2>Counseling Schedule</h2><p>Our pastoral team is available on scheduled days for counseling and spiritual guidance.</p></div></div><p>For inquiries about available schedules or to talk to our parish office, you may contact us.</p><a class="ps-btn ps-btn-outline co-contact" href="dashboard.html#parish-contacts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 3 4 1 1 4-3 2a14 14 0 0 0 7 7l2-3 4 1 1 4c-1 3-5 3-10 0S3 11 3 7c0-2 1-3 2-4Z"/></svg> Contact Parish Office</a></section></div>
 <section class="co-card co-about" id="about-counseling"><div><h2>About Counseling</h2><p>Parish counseling provides a respectful and confidential ministry for individuals and families seeking spiritual guidance, emotional support, and a listening presence. Our priests and pastoral team are here to walk with you in your journey, offering prayer, encouragement, and hope through faith.</p></div><blockquote>&ldquo;Cast all your anxiety on Him<br>because He cares for you.&rdquo;<cite>&mdash; 1 Peter 5:7</cite></blockquote></section>
 
-</main></div><script src="assets/js/counseling.js?v=1"></script><script src="assets/js/responsive.js?v=1"></script></body></html>
+</main></div><script src="assets/js/counseling.js?v=1"></script><script src="assets/js/session-user.js"></script>
+<script src="assets/js/responsive.js?v=1"></script></body></html>

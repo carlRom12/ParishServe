@@ -387,6 +387,9 @@ h1, h2, h3, h4 {
     border: 2px solid var(--cream);
     animation: ps-badge-pulse 2.2s ease-in-out infinite;
 }
+.ps-notif-badge[hidden] { display: none; }
+/* initNotificationPoll() (main.js) adds .has-new when the pending count goes up */
+.ps-notif-btn.has-new svg { animation: ps-bell-ring 0.9s ease; }
 
 .ps-user-chip {
     display: flex;
@@ -438,6 +441,26 @@ h1, h2, h3, h4 {
 .ps-btn-outline:active { transform: translateY(0); }
 
 .ps-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
+
+/* Busy state for a submit button while its request is in flight (login,
+   password reset, wizard Next, admin Save) -- see psSetLoading() in
+   main.js. A small spinner follows the label. */
+.ps-btn.is-loading { pointer-events: none; cursor: progress; }
+.ps-btn.is-loading::after {
+    content: '';
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    animation: ps-spin 0.7s linear infinite;
+    flex-shrink: 0;
+}
+
+/* "The parish already has bookings on this date" under the wizard datepickers (frontend.js) */
+.ps-booking-hint { display: block; margin-top: 6px; font-size: 12px; line-height: 1.45; color: var(--status-scheduled-text); }
+.ps-booking-hint[hidden] { display: none; }
+.ps-booking-hint.is-conflict { color: var(--status-rejected-text); font-weight: 600; }
 
 /* checkmark checklist -- first built for wedding.php's Reminders card,
    reused as-is by wedding-request-step3.php's Important Reminders */
@@ -937,6 +960,16 @@ input[type="radio"], input[type="checkbox"] { accent-color: var(--maroon-700); }
     30% { transform: rotate(-8deg); }
     45% { transform: rotate(12deg); }
 }
+@keyframes ps-spin {
+    to { transform: rotate(360deg); }
+}
+@keyframes ps-bell-ring {
+    0%, 100% { transform: rotate(0deg); }
+    20% { transform: rotate(14deg); }
+    40% { transform: rotate(-12deg); }
+    60% { transform: rotate(8deg); }
+    80% { transform: rotate(-4deg); }
+}
 
 @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
@@ -1056,6 +1089,36 @@ input[type="radio"], input[type="checkbox"] { accent-color: var(--maroon-700); }
 }
 .wr-next-step-notice svg { width: 16px; height: 16px; stroke: currentColor; flex-shrink: 0; margin-top: 2px; }
 .wr-next-step-notice[hidden] { display: none; }
+
+/* Problems the server found with a request form submission, listed at the
+   top of the final step (ps_request_form_fields() in includes/request-forms.php). */
+.wr-form-errors {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin: 0 0 18px;
+    padding: 14px 16px;
+    border-radius: var(--radius-md);
+    background: var(--status-rejected-bg);
+    color: var(--status-rejected-text);
+    font-size: 13px;
+    line-height: 1.5;
+}
+.wr-form-errors:focus { outline: 2px solid var(--status-rejected-text); outline-offset: 2px; }
+.wr-form-errors svg { width: 18px; height: 18px; stroke: currentColor; flex-shrink: 0; margin-top: 1px; }
+.wr-form-errors ul { margin: 6px 0 0; padding-left: 18px; }
+.wr-form-errors li + li { margin-top: 3px; }
+.wr-form-errors a { color: inherit; font-weight: 700; text-decoration: underline; margin-left: 4px; }
+
+/* Upload state under a document input (assets/js/request-uploads.js) */
+.ps-upload-status { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 12px; margin-top: 8px; font-size: 12.5px; line-height: 1.4; color: var(--text-body); overflow-wrap: anywhere; }
+.ps-upload-status[hidden] { display: none; }
+.ps-upload-status.is-busy { color: var(--status-scheduled-text); }
+.ps-upload-status.is-done { color: var(--status-approved-text); font-weight: 600; }
+.ps-upload-status.is-error { color: var(--status-rejected-text); }
+.ps-upload-remove { padding: 0; border: 0; background: none; font: inherit; font-weight: 600; color: var(--maroon-700); text-decoration: underline; cursor: pointer; }
+.wr3-doc-check.is-missing { background: var(--status-rejected-bg); color: var(--status-rejected-text); }
+.wr3-doc-file { margin-left: auto; font-size: 12px; color: var(--text-body); overflow-wrap: anywhere; text-align: right; }
 .wr-notes-field { margin-top: 22px; }
 .wr-optional { font-weight: 400; color: var(--text-body); }
 .ps-field input[type="text"],

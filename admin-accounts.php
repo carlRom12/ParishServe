@@ -1,20 +1,5 @@
 <?php
-/**
- * admin-accounts.php
- * ---------------------------------------------------------------------
- * Super Admin only. Lists every account and lets the Super Admin promote
- * a verified Parishioner to Admin (or back), and suspend or reactivate
- * accounts. New staff register normally and verify their email first,
- * then get promoted here -- so every Admin has a working email for
- * password resets.
- *
- * Super Admin accounts (including your own) are read-only on this page;
- * add or change those directly in the database. Save POSTs to
- * admin-update-account.php through the same initAdminModals() flow as
- * the request pages; filters reuse initAdminTableFilters() (the role
- * tabs are its "type" tabs).
- * ---------------------------------------------------------------------
- */
+ 
 $psGuardRoles = ['Super Admin'];
 require __DIR__ . '/includes/auth-guard.php';
 

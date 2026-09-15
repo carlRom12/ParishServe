@@ -1,23 +1,25 @@
+<?php
+require_once __DIR__ . '/includes/request-forms.php';
+ps_handle_request_form('funeral');
+?>
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Apply for Confirmation · ParishServe</title>
-
+<html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Request Funeral Service &middot; ParishServe</title>
 <link rel="stylesheet" href="assets/css/style.css?v=confirmation-2">
-
+<link rel="stylesheet" href="assets/css/confirmation-layout.css?v=12">
+<link rel="stylesheet" href="assets/css/funeral-layout.css?v=1">
+<link rel="stylesheet" href="assets/css/responsive.css?v=3">
+<link rel="stylesheet" href="assets/css/funeral-guidelines.css?v=5">
+<link rel="stylesheet" href="assets/css/funeral-requirements.css?v=3">
 <link rel="stylesheet" href="assets/css/wedding-request.css">
 <link rel="stylesheet" href="assets/css/wedding-request-step3.css">
-<link rel="stylesheet" href="assets/css/confirmation-layout.css?v=12">
-<link rel="stylesheet" href="assets/css/responsive.css?v=3">
+<link rel="stylesheet" href="assets/css/funeral-request.css?v=3">
 <link rel="stylesheet" href="assets/css/service-tabs.css?v=1">
 <link rel="stylesheet" href="assets/css/service-back.css?v=2">
 <link rel="stylesheet" href="assets/css/service-review.css?v=2">
 <link rel="stylesheet" href="assets/css/sidebar-refined.css?v=2">
-</head>
-<body class="confirmation-page">
-<div class="ps-shell">
+</head><body class="funeral-page funeral-requirements-page funeral-request-page"><div class="ps-shell">
 <aside class="ps-sidebar">
 
     <div class="ps-logo">
@@ -63,13 +65,13 @@
                         </a>
                     </li>
                                     <li>
-                        <a class="ps-nav-link active"
+                        <a class="ps-nav-link"
                            href="confirmation.html">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5c3 1 4 4 7 5l3-4 3 1 2-2 3 2-3 3c-1 5-4 8-9 8l-5 3-2-3 4-3C3 12 2 9 3 5Z"/><path d="m7 11 5 3m4-6h.01"/></svg>                            <span>Confirmation</span>
                         </a>
                     </li>
                                     <li>
-                        <a class="ps-nav-link"
+                        <a class="ps-nav-link active"
                            href="funeral.html">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v18"/><path d="M7 8h10"/></svg>                            <span>Burial / Funeral</span>
                         </a>
@@ -123,111 +125,53 @@
 
     <div class="ps-logout-wrap">
 
-        <a href="landingpage.html" class="ps-logout-btn">
+        <a href="logout.php" class="ps-logout-btn" data-session-auth-link>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>            <span>Log out</span>
         </a>
     </div>
 
-</aside>
-<main class="ps-main">
-
-    <div class="conf-topline service-topline">
-<a href="confirmation.html" class="conf-back-link service-back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5m6-6-6 6 6 6"/></svg>Back to Confirmation</a>
-        
-        <div class="ps-topbar">
+</aside><main class="ps-main" id="main-content">
+<div class="fg-topline service-topline">
+<a class="fg-back service-back" href="funeral.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5m6-6-6 6 6 6"/></svg>Back to Funeral Services</a><div class="ps-topbar">
 
     <button type="button" class="ps-notif-btn" aria-label="Notifications">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 4 1.5 5.5 2 6.5H4c.5-1 2-2.5 2-6.5z"/><path d="M10 19a2 2 0 0 0 4 0"/></svg>                    <span class="ps-notif-badge">3</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 4 1.5 5.5 2 6.5H4c.5-1 2-2.5 2-6.5z"/><path d="M10 19a2 2 0 0 0 4 0"/></svg>                    
             </button>
 
     <div class="ps-user-chip">
-        <span class="ps-user-avatar">J</span>
+        <span class="ps-user-avatar" data-session-initial>G</span>
         <span class="ps-user-info">
-            <strong>Juan Dela Cruz</strong>
-            <small>Parishioner</small>
+            <strong data-session-name>Guest</strong>
+            <small data-session-role>Not signed in</small>
         </span>
         <svg class="ps-user-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>    </div>
 </div>
     </div>
 
-    <section class="conf-hero">
-        <div class="conf-hero-image">
-            <img src="assets/images/confirmation.png" alt="A priest laying hands on a young man's forehead during a Confirmation Mass">
-        </div>
-        <div class="conf-hero-text">
-            <span class="conf-hero-eyebrow">Sacraments</span>
-            <h1>Apply for Confirmation</h1>
-            <p>Take the next step in your faith journey.</p>
-            <div class="conf-hero-quote">
-                <p>&ldquo;Be sealed with the gift of the Holy Spirit.&rdquo;</p>
-                <cite>— Ephesians 1:13</cite>
-            </div>
-        </div>
-    </section>
-
-    <nav class="conf-tabs" aria-label="Confirmation sections">
-        <a href="confirmation-guidelines.html" class="conf-tab">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5c2-1.2 5-1.2 7 0v14c-2-1.2-5-1.2-7 0z"/><path d="M20 5c-2-1.2-5-1.2-7 0v14c2-1.2 5-1.2 7 0z"/></svg>
-            About Confirmation
-        </a>
-        <a href="confirmation-requirements.html" class="conf-tab">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h7l4 4v14a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M14 3v4h4"/><path d="M9 13h6M9 16.5h6M9 9.5h3"/></svg>
-            Requirements
-        </a>
-        <a href="confirmation-schedule.html" class="conf-tab">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18"/><path d="M8 3v4"/><path d="M16 3v4"/></svg>
-            Schedule
-        </a>
-        <a href="confirmation-request.html" class="conf-tab active">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 4l5 5-11 11H4v-5z"/><path d="M13 6l5 5"/></svg>
-            Apply Now
-        </a>
-    </nav>
-
-    <div class="ps-card wr-stepbar">
-        <div class="wr-step is-done">
-            <span class="wr-step-num"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg></span>
-            <span class="wr-step-text">
-                <strong>Personal Information</strong>
-                <small>Tell us about the candidate</small>
-            </span>
-        </div>
-        <svg class="wr-step-sep" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
-        <div class="wr-step is-done">
-            <span class="wr-step-num"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg></span>
-            <span class="wr-step-text">
-                <strong>Additional Information</strong>
-                <small>Sponsor and schedule details</small>
-            </span>
-        </div>
-        <svg class="wr-step-sep" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
-        <div class="wr-step is-done">
-            <span class="wr-step-num"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg></span>
-            <span class="wr-step-text">
-                <strong>Upload Document</strong>
-                <small>Submit Baptismal Certificate</small>
-            </span>
-        </div>
-        <svg class="wr-step-sep" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
-        <div class="wr-step is-current">
-            <span class="wr-step-num">4</span>
-            <span class="wr-step-text">
-                <strong>Review &amp; Submit</strong>
-                <small>Review and submit</small>
-            </span>
-        </div>
-    </div>
-
-    <form class="wr-form" action="confirmation-request-confirmation.html" method="post" data-wizard-step-form novalidate>
+<section class="fr-banner fg-hero" aria-labelledby="funeral-request-title">
+<img class="fg-hero-image" src="assets/images/funeral.png" alt="A full crucifix on a church altar surrounded by white flowers and candles">
+<div class="fg-hero-copy">
+<div class="fg-eyebrow">Sacraments</div>
+<h1 id="funeral-request-title">Request Funeral Service</h1>
+<p>We are here to help you arrange the funeral Mass and parish service with dignity, care, and compassion.</p>
+<blockquote>&ldquo;Blessed are those who mourn, for they shall be comforted.&rdquo;<cite>&mdash; Matthew 5:4</cite></blockquote>
+</div>
+</section>
+<nav class="fg-tabs" aria-label="Funeral services">
+<a href="funeral-guidelines.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v15M12 5C9 3 5 3 2 5v15c3-2 7-2 10 0 3-2 7-2 10 0V5c-3-2-7-2-10 0Z"/></svg><span>About Funeral Services</span></a>
+<a href="funeral-requirements.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H5v20h14V7l-5-5Zm0 0v6h5M8 12h8M8 16h8"/></svg><span>Requirements</span></a>
+<a href="funeral-schedule.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 2v6m10-6v6M3 10h18m-13 5 3 3 5-5"/></svg><span>Schedule</span></a>
+<a href="funeral-request.html" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4H4v17h17v-9M9 15l1-5L19 1l4 4-9 9-5 1Z"/></svg><span>Request Service</span></a></nav>
+<div class="ps-card wr-stepbar"><div class="wr-step is-done" ><span class="wr-step-num">1</span><span class="wr-step-text"><strong>Family &amp; Deceased Information</strong><small>Tell us about the deceased and requester</small></span></div><span class="wr-step-sep" aria-hidden="true">&rsaquo;</span><div class="wr-step is-done" ><span class="wr-step-num">2</span><span class="wr-step-text"><strong>Service Arrangement</strong><small>Mass, wake, burial, and schedule details</small></span></div><span class="wr-step-sep" aria-hidden="true">&rsaquo;</span><div class="wr-step is-done" ><span class="wr-step-num">3</span><span class="wr-step-text"><strong>Upload Document</strong><small>Submit death certificate</small></span></div><span class="wr-step-sep" aria-hidden="true">&rsaquo;</span><div class="wr-step is-current" aria-current="step"><span class="wr-step-num">4</span><span class="wr-step-text"><strong>Review &amp; Submit</strong><small>Review and submit</small></span></div></div>    <form class="wr-form" action="funeral-request-step4.php" method="post" data-funeral-step="4"><?php ps_request_form_fields(); ?>
 
         <div class="ps-card wr3-intro">
             <div>
                 <h2>Review &amp; Submit</h2>
-                <p>Please review your Confirmation application details before submitting.</p>
+                <p>Please review your funeral service request details before submitting.</p>
             </div>
-            <span class="conf-review-progress" id="confReviewProgress">
+            <span class="conf-review-progress" id="funeralReviewProgress">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5l3.5 2"/></svg>
-                <span id="confReviewProgressText">Checking details…</span>
+                <span id="funeralReviewProgressText">Checking details…</span>
             </span>
         </div>
 
@@ -236,34 +180,17 @@
             <div class="ps-card wr3-review-card">
                 <div class="wr3-review-card-header">
                     <span class="wr3-review-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.9 3.1-7 7-7s7 3.1 7 7"/></svg></span>
-                    <h3>1. Personal Information</h3>
+                    <h3>1. Family &amp; Deceased Information</h3>
                 </div>
-                <div class="wr3-review-rows">
-                    <div class="wr3-review-row"><span>Full Name</span><strong>Not provided</strong></div>
-                    <div class="wr3-review-row"><span>Date of Birth</span><strong>Not provided</strong></div>
-                    <div class="wr3-review-row"><span>Complete Address</span><strong>Not provided</strong></div>
-                    <div class="wr3-review-row"><span>Mobile Number</span><strong>Not provided</strong></div>
-                    <div class="wr3-review-row"><span>Email Address</span><strong>Not provided</strong></div>
-                </div>
+                <div class="wr3-review-rows"><div class="wr3-review-row"><span>Your First Name</span><strong data-funeral-review="familyFirstName">Not provided</strong></div><div class="wr3-review-row"><span>Your Last Name</span><strong data-funeral-review="familyLastName">Not provided</strong></div><div class="wr3-review-row"><span>Relationship to the Deceased</span><strong data-funeral-review="relationship">Not provided</strong></div><div class="wr3-review-row"><span>Mobile Number</span><strong data-funeral-review="familyMobile">Not provided</strong></div><div class="wr3-review-row"><span>Email Address</span><strong data-funeral-review="familyEmail">Not provided</strong></div><div class="wr3-review-row"><span>Name of the Deceased</span><strong data-funeral-review="deceasedName">Not provided</strong></div><div class="wr3-review-row"><span>Date of Death</span><strong data-funeral-review="dateOfDeath">Not provided</strong></div><div class="wr3-review-row"><span>Burial Arrangement</span><strong data-funeral-review="burialArrangement">Not provided</strong></div></div>
             </div>
 
             <div class="ps-card wr3-review-card">
                 <div class="wr3-review-card-header">
                     <span class="wr3-review-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18"/><path d="M8 3v4"/><path d="M16 3v4"/></svg></span>
-                    <h3>2. Additional Information</h3>
+                    <h3>2. Service Arrangement</h3>
                 </div>
-                <div class="wr3-review-rows">
-                    <div class="wr3-review-row"><span>Parish</span><strong>Not provided</strong></div>
-                    <div class="wr3-review-row"><span>Name of Parent/Guardian</span><strong>Not provided</strong></div>
-                    <div class="wr3-review-row"><span>Relationship to Applicant</span><strong>Not provided</strong></div>
-                    <div class="wr3-review-row"><span>Name of School</span><strong>Not provided</strong></div>
-                    <div class="wr3-review-row"><span>Grade / Year Level</span><strong>Not provided</strong></div>
-                    <div class="wr3-review-row"><span>Emergency Contact Number</span><strong>Not provided</strong></div>
-                    <div class="wr3-review-row"><span>Received First Communion?</span><strong>Not provided</strong></div>
-                    <div class="wr3-review-row"><span>Name of Sponsor</span><strong>Not provided</strong></div>
-                    <div class="wr3-review-row"><span>Sponsor Contact Number</span><strong>Not provided</strong></div>
-                    <div class="wr3-review-row wr3-review-row-wrap"><span>Notes / Message to Parish</span><strong>Not provided</strong></div>
-                </div>
+                <div class="wr3-review-rows"><div class="wr3-review-row"><span>Requested Service</span><strong data-funeral-review="serviceType">Not provided</strong></div><div class="wr3-review-row"><span>Preferred Service Date</span><strong data-funeral-review="preferredMassDate">Not provided</strong></div><div class="wr3-review-row"><span>Preferred Time</span><strong data-funeral-review="preferredTime">Not provided</strong></div><div class="wr3-review-row"><span>Burial Place / Cemetery</span><strong data-funeral-review="burialLocation">Not provided</strong></div><div class="wr3-review-row"><span>Burial in a Different Location</span><strong data-funeral-review="differentBurialLocation">Not provided</strong></div><div class="wr3-review-row"><span>Wake Venue / Chapel Name</span><strong data-funeral-review="wakeVenue">Not provided</strong></div><div class="wr3-review-row"><span>Wake Address</span><strong data-funeral-review="wakeAddress">Not provided</strong></div><div class="wr3-review-row"><span>Funeral Home / Coordinator</span><strong data-funeral-review="funeralCoordinator">Not provided</strong></div><div class="wr3-review-row"><span>Additional Notes</span><strong data-funeral-review="serviceNotes">Not provided</strong></div></div>
             </div>
 
         </div>
@@ -271,42 +198,32 @@
         <div class="ps-card wr3-review-card wr3-review-card-full">
             <div class="wr3-review-card-header">
                 <span class="wr3-review-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17a4.5 4.5 0 0 1-1-8.9A5.5 5.5 0 0 1 16.5 8H17a4 4 0 0 1 1 7.9"/><path d="M12 12v7"/><path d="M9 15l3-3 3 3"/></svg></span>
-                <h3>3. Uploaded Document</h3>
+                <h3>3. Death Certificate</h3>
             </div>
             <ul class="wr3-doc-list">
                 <li>
-                    <span class="wr3-doc-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg></span>
-                    <span class="wr3-doc-name">Baptismal Certificate.pdf</span>
-                    <span class="wr3-doc-view" title="No file is actually attached to this review yet -- Steps 1/2/3 don't persist data across pages this session.">View</span>
+                    
+                    <span class="wr3-doc-name"><strong data-funeral-review="certificateName">No document selected</strong></span>
+                    <span class="funeral-file-status">Uploaded to the parish office</span>
                 </li>
-            </ul>
+            </ul><div class="wr3-review-row"><span>Document Notes</span><strong data-funeral-review="documentNotes">Not provided</strong></div>
         </div>
 
         <div class="ps-info-banner is-tip">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5"/><path d="M12 7.8h.01"/></svg>
-            <span>Your application is still subject to parish review and availability. You will receive a confirmation once your request has been approved.</span>
+            <span>Funeral service arrangements are subject to parish review and availability. The parish office will contact you to confirm the schedule.</span>
         </div>
 
         <div class="service-confirm"><label><input type="checkbox" id="confirmAccurate" name="confirmAccurate" data-confirm-toggle required><span><strong>I confirm</strong> that the information provided is true and accurate.</span></label></div>
 
-        <div class="wr-actions">
-            <a href="confirmation-request-step3.html" class="ps-btn wr-cancel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg> Back</a>
+        <p id="missingDetails" class="funeral-draft-note" hidden></p><div class="wr-actions">
+            <a href="funeral-request-step3.html" class="ps-btn wr-cancel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg> Back</a>
             <button type="submit" class="ps-btn ps-btn-primary wr-submit" data-confirm-submit disabled>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12 20 4l-6 16-3-7-7-3z"/></svg> Submit Confirmation Application
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12 20 4l-6 16-3-7-7-3z"/></svg> Submit Funeral Service Request
             </button>
         </div>
 
-        <p class="wr-next-step-notice" data-wizard-notice hidden>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5"/><path d="M12 7.8h.01"/></svg>
-            There's no backend yet to actually save this request -- the review above is genuinely what you typed on Steps 1, 2 &amp; 3, but there's no <code>confirmation_requests</code> table to insert it into. Once the database is wired up, submitting here will create a real request and notify the parish office.
-        </p>
+        
 
-    </form>
-
-</main>
-</div>
-<script src="assets/js/frontend.js"></script>
-<script src="assets/js/main.js"></script>
-<script src="assets/js/responsive.js?v=1"></script>
-<script src="assets/js/review-file.js?v=1"></script></body>
-</html>
+    </form></main></div><script src="assets/js/funeral-request.js?v=4"></script><script src="assets/js/session-user.js"></script>
+<script src="assets/js/responsive.js?v=1"></script></body></html>

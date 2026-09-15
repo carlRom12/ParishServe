@@ -17,8 +17,9 @@ function setAuthFieldError(input, message) {
 (async function () {
     const alert = document.querySelector('[data-auth-alert]');
     const message = document.querySelector('[data-auth-message]');
-    const show = text => {
+    const show = (text, isSuccess = false) => {
         message.textContent = text;
+        alert.classList.toggle('is-success', isSuccess);
         alert.hidden = false;
     };
     const page = location.pathname.split('/').pop().replace('.html', '');
@@ -27,7 +28,7 @@ function setAuthFieldError(input, message) {
         const today = new Date();
         birthDate.max = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
     }
-    document.querySelectorAll('[data-otp-form], [data-register-form]').forEach(form => {
+    document.querySelectorAll('[data-otp-form], [data-register-form], [data-login-form], [data-auth-form]').forEach(form => {
         form.addEventListener('submit', event => {
             if (location.protocol === 'file:') {
                 event.preventDefault();
@@ -41,10 +42,15 @@ function setAuthFieldError(input, message) {
         const response = await fetch(`auth-state.php?page=${encodeURIComponent(page)}`, { cache: 'no-store' });
         if (!response.ok) return;
         const state = await response.json();
-        if (state.error || state.success) show(state.error || state.success);
+        // e.g. reset-password.html without a verified code
+        if (state.redirect) {
+            location.replace(state.redirect);
+            return;
+        }
+        if (state.error || state.success) show(state.error || state.success, !state.error);
         const email = document.querySelector('[data-pending-email]');
         if (email && state.email) email.textContent = state.email;
-        const form = document.querySelector('[data-register-form]');
+        const form = document.querySelector('[data-register-form], [data-login-form], [data-auth-form]');
         for (const [name, value] of Object.entries(state.oldInput || {})) {
             const input = form?.elements.namedItem(name);
             if (!input || input.type === 'password' || input.type === 'file') continue;

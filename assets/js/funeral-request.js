@@ -8,15 +8,17 @@
         const stored = JSON.parse(sessionStorage.getItem(key) || '{}');
         if (stored && typeof stored === 'object' && !Array.isArray(stored)) draft = stored;
     } catch (_) { /* Keep the form usable when storage is unavailable. */ }
+    // ps_* fields (the submit token, the injected draft) belong to a single page load.
+    const skip = input => !input.name || input.name.startsWith('ps_') || input.type === 'file';
     const save = () => {
         for (const input of form.elements) {
-            if (input.name && input.type !== 'file' && (input.type !== 'radio' || input.checked)) draft[input.name] = input.value;
+            if (!skip(input) && (input.type !== 'radio' || input.checked)) draft[input.name] = input.value;
         }
         try { sessionStorage.setItem(key, JSON.stringify(draft)); return true; }
         catch (_) { return false; }
     };
     for (const input of form.elements) {
-        if (input.name && input.type !== 'file' && typeof draft[input.name] === 'string') {
+        if (!skip(input) && typeof draft[input.name] === 'string') {
             if (input.type === 'radio') input.checked = input.value === draft[input.name];
             else input.value = draft[input.name];
         }
@@ -49,9 +51,17 @@
     }
     const certificate = document.getElementById('deathCertificate');
     if (certificate) {
-        // A remembered filename is not a saved or uploaded document.
-        delete draft.certificateName;
-        save();
+        // The file itself is uploaded by request-uploads.js the moment it's
+        // chosen (type/size errors are shown there too); certificateName
+        // only records that it's on the server, for the Step 4 checklist.
+        certificate.addEventListener('ps:upload-staged', event => {
+            draft.certificateName = event.detail.name;
+            save();
+        });
+        certificate.addEventListener('ps:upload-cleared', () => {
+            delete draft.certificateName;
+            save();
+        });
         const zone = certificate.closest('[data-dropzone]');
         if (zone) {
             ['dragenter', 'dragover'].forEach(type => zone.addEventListener(type, event => {
@@ -70,15 +80,7 @@
         }
         certificate.addEventListener('change', () => {
             const file = certificate.files[0];
-            const error = document.getElementById('certificateError');
-            const valid = file && /\.(pdf|jpe?g|png)$/i.test(file.name) && file.size > 0 && file.size <= 5 * 1024 * 1024;
-            certificate.setCustomValidity(file && !valid ? 'Choose a PDF, JPG or PNG file no larger than 5 MB.' : '');
-            error.hidden = !file || valid;
-            error.textContent = certificate.validationMessage;
-            document.getElementById('certificateName').textContent = file ? file.name : 'No file chosen';
-            if (valid) draft.certificateName = file.name;
-            else delete draft.certificateName;
-            save();
+            if (file) document.getElementById('certificateName').textContent = file.name;
         });
     }
 
@@ -101,10 +103,12 @@
         }
         const missing = document.getElementById('missingDetails');
         missing.hidden = complete;
-        missing.textContent = 'Please go back and complete the required details and document selection before continuing.';
+        missing.textContent = 'Please go back and complete the required details and upload the death certificate before continuing.';
         const sync = () => { submit.disabled = !complete || !confirmation.checked; };
         confirmation.addEventListener('change', sync);
         sync();
+        // Problems the server found with the last attempt (includes/request-forms.php).
+        form.querySelector('[data-form-errors]')?.focus();
     } else submit.disabled = false;
 
     form.addEventListener('submit', event => {
@@ -121,11 +125,30 @@
             warning.textContent = 'Your browser cannot save this draft. Please enable session storage before continuing.';
             return;
         }
-        if (step < 4) location.href = form.getAttribute('action');
-        else if (complete && confirmation.checked) {
-            const notice = document.getElementById('funeralSubmitNotice');
-            notice.hidden = false;
-            notice.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        if (step < 4) {
+            (event.submitter || submit).classList.add('is-loading');
+            location.href = form.getAttribute('action');
+        } else if (complete && confirmation.checked && !form.dataset.submitting) {
+            // Real submit: the review above is only text, so copy the whole
+            // draft into the form for the server (ps_handle_request_form()).
+            let field = form.querySelector('input[name="ps_draft"]');
+            if (!field) {
+                field = document.createElement('input');
+                field.type = 'hidden';
+                field.name = 'ps_draft';
+                form.append(field);
+            }
+            field.value = JSON.stringify(draft);
+            form.dataset.submitting = 'true';
+            (event.submitter || submit).classList.add('is-loading');
+            HTMLFormElement.prototype.submit.call(form);
         }
+    });
+
+    // Back/forward cache restores the page mid-submit; clear the busy state.
+    window.addEventListener('pageshow', event => {
+        if (!event.persisted) return;
+        delete form.dataset.submitting;
+        form.querySelectorAll('.is-loading').forEach(button => button.classList.remove('is-loading'));
     });
 })();

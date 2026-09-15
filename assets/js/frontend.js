@@ -1,37 +1,65 @@
 (function () {
     const page = location.pathname.split('/').pop();
-    const flow = page.startsWith('wedding-request') ? 'wedding' : page.startsWith('baptism-request') ? 'baptism' : page.startsWith('confirmation-request') ? 'confirmation' : null;
+    // The final page of each request form is .php (it submits to the
+    // server, includes/request-forms.php); the earlier steps stay .html.
+    const pageName = page.replace(/\.(html|php)$/, '');
+    const flow = pageName.startsWith('mass-intention-request') ? 'mass-intention'
+        : pageName.startsWith('wedding-request') ? 'wedding'
+        : pageName.startsWith('baptism-request') ? 'baptism'
+        : pageName.startsWith('confirmation-request') ? 'confirmation'
+        : pageName === 'donation-request' ? 'donations'
+        : null;
     const key = 'parishserve-draft-' + flow;
+    const isoDate = date => `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
     let draft = {};
     try { draft = JSON.parse(sessionStorage.getItem(key) || '{}'); } catch (_) { /* Storage may be disabled. */ }
     const form = document.querySelector('form:not([data-login-form]):not([data-register-form]):not([data-otp-form])');
     if (flow && form) {
+        // ps_* fields (the submit token, the injected draft) belong to a single page load.
+        const skip = input => !input.name || input.name.startsWith('ps_') || input.type === 'file' || input.tagName === 'BUTTON';
         for (const input of form.elements) {
-            if (!input.name || !(input.name in draft) || input.type === 'file') continue;
+            if (skip(input) || !(input.name in draft)) continue;
             if (input.type === 'radio' || input.type === 'checkbox') input.checked = input.value === draft[input.name];
             else input.value = draft[input.name];
         }
         const save = () => {
-            for (const [name, value] of new FormData(form)) {
-                if (typeof value === 'string') draft[name] = value;
+            for (const input of form.elements) {
+                if (skip(input) || input.disabled) continue;
+                if (input.type === 'radio') {
+                    if (input.checked) draft[input.name] = input.value;
+                } else if (input.type === 'checkbox') {
+                    draft[input.name] = input.checked ? input.value : '';
+                } else {
+                    draft[input.name] = input.value;
+                }
             }
             try { sessionStorage.setItem(key, JSON.stringify(draft)); } catch (_) { /* Keep the form usable without storage. */ }
         };
         form.addEventListener('input', save);
         form.addEventListener('change', save);
-        if (!form.hasAttribute('data-wizard-step-form') && !form.hasAttribute('data-baptism-upload')) {
+        // These submit to the server themselves: the final steps
+        // (initWizardStepForm() in main.js), baptism step 2 (baptism-upload.js)
+        // and the one-page Mass Intention form (mass-intention-request.js).
+        if (!form.matches('[data-wizard-step-form], [data-baptism-upload], [data-multi-step]')) {
             form.addEventListener('submit', event => {
                 event.preventDefault();
                 if (!form.reportValidity()) return;
                 save();
-                location.href = page === 'baptism-request.html' ? 'baptism-request-step2.html' : form.getAttribute('action');
+                // Busy cue on "Next" while the next step loads (style.css .is-loading).
+                (event.submitter || form.querySelector('[type="submit"]'))?.classList.add('is-loading');
+                location.href = form.getAttribute('action');
             });
         }
     }
 
     document.querySelectorAll('input[type="date"][data-max-today]').forEach(input => {
-        const today = new Date();
-        input.max = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+        input.max = isoDate(new Date());
+    });
+    // The server's rule for these is "a future date" (includes/request-forms.php).
+    document.querySelectorAll('input[type="date"][data-min-tomorrow]').forEach(input => {
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        input.min = isoDate(tomorrow);
     });
 
     document.querySelectorAll('[data-datepicker]').forEach(picker => {
@@ -42,8 +70,7 @@
         today.setHours(0, 0, 0, 0);
         const tomorrow = new Date(today);
         tomorrow.setDate(tomorrow.getDate() + 1);
-        const iso = date => `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-        input.min = iso(tomorrow);
+        input.min = isoDate(tomorrow);
         const validate = () => {
             input.setCustomValidity('');
             if (!input.value) return;
@@ -59,9 +86,21 @@
             else input.focus();
         });
         validate();
+        // What's already booked that day: booking-hint.js (data-booking-type).
     });
 
-    if (page === 'confirmation-request-step4.html') {
+    // Review steps: [data-review="field [field ...]"] shows those draft values
+    // joined with spaces (data-review-format="date" formats a date).
+    document.querySelectorAll('[data-review]').forEach(value => {
+        let text = value.dataset.review.split(/\s+/).map(name => String(draft[name] || '').trim()).filter(Boolean).join(' ');
+        if (text && value.dataset.reviewFormat === 'date' && /^\d{4}-\d{2}-\d{2}$/.test(text)) {
+            text = new Date(text + 'T00:00:00').toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+        }
+        value.textContent = text || 'Not provided';
+        value.classList.toggle('is-empty', !text);
+    });
+
+    if (pageName === 'confirmation-request-step4') {
         const fullName = [draft.candidateFirstName, draft.candidateMiddleName, draft.candidateLastName, draft.candidateSuffix].filter(Boolean).join(' ');
         const dob = /^\d{4}-\d{2}-\d{2}$/.test(draft.candidateDob || '')
             ? new Date(draft.candidateDob + 'T00:00:00').toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
@@ -98,6 +137,12 @@
                 : '<circle cx="12" cy="12" r="9"/><path d="M12 7.5v5l3.5 2"/>';
         }
     }
+
+    // request-confirmation.php: that request went through, so its draft is finished.
+    document.querySelectorAll('[data-clear-draft]').forEach(marker => {
+        try { sessionStorage.removeItem(marker.dataset.clearDraft); } catch (_) { /* nothing to clear */ }
+    });
+
     const greeting = document.querySelector('.db-hero h1')?.firstChild;
     if (greeting && greeting.nodeType === Node.TEXT_NODE) {
         const hour = new Date().getHours();

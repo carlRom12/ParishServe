@@ -1,3 +1,7 @@
+<?php
+require_once __DIR__ . '/includes/request-forms.php';
+ps_handle_request_form('wedding');
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -124,7 +128,7 @@
 
     <div class="ps-logout-wrap">
 
-        <a href="landingpage.html" class="ps-logout-btn">
+        <a href="logout.php" class="ps-logout-btn" data-session-auth-link>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>            <span>Log out</span>
         </a>
     </div>
@@ -136,14 +140,14 @@
         <div class="ps-topbar">
 
     <button type="button" class="ps-notif-btn" aria-label="Notifications">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 4 1.5 5.5 2 6.5H4c.5-1 2-2.5 2-6.5z"/><path d="M10 19a2 2 0 0 0 4 0"/></svg>                    <span class="ps-notif-badge">3</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 4 1.5 5.5 2 6.5H4c.5-1 2-2.5 2-6.5z"/><path d="M10 19a2 2 0 0 0 4 0"/></svg>                    
             </button>
 
     <div class="ps-user-chip">
-        <span class="ps-user-avatar">J</span>
+        <span class="ps-user-avatar" data-session-initial>G</span>
         <span class="ps-user-info">
-            <strong>Juan Dela Cruz</strong>
-            <small>Parishioner</small>
+            <strong data-session-name>Guest</strong>
+            <small data-session-role>Not signed in</small>
         </span>
         <svg class="ps-user-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>    </div>
 </div>
@@ -180,4 +184,8 @@
         </div>
             </div>
 
-    <section class="ps-card"><h2>Step 3 of 3: Review &amp; Submit</h2><p>Please review your wedding request before submitting.</p></section><div id="weddingReview" class="wr3-review-grid" style="margin-top:20px"></div><section class="ps-card wr3-review-card" style="margin-top:20px"><h3>Uploaded Documents</h3><ul class="wr3-doc-list" id="weddingReviewFiles"></ul></section><form id="weddingReviewForm"><div class="service-confirm"><label><input type="checkbox" required> <strong>I confirm</strong> that the information provided is true and accurate.</label></div><p id="weddingSubmitStatus" role="status"></p><div class="wr-actions"><a class="ps-btn wr-cancel" href="wedding-request-step2.html">Back</a><button class="ps-btn ps-btn-primary wr-submit" type="submit">Submit Wedding Request</button></div></form></main></div><script src="assets/js/responsive.js?v=1"></script><script src="assets/js/wedding-review.js?v=1"></script></body></html>
+    <section class="ps-card"><h2>Step 3 of 3: Review &amp; Submit</h2><p>Please review your wedding request before submitting.</p></section><div id="weddingReview" class="wr3-review-grid" style="margin-top:20px"></div><section class="ps-card wr3-review-card" style="margin-top:20px"><h3>Uploaded Documents</h3><ul class="wr3-doc-list" id="weddingReviewFiles" data-uploaded-docs="wedding"></ul></section><form id="weddingReviewForm" action="wedding-request-step3.php" method="post" data-wizard-step-form data-draft-key="parishserve-draft-wedding" novalidate><?php ps_request_form_fields(); ?><div class="service-confirm"><label><input type="checkbox" name="confirmTruthful" required> <strong>I confirm</strong> that the information provided is true and accurate.</label></div><p id="weddingSubmitStatus" role="status"></p><div class="wr-actions"><a class="ps-btn wr-cancel" href="wedding-request-step2.html">Back</a><button class="ps-btn ps-btn-primary wr-submit" type="submit">Submit Wedding Request</button></div></form></main></div><script src="assets/js/session-user.js"></script>
+<script src="assets/js/responsive.js?v=1"></script><script src="assets/js/frontend.js"></script>
+<script src="assets/js/main.js"></script>
+<script src="assets/js/request-uploads.js"></script>
+<script src="assets/js/wedding-review.js?v=2"></script></body></html>

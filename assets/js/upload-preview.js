@@ -25,12 +25,14 @@
             const header = document.createElement('div'); header.className = 'service-upload-header';
             const name = document.createElement('strong'); name.textContent = file.name + ' (' + Math.ceil(file.size / 1024) + ' KB)';
             const remove = document.createElement('button'); remove.type = 'button'; remove.className = 'ps-btn ps-btn-outline'; remove.textContent = 'Remove File';
-            remove.addEventListener('click', () => { input.value = ''; input.dispatchEvent(new Event('change', {bubbles:true})); input.dispatchEvent(new Event('input', {bubbles:true})); update(); input.focus(); });
+            remove.addEventListener('click', () => { input.value = ''; input.dispatchEvent(new CustomEvent('ps:request-remove')); input.dispatchEvent(new Event('change', {bubbles:true})); input.dispatchEvent(new Event('input', {bubbles:true})); update(); input.focus(); });
             header.append(name, remove); preview.append(header);
             if (/\.(png|jpe?g|gif|webp)$/i.test(file.name)) { const image = document.createElement('img'); image.src = url; image.alt = 'Preview of selected file'; preview.append(image); }
             else if (/\.pdf$/i.test(file.name)) { const frame = document.createElement('iframe'); frame.src = url; frame.title = 'Selected PDF preview'; preview.append(frame); }
             const open = document.createElement('a'); open.href = url; open.target = '_blank'; open.rel = 'noopener'; open.textContent = 'Open full preview';
-            const note = document.createElement('p'); note.textContent = 'Local preview only. Your file has not been sent. If the preview does not display, use Open full preview.'; preview.append(open,note);
+            // Forms with data-upload-flow send the file right away (request-uploads.js).
+            const sent = input.form && input.form.dataset.uploadFlow;
+            const note = document.createElement('p'); note.textContent = (sent ? 'This is the file you chose; it is uploaded to the parish office right away.' : 'Local preview only. Your file has not been sent.') + ' If the preview does not display, use Open full preview.'; preview.append(open,note);
         }
         input.addEventListener('change', update);
         zone.addEventListener('dragover', event => event.preventDefault());

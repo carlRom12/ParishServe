@@ -125,7 +125,7 @@
 
     <div class="ps-logout-wrap">
 
-        <a href="landingpage.html" class="ps-logout-btn">
+        <a href="logout.php" class="ps-logout-btn" data-session-auth-link>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>            <span>Log out</span>
         </a>
     </div>
@@ -137,14 +137,14 @@
         <div class="ps-topbar">
 
     <button type="button" class="ps-notif-btn" aria-label="Notifications">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 4 1.5 5.5 2 6.5H4c.5-1 2-2.5 2-6.5z"/><path d="M10 19a2 2 0 0 0 4 0"/></svg>                    <span class="ps-notif-badge">3</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 4 1.5 5.5 2 6.5H4c.5-1 2-2.5 2-6.5z"/><path d="M10 19a2 2 0 0 0 4 0"/></svg>                    
             </button>
 
     <div class="ps-user-chip">
-        <span class="ps-user-avatar">J</span>
+        <span class="ps-user-avatar" data-session-initial>G</span>
         <span class="ps-user-info">
-            <strong>Juan Dela Cruz</strong>
-            <small>Parishioner</small>
+            <strong data-session-name>Guest</strong>
+            <small data-session-role>Not signed in</small>
         </span>
         <svg class="ps-user-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>    </div>
 </div>
@@ -177,7 +177,7 @@
         </div>
             </div>
 
-    <form action="baptism-request.html" method="post" novalidate>
+    <form action="baptism-request-step2.php" method="post" novalidate>
 
         <div class="ps-card wr-section">
             <h2 class="wr-section-heading">1. Baptism Type <span class="wr-required">*</span></h2>
@@ -302,7 +302,7 @@
                 <label for="baptismDate"><span id="baptismDateLabel">Select a future Saturday</span> <span class="wr-required">*</span></label>
                 <div class="ps-datepicker" data-datepicker data-weekday="6" data-regular-weekday="6">
                     <span class="ps-datepicker-field">
-                        <input type="text" id="baptismDate" name="baptismDate" placeholder="mm/dd/yyyy"
+                        <input type="text" id="baptismDate" name="baptismDate" placeholder="mm/dd/yyyy" data-booking-type="baptism"
                                inputmode="numeric" autocomplete="off" data-datepicker-input
                                pattern="^(0[1-9]|1[0-2])/(0[1-9]|[12][0-9]|3[01])/[0-9]{4}$"
                                value="" required>
@@ -330,6 +330,8 @@
 </div>
 <script src="assets/js/frontend.js"></script>
 <script src="assets/js/main.js"></script>
+<script src="assets/js/booking-hint.js?v=1"></script>
+<script src="assets/js/session-user.js"></script>
 <script src="assets/js/responsive.js?v=1"></script>
 <script src="assets/js/baptism-request-tab.js?v=1"></script></body>
 </html>

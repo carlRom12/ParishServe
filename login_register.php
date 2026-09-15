@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once 'config.php';
+require_once 'includes/otp-mailer.php';
 function backToRegister($message) {
     $_SESSION['register_error'] = $message;
  
@@ -66,13 +67,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password_hash = password_hash($password, PASSWORD_DEFAULT);
     $otp_code = random_int(100000, 999999);
     $otp_hash = password_hash((string) $otp_code, PASSWORD_DEFAULT);
-    $otp_expires_at = date('Y-m-d H:i:s', time() + 180);
+    $otp_expires_at = date('Y-m-d H:i:s', time() + PS_OTP_TTL_SECONDS);
 
     $stmt = $conn->prepare("INSERT INTO users(firstname, middlename, lastname, suffix,
                                              date_of_birth,  gender, mobile_number, email, 
                                              password_hash, email_verified, otp_hash,
                                              otp_expires_at,status)
-                            VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?, 'active')");
+                            VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?, 'Active')");
     $stmt->bind_param("sssssssssss", $firstname, $middlename, $lastname,
                        $suffix, $date_of_birth, $gender, $mobileNum,
                        $email, $password_hash, $otp_hash,

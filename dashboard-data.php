@@ -3,11 +3,12 @@
  * dashboard-data.php
  * ---------------------------------------------------------------------
  * JSON for dashboard.html (a static page, so it can't query anything
- * itself -- initDashboardData() in main.js fetches this). For a signed-in
+ * itself -- assets/js/dashboard-revamp.js fetches this). For a signed-in
  * user: first name, role, stat counts and the 3 newest requests, linked
- * to them by users.mobile_number = <request table>.contact_number
- * (database/schema.sql group note #2). Logged-out visitors get
- * {loggedIn: false} and the page keeps its sample preview.
+ * to them by users.mobile_number = <request table>.contact_number (the
+ * request tables have no users.id column). Logged-out visitors get
+ * {loggedIn: false} and the page keeps its "Log in to see your requests"
+ * prompt.
  * ---------------------------------------------------------------------
  */
 session_start();
@@ -38,7 +39,7 @@ foreach (ps_dashboard_stats($counts) as $stat) {
 }
 
 $requests = [];
-foreach (ps_fetch_requests($conn, $user['mobile_number'], 3) as $r) {
+foreach (ps_fetch_requests($conn, ['contact' => $user['mobile_number'], 'limit' => 3]) as $r) {
     $type = PS_REQUEST_TYPES[$r['type']];
     ob_start();
     ps_icon($type['icon']);

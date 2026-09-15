@@ -2,8 +2,8 @@
 /**
  * calendar-events.php
  * ---------------------------------------------------------------------
- * Public JSON feed for calendar.js (and the booking hint on the wizard
- * datepickers in frontend.js): parish bookings staff have approved,
+ * Public JSON feed for calendar.js, service-schedule.js,
+ * dashboard-revamp.js and announcements.js: parish bookings staff have approved,
  * scheduled or completed, for the 6-week grid shown for ?month=&year=.
  * Anonymous on purpose -- type, time and status only, never names or
  * contact numbers -- and counseling appointments are left out entirely.

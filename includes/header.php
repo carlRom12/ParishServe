@@ -8,7 +8,8 @@
  *   $pageTitle  shown as "<title> · ParishServe"
  *   $pageCss    one stylesheet name or an array of them (in assets/css/),
  *               loaded after style.css and before responsive.css
- * includes/footer.php closes the wrapper.
+ * includes/footer.php closes the wrapper. The csrf-token meta is read by
+ * initAdminModals() in main.js for its POSTs (see auth-guard.php).
  * ---------------------------------------------------------------------
  */
 require_once __DIR__ . '/icons.php';
@@ -21,6 +22,9 @@ $pageCssFiles = isset($pageCss) ? (array) $pageCss : [];
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title><?php echo htmlspecialchars(isset($pageTitle) ? $pageTitle . ' · ParishServe' : 'ParishServe'); ?></title>
+<?php if (function_exists('ps_csrf_token')): ?>
+<meta name="csrf-token" content="<?php echo htmlspecialchars(ps_csrf_token()); ?>">
+<?php endif; ?>
 
 <link rel="stylesheet" href="assets/css/style.css">
 

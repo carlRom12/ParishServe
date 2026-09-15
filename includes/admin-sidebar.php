@@ -2,39 +2,56 @@
 /**
  * admin-sidebar.php
  * ---------------------------------------------------------------------
- * Left navigation rail for the admin portal. Mirrors includes/sidebar
- * .php structurally (same $psNavGroups -> .ps-nav-link markup, same
+ * Left navigation rail for the admin portal. Mirrors the parishioner
+ * sidebar structurally (same $psNavGroups -> .ps-nav-link markup, same
  * active-link convention via $activeNav set by the calling page before
- * requiring header.php) but with the admin-specific nav items.
+ * requiring header.php) but with the admin-specific nav items: one link
+ * per request type (PS_REQUEST_TYPES, each its own page) alongside
+ * Donations and Announcements, plus the Calendar and Reports.
  *
- * FRONTEND ONLY, same as the rest of the site this session: no auth
- * guard here, no session -- these pages are reachable directly, same
- * as dashboard.php/announcements.php/etc. Wiring real admin auth is a
- * separate backend task, not part of this pass.
+ * Every page that includes this has already passed
+ * includes/auth-guard.php. The "Accounts" link only shows for a Super
+ * Admin -- admin-accounts.php enforces that itself too, hiding the link
+ * is just tidiness.
  * ---------------------------------------------------------------------
  */
 require_once __DIR__ . '/icons.php';
+require_once __DIR__ . '/request-types.php';
 
 if (!isset($activeNav)) {
     $activeNav = '';
 }
 
+$psManageItems = [];
+foreach (PS_REQUEST_TYPES as $psTypeKey => $psTypeInfo) {
+    $psManageItems[] = ['key' => $psTypeKey, 'label' => $psTypeInfo['plural'], 'icon' => $psTypeInfo['icon'], 'href' => $psTypeInfo['page']];
+}
+$psManageItems[] = ['key' => 'donations',     'label' => 'Donations',     'icon' => 'heart',     'href' => 'admin-donations.php'];
+$psManageItems[] = ['key' => 'announcements', 'label' => 'Announcements', 'icon' => 'megaphone', 'href' => 'admin-announcements.php'];
+
 $psNavGroups = [
     [
         'label' => null,
         'items' => [
-            ['key' => 'dashboard', 'label' => 'Dashboard', 'icon' => 'home', 'href' => 'admin-dashboard.php'],
+            ['key' => 'dashboard', 'label' => 'Dashboard', 'icon' => 'home',     'href' => 'admin-dashboard.php'],
+            ['key' => 'calendar',  'label' => 'Calendar',  'icon' => 'calendar', 'href' => 'admin-calendar.php'],
+            ['key' => 'reports',   'label' => 'Reports',   'icon' => 'chart',    'href' => 'admin-reports.php'],
         ],
     ],
     [
         'label' => 'Manage',
-        'items' => [
-            ['key' => 'requests',      'label' => 'Requests',      'icon' => 'document', 'href' => 'admin-requests.php'],
-            ['key' => 'donations',     'label' => 'Donations',     'icon' => 'heart',     'href' => 'admin-donations.php'],
-            ['key' => 'announcements', 'label' => 'Announcements', 'icon' => 'megaphone', 'href' => 'admin-announcements.php'],
-        ],
+        'items' => $psManageItems,
     ],
 ];
+
+if (function_exists('ps_is_super_admin') && ps_is_super_admin()) {
+    $psNavGroups[] = [
+        'label' => 'Super Admin',
+        'items' => [
+            ['key' => 'accounts', 'label' => 'Accounts', 'icon' => 'people', 'href' => 'admin-accounts.php'],
+        ],
+    ];
+}
 ?>
 <aside class="ps-sidebar">
 
@@ -54,7 +71,7 @@ $psNavGroups = [
                 <?php foreach ($group['items'] as $item): ?>
                     <li>
                         <a class="ps-nav-link<?php echo $activeNav === $item['key'] ? ' active' : ''; ?>"
-                           href="<?php echo htmlspecialchars($item['href']); ?>">
+                           href="<?php echo htmlspecialchars($item['href']); ?>"<?php echo $activeNav === $item['key'] ? ' aria-current="page"' : ''; ?>>
                             <?php ps_icon($item['icon']); ?>
                             <span><?php echo htmlspecialchars($item['label']); ?></span>
                         </a>
@@ -67,9 +84,7 @@ $psNavGroups = [
     <div class="ps-sidebar-art"><?php ps_icon('church'); ?></div>
 
     <div class="ps-logout-wrap">
-        <!-- no real session this pass -- same placeholder convention
-             as includes/sidebar.php's own logout link. -->
-        <a href="index.php" class="ps-logout-btn">
+        <a href="logout.php" class="ps-logout-btn">
             <?php ps_icon('logout'); ?>
             <span>Log out</span>
         </a>
