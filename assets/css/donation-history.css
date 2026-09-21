@@ -1,0 +1,32 @@
+﻿.dh-history { margin-top:24px; padding:24px; scroll-margin-top:24px; }
+.dh-history>p { font-size:16px; line-height:1.6; margin:12px 0; }
+.dh-list { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin:20px 0; }
+.dh-entry { border:1px solid #e8dfd5; border-radius:8px; padding:20px; background:#fff; }
+.dh-entry h3 { font-size:17px; overflow-wrap:anywhere; }
+.dh-entry>strong { display:block; margin:10px 0; font-size:21px; color:#571125; }
+.dh-entry p { margin:6px 0; font-size:15px; line-height:1.6; }
+.dh-status { display:inline-block; margin-top:10px; padding:6px 12px; border-radius:20px; color:#571125; background:#f5ebdc; font-size:14px; }
+.dh-history button { min-height:44px; }
+@media(max-width:760px) { .dh-list { grid-template-columns:1fr; }.dh-history { padding:20px 16px; } }
+/* .ps-btn sets display:inline-flex, which (being an author rule) beats
+   the UA stylesheet's [hidden]{display:none} at equal specificity --
+   without this, a history feed's button.hidden=true (401/no-more-pages)
+   has no visible effect and "Load more..." stays shown even while a
+   "Sign in" link is also being shown in its place. Covers any feed
+   using this file's .dh-* markup (donations, Mass Intention, ...). */
+[data-donation-history] [hidden],
+[data-mass-intention-history] [hidden] { display:none!important; }
+
+/* Compact sidebar-card variant of a "My X History" feed, used instead of
+   its own full-width section -- add .sh-help-history alongside
+   .co-card.sh-help on the card. Narrower, so the list stays a single
+   column and entries/status text scale down to fit, rather than reusing
+   .dh-history's full-width sizing. */
+.sh-help-history { scroll-margin-top:24px; }
+.sh-help-history [role="status"] { font-size:13px; line-height:1.6; margin:10px 0; }
+.sh-help-history .dh-list { grid-template-columns:1fr; gap:10px; margin:14px 0; }
+.sh-help-history .dh-entry { padding:14px; }
+.sh-help-history .dh-entry h3 { font-size:14px; }
+.sh-help-history .dh-entry>strong { font-size:17px; margin:6px 0; }
+.sh-help-history .dh-entry p { font-size:13px; margin:4px 0; }
+.sh-help-history button { width:100%; margin-top:6px; }

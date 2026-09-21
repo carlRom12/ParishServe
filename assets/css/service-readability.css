@@ -1,0 +1,59 @@
+/* Readable service information, with comfortable targets and line lengths. */
+:is(.sh-accordions,.wh-accordions) { gap:14px; }
+:is(.sh-accordion,.wh-accordion) summary { min-height:88px; padding:20px 24px; }
+:is(.sh-accordion,.wh-accordion) summary strong { font-size:22px; line-height:1.35; }
+:is(.sh-accordion,.wh-accordion) summary small { display:block; margin-top:5px; font-size:14px; line-height:1.5; color:#51515c; }
+:is(.sh-accordion,.wh-accordion) summary>svg { color:#91621d; }
+:is(.sh-accordion,.wh-accordion) summary:hover { background:#fcf8f1; }
+:is(.sh-accordion,.wh-accordion)[open] summary { background:#faf5ec; border-bottom:1px solid #e9dfd1; }
+:is(.sh-accordion,.wh-accordion) summary:focus-visible { outline:3px solid #80551b; outline-offset:-4px; }
+:is(.sh-panel,.wh-panel) { padding:24px; font-size:16px; line-height:1.75; color:#3e3d44; }
+:is(.sh-panel,.wh-panel) p,:is(.sh-panel,.wh-panel) li { font-size:16px; line-height:1.75; color:#3e3d44; }
+:is(.sh-panel,.wh-panel)>p,:is(.sh-panel,.wh-panel)>div>p,:is(.sh-panel,.wh-panel)>blockquote { max-width:68ch; }
+:is(.sh-panel,.wh-panel) p+p { margin-top:18px; }
+:is(.sh-panel,.wh-panel) h2,:is(.sh-panel,.wh-panel) h3 { margin:22px 0 10px; font-size:21px; line-height:1.4; }
+:is(.sh-panel,.wh-panel) strong { color:#571125; }
+:is(.sh-panel,.wh-panel) blockquote { margin:24px 0 0; padding:18px 22px; border-left:3px solid #b8893b; border-radius:0 8px 8px 0; background:#faf6ef; }
+:is(.sh-panel,.wh-panel) blockquote p { margin:0; }
+:is(.sh-panel,.wh-panel) blockquote cite { display:block; margin-top:10px; font-size:14px; font-style:normal; color:#57515a; }
+:is(.sh-panel,.wh-panel) a { display:inline-flex; align-items:center; min-height:44px; padding:8px 0; color:#760d2c; font-weight:600; text-decoration:underline; text-underline-offset:4px; }
+:is(.sh-panel,.wh-panel) a:hover { color:#4e1025; }
+:is(.sh-panel,.wh-panel) a:focus-visible { outline:3px solid #80551b; outline-offset:4px; border-radius:3px; }
+:is(.sh-help,#wedding-schedule) p { font-size:16px; line-height:1.7; color:#3e3d44; }
+@media(max-width:760px) {
+ :is(.sh-accordion,.wh-accordion) summary { padding:18px 16px; gap:12px; }
+ :is(.sh-accordion,.wh-accordion) summary strong { font-size:20px; }
+ :is(.sh-panel,.wh-panel) { padding:20px 16px; }
+ :is(.sh-panel,.wh-panel) blockquote { padding:16px; }
+}
+/* Keep detailed fees and process descriptions as readable as the paragraphs. */
+:is(.sh-panel,.wh-panel) :is(.mi-note,.mi-reflection,.bh-fee>strong) { font-size:16px; line-height:1.75; }
+:is(.sh-panel,.wh-panel) :is(.mi-process,.wh-process) p { font-size:16px; line-height:1.65; }
+:is(.sh-panel,.wh-panel) :is(.mi-process,.wh-process) h3 { margin:8px 0; font-size:19px; }
+:is(.sh-panel,.wh-panel)>ol:not(.wh-process):not(.mi-process),:is(.sh-panel,.wh-panel)>ul { max-width:68ch; }
+:is(.sh-panel,.wh-panel) li+li { margin-top:12px; }
+.wh-panel .mi-about p { max-width:68ch; }
+.wh-panel .mi-reflection { padding:16px 20px; background:#faf6ef; border-left:3px solid #b8893b; }
+.wh-panel .mi-reflection small { font-size:14px; }
+@media(max-width:1100px) { .wh-panel .wh-process { grid-template-columns:1fr 1fr; }.wh-panel .wh-process::before { display:none; } }
+@media(max-width:520px) {
+ .wh-panel .wh-process { grid-template-columns:1fr; }
+ .sh-panel .bh-fee { align-items:flex-start; flex-direction:column; gap:8px; }
+}
+
+/* Left-align reading content; reserve centering for steps and reflections. */
+:is(.sh-panel,.wh-panel)>p,
+:is(.sh-panel,.wh-panel)>blockquote,
+:is(.sh-panel,.wh-panel)>ul,
+:is(.sh-panel,.wh-panel)>ol:not(.mi-process):not(.wh-process),
+.sh-panel>div:not(.bh-fee),
+.wh-panel .mi-about { max-width:68ch; margin-inline:0; text-align:left; }
+:is(.sh-panel,.wh-panel) :is(.mi-process,.wh-process) { width:100%; max-width:none; margin:24px auto; align-items:start; gap:24px; }
+:is(.sh-panel,.wh-panel) :is(.mi-process,.wh-process)>li { margin:0; padding:0; }
+:is(.sh-panel,.wh-panel) :is(.mi-process,.wh-process) p { max-width:25ch; margin-inline:auto; }
+.sh-panel .mi-reflection { max-width:68ch; margin:22px auto 0; padding:18px; border:0; border-radius:8px; background:#faf6ef; text-align:center; }
+.sh-panel .bh-fee { max-width:68ch; margin-inline:auto; }
+@media(max-width:760px) { :is(.sh-panel,.wh-panel) :is(.mi-process,.wh-process) { gap:24px; } }
+
+:is(.sh-panel,.wh-panel) .mi-note { max-width:none; width:100%; text-align:left; }
+.wh-panel .mi-reflection { text-align:center; }

@@ -1,1 +1,62 @@
 .wedding-home-page .co-hero{background:#f6f0e6;color:#571125}.wedding-home-page .co-hero::after{background:linear-gradient(90deg,#f8f3eaf2, #f8f3ea80 48%,transparent 72%)}.wedding-home-page .co-hero-copy{max-width:730px;padding:32px 40px 80px}.wedding-home-page .co-hero h1{color:#571125;font-size:60px}.wedding-home-page .co-eyebrow{color:#907032}.wedding-home-page .co-hero-copy>p{color:#62595a}.wedding-home-page .co-hero-copy .wh-intro{font-size:15px;line-height:1.6;margin-top:12px}.wedding-home-page .co-hero blockquote{font-size:15px;margin-top:16px}.wedding-home-page .mi-info h2{margin-bottom:12px}.wedding-home-page .wh-reminders{background:#faf3e7}.wh-office{margin-top:24px;padding-top:18px;border-top:1px solid #eadbc7}.wh-office h3{font-size:17px;margin-bottom:8px}#wedding-schedule{scroll-margin-top:20px}.mi-reflection small{font:12px 'Poppins',sans-serif}@media(max-width:760px){.wedding-home-page .co-hero-copy{padding:28px 24px}.wedding-home-page .co-hero h1{font-size:40px}}
+/* Compact wedding landing layout. */
+.wedding-home-page .co-hero { aspect-ratio:auto; min-height:260px; border-radius:10px; }
+.wedding-home-page .co-hero>img { object-fit:cover; object-position:right center; }
+.wedding-home-page .co-hero-copy { padding:28px 34px; max-width:700px; }
+.wedding-home-page .co-hero h1 { font-size:52px; }
+.wh-hero-cta { margin-top:20px; min-height:44px; }
+.wedding-home-page .co-hero blockquote { font-size:14px; margin-top:14px; }
+.wedding-home-page .mi-links { margin:14px 0; padding:0; gap:12px; background:transparent; }
+.wedding-home-page .mi-links .co-card { min-height:180px; padding:18px; }
+.wh-content { display:grid; grid-template-columns:minmax(0,2fr) minmax(260px,1fr); gap:16px; align-items:start; }
+.wh-accordions { display:grid; gap:10px; }
+.wh-accordion { background:white; border:1px solid #eee4dc; border-radius:8px; overflow:hidden; }
+.wh-accordion summary { display:flex; justify-content:space-between; align-items:center; gap:16px; padding:16px 22px; cursor:pointer; list-style:none; }
+.wh-accordion summary::-webkit-details-marker { display:none; }
+.wh-accordion summary::after { content:'+'; font-size:24px; color:#760d2c; }
+
+.wh-accordion summary strong { display:block; font:600 19px/1.4 'Playfair Display',serif; color:#760d2c; }
+.wh-accordion summary small { font-size:12px; color:#566074; }
+.wh-accordion summary:focus-visible,.wh-collapse:focus-visible { outline:2px solid #a67521; outline-offset:-3px; }
+.wh-panel { padding:0 22px 20px; font-size:13px; line-height:1.7; }
+.wh-panel ol,.wh-panel ul { padding-left:20px; }
+.wh-panel li { margin-bottom:8px; }
+.wh-panel a { color:#760d2c; text-decoration:underline; }
+.wh-panel .mi-about { display:block; border:0; padding:10px 0; margin:0; }
+.wh-content>#wedding-schedule { background:#fbf6ee; padding:24px; }
+.wh-journey { display:grid; grid-template-columns:1fr 3fr; gap:24px; padding:22px; margin-top:16px; }
+.wh-process { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); list-style:none; gap:16px; padding:0!important; margin:0; text-align:center; }
+.wh-process span { display:inline-flex; width:34px; height:34px; border-radius:50%; align-items:center; justify-content:center; background:#f5ebda; color:#641a30; margin-bottom:8px; }
+.wh-process li:first-child span { background:#760d2c; color:white; }.wh-process h3 { font-size:16px; }.wh-process p,.wh-journey>div p { font-size:12px; }
+.wh-collapse { align-self:flex-end; background:#ffffff15; color:#fff5dd; border:1px solid #ffffff30; border-radius:8px; width:30px; height:30px; cursor:pointer; font-size:24px; }
+@media(min-width:761px){body.wedding-home-page.wh-nav-collapsed { --sidebar-width:76px; }body.wh-nav-collapsed .ps-sidebar { width:76px; }body.wh-nav-collapsed .ps-logo-eyebrow,body.wh-nav-collapsed .ps-logo-name,body.wh-nav-collapsed .ps-logo-sub,body.wh-nav-collapsed .ps-nav-link>span,body.wh-nav-collapsed .ps-nav-section,body.wh-nav-collapsed .ps-logout-btn>span { display:none; }body.wh-nav-collapsed .ps-nav-link,body.wh-nav-collapsed .ps-logout-btn { justify-content:center; padding:10px; }body.wh-nav-collapsed .ps-nav-link::after { display:none; }}
+@media(max-width:1024px){.wh-content,.wh-journey { grid-template-columns:1fr; }}
+@media(max-width:760px){.wh-collapse { display:none; }.wedding-home-page .co-hero>img { position:absolute; height:100%; }.wedding-home-page .co-hero::after { display:block; background:linear-gradient(90deg,#faf4eaf5,#faf4eac9); }.wedding-home-page .co-hero h1 { font-size:40px; }.wedding-home-page .co-hero-copy { padding:24px; }.wh-process { grid-template-columns:1fr 1fr; }}
+
+.wedding-home-page .ps-sidebar { background:radial-gradient(ellipse at top left,#772e3c55,transparent 65%),linear-gradient(165deg,#4d1725,#2b0c16); }
+.wedding-home-page .ps-sidebar .ps-nav-section { letter-spacing:1.4px; }
+.wedding-home-page .ps-sidebar .ps-nav-link.active { background:linear-gradient(110deg,#ffda73,#e7ac40); color:#35121a; }
+.wedding-home-page .ps-sidebar .ps-nav-link>svg { padding:3px; width:26px; height:26px; border-radius:7px; background:#ffffff0c; }
+@media(min-width:1025px){.wedding-home-page .ps-logo { display:grid; grid-template-columns:38px 1fr; column-gap:10px; text-align:left; }.wedding-home-page .ps-logo-crest { grid-row:1/4; width:36px!important; height:44px!important; }.wedding-home-page .ps-logo-name { font-size:22px!important; }.wedding-home-page .ps-logo-sub { font-size:9px!important; }.wedding-home-page.wh-nav-collapsed .ps-logo { display:block; }}
+/* Keep the Wedding landing cards below the hero, overriding shared overlaps. */
+body.wedding-home-page .ps-main .mi-links { margin:14px 0; padding:0; background:transparent; }
+body.wedding-home-page .ps-main .mi-links>article { min-height:180px; }
+.wh-accordion[open] summary::after { content:'\2212'; }
+body.wedding-home-page .ps-sidebar { background:radial-gradient(ellipse at top left,#772e3c55,transparent 65%),linear-gradient(165deg,#4d1725,#2b0c16); }
+body.wedding-home-page .ps-sidebar .ps-nav-link>svg { flex-basis:26px; }
+.wh-collapse:focus-visible { outline:3px solid #e7ac40; outline-offset:3px; }
+@media (min-width:761px) and (max-width:1024px) { .wh-collapse { display:none; } }
+
+.wh-section-icon { width:28px; height:28px; flex:0 0 28px; color:#b87b20; }
+.wh-accordion summary>span { flex:1; }
+.wh-accordion summary::after { content:''; width:8px; height:8px; border-right:2px solid currentColor; border-bottom:2px solid currentColor; transform:rotate(45deg); flex:0 0 8px; }
+.wh-accordion[open] summary::after { content:''; transform:rotate(225deg); }
+.wh-process { position:relative; }
+.wh-process::before { content:''; position:absolute; top:17px; left:12%; right:12%; height:2px; background:#eadbc7; }
+.wh-process li { position:relative; }
+@media(max-width:760px) { .wh-process::before { display:none; } }
+@media (min-width:761px) and (max-width:1024px) {
+    body.wedding-home-page .ps-sidebar .ps-nav-section { font-size:0; height:1px; padding:0; margin:18px 8px 10px; background:#c99d5c40; }
+    body.wedding-home-page .ps-sidebar .ps-nav-section::after,
+    body.wedding-home-page .ps-sidebar .ps-nav-link.active::after { display:none; }
+}

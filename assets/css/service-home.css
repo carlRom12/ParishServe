@@ -1,0 +1,48 @@
+﻿/* Shared compact service landing layout. */
+body.service-home-page .co-hero { aspect-ratio:auto; min-height:260px; border-radius:10px; background:#f6f0e6; color:#571125; }
+body.service-home-page .co-hero>img { object-fit:cover; object-position:right center; }
+body.service-home-page .co-hero::after { background:linear-gradient(90deg,#f8f3eaf2,#f8f3ea80 48%,transparent 72%); }
+body.service-home-page .co-hero-copy { padding:28px 34px; max-width:700px; }
+body.service-home-page .co-hero h1 { color:#571125; font-size:52px; }
+body.service-home-page .co-eyebrow { color:#907032; }
+body.service-home-page .co-hero-copy>p { color:#62595a; }
+body.service-home-page .co-hero blockquote { font-size:14px; margin-top:14px; }
+body.service-home-page .ps-main .mi-links { margin:14px 0; padding:0; gap:12px; background:transparent; }
+body.service-home-page .ps-main .mi-links>article { min-height:180px; }
+.sh-content { display:grid; grid-template-columns:minmax(0,2fr) minmax(260px,1fr); gap:16px; align-items:start; }
+/* Stacks multiple sidebar cards (Need Help, My Donation History, ...) in
+   the right column instead of just the one card the grid column expects. */
+.sh-side { display:grid; gap:16px; align-content:start; }
+.sh-accordions { display:grid; gap:10px; }
+.sh-accordion { border:1px solid #eee4dc; border-radius:8px; background:#fff; overflow:hidden; }
+.sh-accordion summary { display:flex; align-items:center; gap:16px; padding:16px 22px; cursor:pointer; list-style:none; }
+.sh-accordion summary::-webkit-details-marker { display:none; }
+.sh-accordion summary>svg { width:28px; height:28px; flex:0 0 28px; color:#b87b20; }
+.sh-accordion summary>span { flex:1; }
+.sh-accordion summary strong { display:block; font:600 19px/1.4 'Playfair Display',Georgia,serif; color:#760d2c; }
+.sh-accordion summary small { font-size:12px; color:#566074; }
+.sh-accordion summary::after { content:''; width:8px; height:8px; border-right:2px solid #760d2c; border-bottom:2px solid #760d2c; transform:rotate(45deg); flex:0 0 8px; }
+.sh-accordion[open] summary::after { transform:rotate(225deg); }
+.sh-accordion summary:focus-visible { outline:2px solid #a67521; outline-offset:-3px; }
+.sh-panel { padding:0 22px 20px; font-size:13px; line-height:1.7; }
+.sh-panel .mi-reflection { margin-top:12px; }
+.sh-help { padding:24px; background:#fbf6ee; }
+.sh-help h2 { margin-bottom:10px; }
+@media(max-width:1024px) { .sh-content { grid-template-columns:1fr; } }
+@media(max-width:760px) {
+ body.service-home-page .co-hero h1 { font-size:40px; }
+ body.service-home-page .co-hero-copy { padding:24px; }
+ body.service-home-page .co-hero::after { background:linear-gradient(90deg,#faf4eaf5,#faf4eac9); }
+ .sh-panel .mi-process { grid-template-columns:1fr; }
+}
+/* Hero primitives also support pages without the counseling stylesheet. */
+body.service-home-page .co-hero { position:relative; isolation:isolate; overflow:hidden; }
+body.service-home-page .co-hero>img { position:absolute; inset:0; width:100%; height:100%; z-index:-2; }
+body.service-home-page .co-hero::after { content:''; position:absolute; inset:0; z-index:-1; }
+body.service-home-page .co-hero h1 { line-height:1.15; margin:12px 0 8px; }
+body.service-home-page .co-eyebrow { display:inline-block; padding-bottom:8px; border-bottom:2px solid #dda03d; font-size:12px; font-weight:700; letter-spacing:2px; text-transform:uppercase; }
+body.service-home-page .co-hero-copy>p { font-size:21px; line-height:1.4; }
+body.service-home-page .co-hero cite { display:block; margin-top:4px; font-style:normal; }
+body.service-home-page .ps-main .conf-quicklinks { margin:14px 0; padding:0; background:transparent; }
+.sh-panel p+p,.sh-panel blockquote { margin-top:12px; }
+.sh-help .ps-btn { margin-top:18px; width:100%; }

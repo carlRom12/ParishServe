@@ -9,7 +9,7 @@ ps_handle_request_form('donation');
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Give Now | ParishServe</title>
 
-<link rel="stylesheet" href="assets/css/style.css?v=confirmation-2">
+<link rel="stylesheet" href="assets/css/style.css?v=confirmation-6">
 
 <link rel="stylesheet" href="assets/css/confirmation-layout.css?v=12">
 <link rel="stylesheet" href="assets/css/funeral-layout.css?v=1">
@@ -28,8 +28,10 @@ ps_handle_request_form('donation');
 <link rel="stylesheet" href="assets/css/service-back.css?v=2">
 <link rel="stylesheet" href="assets/css/upload-preview.css?v=1">
 <link rel="stylesheet" href="assets/css/sidebar-refined.css?v=2">
+<link rel="stylesheet" href="assets/css/sidebar-hover.css?v=3">
+<link rel="stylesheet" href="assets/css/donation-history.css?v=4">
 </head>
-<body class="funeral-page mass-intention-page donation-page donation-about-page donation-request-page">
+<body class="funeral-page mass-intention-page donation-page donation-about-page donation-request-page ps-hover-sidebar">
 <div class="ps-shell">
 <aside class="ps-sidebar">
 
@@ -89,22 +91,13 @@ ps_handle_request_form('donation');
                             </ul>
                                     <span class="ps-nav-section">Parish Services</span>
                         <ul class="ps-nav-list">
-                                    <li>
-                        <a class="ps-nav-link" href="counseling.html" aria-current="page">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="7" r="3"/><path d="M5 21v-2a7 7 0 0 1 14 0v2M4 5a3 3 0 0 0 0 6m16-6a3 3 0 0 1 0 6M2 19v-2a5 5 0 0 1 3-4m17 6v-2a5 5 0 0 0-3-4"/></svg>                            <span>Counseling</span>
-                        </a>
-                    </li>
+                                    
                                     <li>
                         <a class="ps-nav-link" href="mass-intention.html">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3h14v3a7 7 0 0 1-14 0V3Zm7 10v5m-5 3h10l-2-3H9l-2 3Z"/></svg>                            <span>Mass Intention</span>
                         </a>
                     </li>
-                                    <li>
-                        <a class="ps-nav-link"
-                           href="facility-reservation.html">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="8" width="7" height="13"/><rect x="13" y="3" width="7" height="18"/><path d="M6.5 11h2M6.5 14h2M6.5 17h2M15.5 6h2M15.5 9h2M15.5 12h2M15.5 15h2"/></svg>                            <span>Facility Reservation</span>
-                        </a>
-                    </li>
+                                    
                                     <li>
                         <a class="ps-nav-link active" aria-current="page" href="donations.html">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z"/></svg>                            <span>Donate</span>
@@ -259,6 +252,6 @@ ps_handle_request_form('donation');
                                                                     <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>After sending, please upload your proof of payment.</li>
                                                                     <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>Your donation will be verified by our parish staff.</li>
                                                             </ul>
-                        </div></section><section class="ps-card wr-section dn-help"><div><h3>Need Assistance?</h3><p>For questions or concerns, contact the parish office.</p></div><a class="ps-btn ps-btn-outline" href="dashboard.html#parish-contacts">Contact Parish Office</a></section></aside></div></form></main></div><script src="assets/js/frontend.js"></script><script src="assets/js/main.js"></script><script src="assets/js/session-user.js"></script>
+                        </div></section><section class="ps-card wr-section dn-help"><div><h3>Need Assistance?</h3><p>For questions or concerns, contact the parish office.</p></div><a class="ps-btn ps-btn-outline" href="dashboard.html#parish-contacts">Contact Parish Office</a></section><section class="ps-card wr-section dn-help"><div><h3>My Donation History</h3><p>View the donations you submitted and their parish review status.</p></div><a class="ps-btn ps-btn-outline" href="#donation-history">View History</a></section></aside></div></form><section class="ps-card dh-history" id="donation-history" data-donation-history aria-labelledby="donation-history-title"><h2 id="donation-history-title">My Donation History</h2><p>View the donations you submitted while signed in and their parish review status.</p><p role="status" aria-live="polite">Loading your donations...</p><div class="dh-list" data-history-list></div><button type="button" class="ps-btn ps-btn-outline" hidden>Load more donations</button><p>Older donations submitted without an account link may not appear here. Contact the parish office if you need help locating a previous donation.</p></section></main></div><script src="assets/js/frontend.js"></script><script src="assets/js/main.js"></script><script src="assets/js/session-user.js"></script>
 <script src="assets/js/responsive.js?v=1"></script><script src="assets/js/donation-checkout.js?v=1"></script><script src="assets/js/request-uploads.js"></script>
-<script src="assets/js/upload-preview.js?v=2"></script></body></html>
+<script src="assets/js/upload-preview.js?v=2"></script><script src="assets/js/donation-history.js?v=1"></script></body></html>

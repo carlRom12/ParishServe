@@ -1,0 +1,47 @@
+/* Stable icon positions: labels fade in without changing row or header heights. */
+body.ps-hover-sidebar .ps-sidebar .ps-nav { scrollbar-width:none; -ms-overflow-style:none; }
+body.ps-hover-sidebar .ps-sidebar .ps-nav::-webkit-scrollbar { display:none; }
+@media (min-width:761px) {
+    body.ps-hover-sidebar .ps-sidebar { position:fixed; top:0; left:0; width:76px; z-index:100; transition:width .2s ease, box-shadow .2s ease; }
+    body.ps-hover-sidebar .ps-main { margin-left:76px; width:calc(100% - 76px); }
+    body.ps-hover-sidebar .ps-sidebar .ps-logo { display:block; position:relative; width:216px; height:88px; flex:0 0 88px; text-align:left; padding:0; margin-bottom:12px; }
+    body.ps-hover-sidebar .ps-sidebar .ps-logo-crest { position:absolute; left:7px; top:4px; width:36px!important; height:44px!important; margin:0; }
+    body.ps-hover-sidebar .ps-sidebar .ps-logo-eyebrow { position:absolute; left:58px; top:0; font-size:9px; }
+    body.ps-hover-sidebar .ps-sidebar .ps-logo-name { position:absolute; left:58px; top:28px; font-size:22px!important; }
+    body.ps-hover-sidebar .ps-sidebar .ps-logo-sub { position:absolute; left:58px; top:59px; font-size:8px!important; white-space:nowrap; }
+    body.ps-hover-sidebar .ps-sidebar .ps-nav,
+    body.ps-hover-sidebar .ps-sidebar .ps-logout-wrap { width:216px; }
+    body.ps-hover-sidebar .ps-sidebar .ps-nav-section { display:flex; height:16px; font-size:10px; margin:14px 12px 7px; padding:0; background:transparent; }
+    body.ps-hover-sidebar .ps-sidebar .ps-nav-link,
+    body.ps-hover-sidebar .ps-sidebar .ps-logout-btn { width:52px; height:46px; min-height:46px; justify-content:flex-start; padding:10px 12px; gap:12px; transition:width .2s ease; }
+    body.ps-hover-sidebar .ps-sidebar .ps-nav-link>svg,
+    body.ps-hover-sidebar .ps-sidebar .ps-logout-btn>svg { width:26px; height:26px; flex:0 0 26px; }
+    body.ps-hover-sidebar .ps-sidebar .ps-nav-link::after { display:none; }
+    body.ps-hover-sidebar .ps-sidebar .ps-logo-eyebrow,
+    body.ps-hover-sidebar .ps-sidebar .ps-logo-name,
+    body.ps-hover-sidebar .ps-sidebar .ps-logo-sub,
+    body.ps-hover-sidebar .ps-sidebar .ps-nav-link>span,
+    body.ps-hover-sidebar .ps-sidebar .ps-logout-btn>span { display:block; white-space:nowrap; }
+    body.ps-hover-sidebar .ps-sidebar :is(.ps-logo-eyebrow,.ps-logo-name,.ps-logo-sub,.ps-nav-section,.ps-nav-link>span,.ps-logout-btn>span) { opacity:0; visibility:hidden; transition:opacity .15s ease, visibility .15s; }
+    body.ps-hover-sidebar .ps-sidebar:is(:hover,:focus-within) { width:240px; box-shadow:8px 0 24px #25091124; }
+    body.ps-hover-sidebar .ps-sidebar:is(:hover,:focus-within) :is(.ps-nav-link,.ps-logout-btn) { width:216px; }
+    body.ps-hover-sidebar .ps-sidebar:is(:hover,:focus-within) :is(.ps-logo-eyebrow,.ps-logo-name,.ps-logo-sub,.ps-nav-section,.ps-nav-link>span,.ps-logout-btn>span) { opacity:1; visibility:visible; }
+}
+@media (prefers-reduced-motion:reduce) { body.ps-hover-sidebar .ps-sidebar, body.ps-hover-sidebar .ps-sidebar * { transition:none!important; } }
+
+/* Constrain aspect-ratio heroes to the available content column. */
+body.ps-hover-sidebar .co-hero { width:100%; max-width:100%; min-width:0; }
+/* Keep the content beside the expanding desktop navigation. */
+@media (min-width:761px) {
+    body.ps-hover-sidebar .ps-main { transition:margin-left .2s ease, width .2s ease; }
+    body.ps-hover-sidebar:has(.ps-sidebar:is(:hover,:focus-within)) .ps-main { margin-left:240px; width:calc(100% - 240px); }
+}
+@media (prefers-reduced-motion:reduce) { body.ps-hover-sidebar .ps-main { transition:none; } }
+/* Subpage banners retain their height while the sidebar changes content width. */
+@media (min-width:761px) {
+    body.ps-hover-sidebar:not(.service-home-page):not(.wedding-home-page) .co-hero { aspect-ratio:auto; min-height:max(360px, calc((100vw - 124px) / 3)); }
+    body.ps-hover-sidebar:not(.service-home-page) .conf-hero { aspect-ratio:auto; min-height:max(360px, calc((100vw - 124px) / 2.7)); }
+}
+@media (min-width:761px) {
+    body.ps-hover-sidebar:not(.service-home-page):not(.wedding-home-page) .co-hero-copy { width:calc(100vw - 288px); }
+}

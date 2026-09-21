@@ -47,6 +47,51 @@
         next.disabled = step === 2 && !confirmToggle.checked;
     }
 
+
+    const subject = form.elements.namedItem('intentionSubject');
+    const occasion = form.elements.namedItem('occasion');
+    const soulInputs = ['soulName1', 'soulName2'].map(name => form.elements.namedItem(name));
+    const typeCopy = {
+        'Thanksgiving Mass': ['Blessing or occasion of thanksgiving', 'e.g., Passing the board examination, birthday, recovery', 'Person or family giving thanks (optional)', 'e.g., Maria Santos and family', 'Give thanks for a blessing received, such as passing an examination or an anniversary.'],
+        'Special Intention': ['Person, family, or intention', 'e.g., Santos family', 'Purpose (optional)', 'e.g., Family unity or guidance', 'Share a personal, family, or community intention.'],
+        'Petition Mass': ['Person or need to pray for', 'e.g., Juan Dela Cruz or upcoming examination', 'Grace or help requested (optional)', 'e.g., Healing, guidance, strength', 'A petition asks for help or a grace needed. Describe the need respectfully.'],
+        'All Souls': ['', '', '', '', 'A general intention for all the faithful departed. No individual names are needed. Offering: PHP 100.'],
+        'For the Souls of': ['', '', '', '', 'One soul: PHP 100. Two souls: PHP 200. Please enter names separately.'],
+    };
+    const selectedType = () => form.querySelector('[name="intentionType"]:checked')?.value || '';
+    const soulNames = () => soulInputs.map(input => input.value.trim()).filter(Boolean);
+    const offering = () => selectedType() === 'For the Souls of' ? Math.max(1, soulNames().length) * 100 : 100;
+    const money = amount => new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' }).format(amount);
+    const intentionSubject = () => selectedType() === 'For the Souls of' ? soulNames().join('; ') : selectedType() === 'All Souls' ? 'All the faithful departed' : subject.value.trim();
+    function syncIntention() {
+        const type = selectedType();
+        const souls = type === 'For the Souls of';
+        const general = type === 'All Souls';
+        document.getElementById('mrSubjectFields').hidden = souls || general;
+        document.getElementById('mrSoulFields').hidden = !souls;
+        subject.disabled = occasion.disabled = step !== 0 || souls || general;
+        subject.required = !souls && !general;
+        soulInputs.forEach((input, index) => {
+            input.disabled = step !== 0 || !souls;
+            input.required = souls && index === 0;
+            const name = input.value.trim();
+            input.setCustomValidity(souls && name && !/^[\p{L}\p{M}][\p{L}\p{M} .'\u2019-]*$/u.test(name) ? 'Enter one name using letters, spaces, apostrophes, periods, or hyphens.' : '');
+        });
+        if (souls && soulInputs[1].value.trim() && soulInputs[0].value.trim().toLocaleLowerCase() === soulInputs[1].value.trim().toLocaleLowerCase()) soulInputs[1].setCustomValidity('Please enter a different person, or leave the second name blank.');
+        const copy = typeCopy[type] || typeCopy['Special Intention'];
+        if (!souls && !general) {
+            form.querySelector('label[for="intentionSubject"]').textContent = copy[0] + ' *';
+            subject.placeholder = copy[1];
+            form.querySelector('label[for="occasion"]').textContent = copy[2];
+            occasion.placeholder = copy[3];
+        }
+        document.getElementById('mrTypeHint').textContent = copy[4];
+        form.querySelector('[data-offering-total]').textContent = money(offering());
+        form.querySelector('[data-review-subject-label]').textContent = souls ? 'Names of the deceased' : general ? 'Offered for' : copy[0];
+    }
+    form.addEventListener('change', event => { if (event.target.name === 'intentionType') syncIntention(); });
+    soulInputs.forEach(input => input.addEventListener('input', syncIntention));
+
     function populateReview() {
         const value = name => (form.elements.namedItem(name)?.value || '').trim();
         const radioLabel = name => {
@@ -60,8 +105,9 @@
         };
         const data = {
             intentionType: radioLabel('intentionType'),
-            intentionSubject: value('intentionSubject'),
-            occasion: value('occasion'),
+            intentionSubject: intentionSubject(),
+            offeringTotal: money(offering()),
+            occasion: ['All Souls', 'For the Souls of'].includes(selectedType()) ? '' : value('occasion'),
             intentionDetails: value('intentionDetails'),
             requesterName: value('requesterName'),
             mobileNumber: value('mobileNumber'),
@@ -95,6 +141,7 @@
         next.innerHTML = step === 2 ? SUBMIT_HTML : NEXT_HTML;
         stepHeading.textContent = STEP_COPY[step][0];
         stepSub.textContent = STEP_COPY[step][1];
+        syncIntention();
         if (step === 2) populateReview();
         updateSubmitState();
     }

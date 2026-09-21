@@ -11,7 +11,6 @@
 .baptism-about-page .ps-main>form .ps-select>svg {display:none;}
 .baptism-about-page .ps-main>form .ps-select select {appearance:auto;}
 .baptism-about-page .ps-main>form .ps-datepicker-field {display:block;padding:0;border:0;background:none;}
-.baptism-about-page .ps-main>form .ps-datepicker-field:has(input[type=date]) .ps-datepicker-toggle {display:none;}
 .baptism-about-page .ps-main>form .ps-field :is(input,select,textarea):focus-visible {outline:2px solid #8a2642;outline-offset:2px;}
 .baptism-about-page .ps-main>form .wr-section .ps-form-row-4+.wr-section-heading {border-top:1px solid #eee8e4;padding-top:22px;margin-top:6px;}
 .baptism-about-page .ps-main>form .wr-actions {margin-top:20px;padding-top:20px;gap:16px;}

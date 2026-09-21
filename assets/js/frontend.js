@@ -61,33 +61,29 @@
         tomorrow.setDate(tomorrow.getDate() + 1);
         input.min = isoDate(tomorrow);
     });
+    // The server's rule for these is "at least N months out" (includes/request-forms.php,
+    // field's min_months_ahead -- e.g. weddingDate needs 3 months' notice).
+    document.querySelectorAll('input[type="date"][data-min-months-ahead]').forEach(input => {
+        const min = new Date();
+        min.setMonth(min.getMonth() + parseInt(input.dataset.minMonthsAhead, 10));
+        input.min = isoDate(min);
+    });
 
-    document.querySelectorAll('[data-datepicker]').forEach(picker => {
-        const input = picker.querySelector('input');
-        input.type = 'date';
-        input.removeAttribute('pattern');
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        const tomorrow = new Date(today);
-        tomorrow.setDate(tomorrow.getDate() + 1);
-        input.min = isoDate(tomorrow);
-        const validate = () => {
-            input.setCustomValidity('');
-            if (!input.value) return;
-            const date = new Date(input.value + 'T00:00:00');
-            const regular = document.querySelector('[name="baptismType"]:checked')?.value === 'regular';
-            if (date <= today) input.setCustomValidity('Please choose a future date.');
-            else if (regular && date.getDay() !== 6) input.setCustomValidity('Regular Baptism is only available on Saturdays.');
-        };
-        input.addEventListener('change', validate);
-        document.querySelectorAll('[name="baptismType"]').forEach(radio => radio.addEventListener('change', validate));
-        picker.querySelector('[data-datepicker-toggle]').addEventListener('click', () => {
+    // .ps-input-icon's trailing calendar glyph: the browser's own picker
+    // indicator is hidden (style.css) because its real hit-region doesn't
+    // reliably line up with the glyph's drawn position, so open the picker
+    // explicitly instead of relying on the click landing on it by luck.
+    document.querySelectorAll('.ps-input-icon svg').forEach(icon => {
+        const input = icon.closest('.ps-input-icon').querySelector('input[type="date"]');
+        if (!input) return;
+        icon.addEventListener('click', () => {
             if (input.showPicker) input.showPicker();
             else input.focus();
         });
-        validate();
-        // What's already booked that day: booking-hint.js (data-booking-type).
     });
+
+    // [data-datepicker] fields (weddingDate, baptismDate, etc.) get a bigger
+    // custom calendar with greyed-out unavailable days: booking-calendar.js.
 
     // Review steps: [data-review="field [field ...]"] shows those draft values
     // joined with spaces (data-review-format="date" formats a date).

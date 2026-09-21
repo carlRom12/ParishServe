@@ -17,7 +17,7 @@ $contact = $receipt && $receipt['contact'] !== '' ? $receipt['contact'] : '';
 $navGroups = [
     ['label' => null, 'items' => [['Dashboard', 'home', 'dashboard.html'], ['Announcements', 'megaphone', 'announcements.html'], ['Parish Calendar', 'calendar', 'calendar.html']]],
     ['label' => 'Sacraments', 'items' => [['Wedding', 'ring', 'wedding.html'], ['Baptism', 'droplet', 'baptism.html'], ['Confirmation', 'flame', 'confirmation.html'], ['Burial / Funeral', 'cross', 'funeral.html']]],
-    ['label' => 'Parish Services', 'items' => [['Counseling', 'people', 'counseling.html'], ['Mass Intention', 'chalice', 'mass-intention.html'], ['Facility Reservation', 'building', 'facility-reservation.html'], ['Donate', 'heart', 'donations.html']]],
+    ['label' => 'Parish Services', 'items' => [['Mass Intention', 'chalice', 'mass-intention.html'], ['Donate', 'heart', 'donations.html']]],
     ['label' => 'Other', 'items' => [['My Profile', 'user', 'profile.html'], ['Settings', 'gear', 'settings.html']]],
 ];
 $activeHref = $form['nav'] ?? '';
@@ -33,8 +33,9 @@ $userRole = $_SESSION['user_role'] ?? 'Visitor';
 <link rel="stylesheet" href="assets/css/style.css">
 <link rel="stylesheet" href="assets/css/request-confirmation.css">
 <link rel="stylesheet" href="assets/css/responsive.css?v=3">
+<link rel="stylesheet" href="assets/css/sidebar-hover.css?v=3">
 </head>
-<body>
+<body class="ps-hover-sidebar">
 <div class="ps-shell">
 <aside class="ps-sidebar">
 

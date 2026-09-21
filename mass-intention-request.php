@@ -9,7 +9,7 @@ ps_handle_request_form('massintention');
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Request a Mass Intention | ParishServe</title>
 
-<link rel="stylesheet" href="assets/css/style.css?v=confirmation-2">
+<link rel="stylesheet" href="assets/css/style.css?v=confirmation-6">
 
 <link rel="stylesheet" href="assets/css/wedding-request.css">
 <link rel="stylesheet" href="assets/css/wedding-request-step3.css">
@@ -21,12 +21,13 @@ ps_handle_request_form('massintention');
 <link rel="stylesheet" href="assets/css/mass-intention.css?v=1">
 <link rel="stylesheet" href="assets/css/mass-about.css?v=1">
 <link rel="stylesheet" href="assets/css/service-tabs.css?v=1">
-<link rel="stylesheet" href="assets/css/mass-intention-request.css?v=5">
+<link rel="stylesheet" href="assets/css/mass-intention-request.css?v=6">
 <link rel="stylesheet" href="assets/css/service-back.css?v=2">
 <link rel="stylesheet" href="assets/css/service-review.css?v=2">
 <link rel="stylesheet" href="assets/css/sidebar-refined.css?v=2">
+<link rel="stylesheet" href="assets/css/sidebar-hover.css?v=3">
 </head>
-<body class="funeral-page mass-intention-page mass-intention-request-page">
+<body class="funeral-page mass-intention-page mass-intention-request-page ps-hover-sidebar">
 <div class="ps-shell">
 <aside class="ps-sidebar">
 
@@ -86,24 +87,14 @@ ps_handle_request_form('massintention');
                             </ul>
                                     <span class="ps-nav-section">Parish Services</span>
                         <ul class="ps-nav-list">
-                                    <li>
-                        <a class="ps-nav-link"
-                           href="counseling.html">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="7" r="3"/><path d="M5 21v-2a7 7 0 0 1 14 0v2M4 5a3 3 0 0 0 0 6m16-6a3 3 0 0 1 0 6M2 19v-2a5 5 0 0 1 3-4m17 6v-2a5 5 0 0 0-3-4"/></svg>                            <span>Counseling</span>
-                        </a>
-                    </li>
+                                    
                                     <li>
                         <a class="ps-nav-link active"
                            href="mass-intention.html">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 3h14v3a7 7 0 0 1-14 0V3Zm7 10v5m-5 3h10l-2-3H9l-2 3Z"/></svg>                            <span>Mass Intention</span>
                         </a>
                     </li>
-                                    <li>
-                        <a class="ps-nav-link"
-                           href="facility-reservation.html">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="8" width="7" height="13"/><rect x="13" y="3" width="7" height="18"/><path d="M6.5 11h2M6.5 14h2M6.5 17h2M15.5 6h2M15.5 9h2M15.5 12h2M15.5 15h2"/></svg>                            <span>Facility Reservation</span>
-                        </a>
-                    </li>
+                                    
                                     <li>
                         <a class="ps-nav-link"
                            href="donations.html">
@@ -196,7 +187,7 @@ ps_handle_request_form('massintention');
                 <h2 id="mrStepHeading" tabindex="-1">Step 1 of 3: Intent Details</h2>
                 <p class="wr-form-sub" id="mrStepSub">Please provide the details of the Mass Intention you would like to request.</p>
             </div>
-            <span class="wr-offering-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4h10"/><path d="M7 4c0 4.5 2 7 5 7s5-2.5 5-7"/><path d="M12 11v6"/><path d="M8 20h8"/><path d="M9.5 17h5l-.5 3h-4z"/></svg> Mass Intention offering: <strong>&#8369;100.00</strong></span>
+            <span class="wr-offering-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4h10"/><path d="M7 4c0 4.5 2 7 5 7s5-2.5 5-7"/><path d="M12 11v6"/><path d="M8 20h8"/><path d="M9.5 17h5l-.5 3h-4z"/></svg> Mass Intention offering: <strong data-offering-total aria-live="polite">&#8369;100.00</strong></span>
         </div>
 
         <section data-step="0">
@@ -204,45 +195,44 @@ ps_handle_request_form('massintention');
             <span class="ps-field-label">Intention Type</span>
             <div class="wr-intent-options" data-radio-cards>
                                     <label class="wr-intent-card" data-radio-card>
-                        <input type="radio" name="intentionType" value="For the Deceased" required>
-                        <span class="wr-intent-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v18"/><path d="M7 8h10"/></svg></span>
-                        <strong>For the Deceased</strong>
-                    </label>
-                                    <label class="wr-intent-card" data-radio-card>
-                        <input type="radio" name="intentionType" value="For the Living" required>
-                        <span class="wr-intent-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8.5" cy="9" r="3"/><circle cx="16" cy="10" r="2.5"/><path d="M3 20c0-3.3 2.5-6 5.5-6s5.5 2.7 5.5 6"/><path d="M14 15.2c2.4.3 4 2.3 4 4.8"/></svg></span>
-                        <strong>For the Living</strong>
-                    </label>
-                                    <label class="wr-intent-card" data-radio-card>
-                        <input type="radio" name="intentionType" value="Thanksgiving" required>
+                        <input type="radio" name="intentionType" value="Thanksgiving Mass" required>
                         <span class="wr-intent-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7-4.4-9.5-9C1 8 2.5 4.5 6 4.5c2 0 3.5 1.2 4 2.5.5-1.3 2-2.5 4-2.5 3.5 0 5 3.5 3.5 6.5C19 15.6 12 20 12 20z"/></svg></span>
-                        <strong>Thanksgiving</strong>
-                    </label>
-                                    <label class="wr-intent-card" data-radio-card>
-                        <input type="radio" name="intentionType" value="Milestones &amp; Celebrations" required>
-                        <span class="wr-intent-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="9" width="16" height="11" rx="1.5"/><path d="M4 9h16M12 9v11"/><path d="M12 9c-1-3.2-3.2-5-5-4s-1 4 2 4zM12 9c1-3.2 3.2-5 5-4s1 4-2 4z"/></svg></span>
-                        <strong>Milestones &amp; Celebrations</strong>
+                        <strong>Thanksgiving Mass</strong>
                     </label>
                                     <label class="wr-intent-card" data-radio-card>
                         <input type="radio" name="intentionType" value="Special Intention" required>
                         <span class="wr-intent-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l2.6 5.6 6.1.7-4.5 4.2 1.2 6-5.4-3-5.4 3 1.2-6-4.5-4.2 6.1-.7z"/></svg></span>
                         <strong>Special Intention</strong>
                     </label>
+                                    <label class="wr-intent-card" data-radio-card>
+                        <input type="radio" name="intentionType" value="Petition Mass" required>
+                        <span class="wr-intent-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8.5" cy="9" r="3"/><circle cx="16" cy="10" r="2.5"/><path d="M3 20c0-3.3 2.5-6 5.5-6s5.5 2.7 5.5 6"/><path d="M14 15.2c2.4.3 4 2.3 4 4.8"/></svg></span>
+                        <strong>Petition Mass</strong>
+                    </label>
+                                    <label class="wr-intent-card" data-radio-card>
+                        <input type="radio" name="intentionType" value="All Souls" required>
+                        <span class="wr-intent-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v18"/><path d="M7 8h10"/></svg></span>
+                        <strong>All Souls</strong>
+                    </label>
+                                    <label class="wr-intent-card" data-radio-card>
+                        <input type="radio" name="intentionType" value="For the Souls of" required>
+                        <span class="wr-intent-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v18"/><path d="M7 8h10"/></svg></span>
+                        <strong>For the Souls of</strong>
+                    </label>
                             </div>
         </div>
 
-        <div class="ps-form-row-2">
-            <div class="ps-field">
-                <label for="intentionSubject">Name of person / family / intention subject <span class="wr-required">*</span></label>
-                <input type="text" id="intentionSubject" name="intentionSubject" placeholder="Enter name or intention subject" required>
+        <div class="ps-form-row-2" id="mrSubjectFields"><div class="ps-field"><label for="intentionSubject">Name of person / family / intention subject <span class="wr-required">*</span></label>
+                <input maxlength="150" type="text" id="intentionSubject" name="intentionSubject" placeholder="Enter name or intention subject" required>
             </div>
             <div class="ps-field">
                 <label for="occasion">Occasion or purpose <span class="wr-optional">(optional)</span></label>
-                <input type="text" id="occasion" name="occasion" placeholder="e.g., Birthday, Anniversary, Get well soon">
+                <input maxlength="150" type="text" id="occasion" name="occasion" placeholder="e.g., Birthday, Anniversary, Get well soon">
             </div>
         </div>
 
-        <div class="ps-field wr-notes-field">
+        <fieldset id="mrSoulFields" hidden class="mr-soul-fields"><legend>For the souls of</legend><p>Enter one deceased person's name per field. Maximum: 2 souls per request. Offering: &#8369;100 per soul.</p><div class="ps-form-row-2"><div class="ps-field"><label for="soulName1">First deceased person's full name <span class="wr-required">*</span></label><input type="text" id="soulName1" name="soulName1" maxlength="70" placeholder="e.g., Juan Dela Cruz" disabled></div><div class="ps-field"><label for="soulName2">Second deceased person's full name (optional)</label><input type="text" id="soulName2" name="soulName2" maxlength="70" placeholder="Leave blank for one soul" disabled></div></div></fieldset><p id="mrTypeHint" class="ps-form-hint" aria-live="polite"></p>
+<div class="ps-field wr-notes-field">
             <label for="intentionDetails">Intention details / prayer request <span class="wr-required">*</span></label>
             <textarea id="intentionDetails" name="intentionDetails" rows="3" maxlength="500" placeholder="Please share the intention or prayer request you would like our parish to pray for." required></textarea>
             <small class="ps-form-hint" id="intentionDetailsCount">0 / 500</small>
@@ -276,7 +266,15 @@ ps_handle_request_form('massintention');
         <div class="ps-form-row-2 mr-schedule-fields">
             <div class="ps-field">
                 <label for="preferredDate">Preferred Mass Date <span class="wr-required">*</span></label>
-                <input type="date" id="preferredDate" name="preferredDate" required>
+                <div class="ps-datepicker" data-datepicker>
+                    <span class="ps-datepicker-field">
+                        <input type="date" id="preferredDate" name="preferredDate" required>
+                        <button type="button" class="ps-datepicker-toggle" data-datepicker-toggle aria-label="Open calendar">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18"/><path d="M8 3v4"/><path d="M16 3v4"/></svg>
+                        </button>
+                    </span>
+                    <div class="ps-datepicker-panel" data-datepicker-panel hidden></div>
+                </div>
             </div>
             <div class="ps-field">
                 <label for="preferredTime">Preferred Mass Time <span class="wr-required">*</span></label>
@@ -317,8 +315,8 @@ ps_handle_request_form('massintention');
                 </div>
                 <div class="wr3-review-rows">
                     <div class="wr3-review-row"><span>Intention Type</span><strong data-review="intentionType">Not provided</strong></div>
-                    <div class="wr3-review-row"><span>Name of person / family / intention subject</span><strong data-review="intentionSubject">Not provided</strong></div>
-                    <div class="wr3-review-row"><span>Occasion or purpose</span><strong data-review="occasion">Not provided</strong></div>
+                    <div class="wr3-review-row"><span data-review-subject-label>Intention subject</span><strong data-review="intentionSubject">Not provided</strong></div>
+                    <div class="wr3-review-row"><span>Offering</span><strong data-review="offeringTotal"></strong></div><div class="wr3-review-row"><span>Occasion or purpose</span><strong data-review="occasion">Not provided</strong></div>
                     <div class="wr3-review-row wr3-review-row-wrap"><span>Intention details / prayer request</span><strong data-review="intentionDetails">Not provided</strong></div>
                 </div>
             </div>
@@ -409,7 +407,8 @@ ps_handle_request_form('massintention');
 </main>
 </div>
 <script src="assets/js/frontend.js"></script>
-<script src="assets/js/mass-intention-request.js?v=2"></script>
+<script src="assets/js/booking-calendar.js?v=7"></script>
+<script src="assets/js/mass-intention-request.js?v=3"></script>
 <script src="assets/js/session-user.js"></script>
 <script src="assets/js/responsive.js?v=1"></script>
 </body>

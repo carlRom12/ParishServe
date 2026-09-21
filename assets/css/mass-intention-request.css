@@ -62,3 +62,8 @@
 .mass-intention-request-page [data-step="2"] .ps-toggle { flex-shrink:0; }
 @media(max-width:1100px){.mass-intention-request-page [data-step="2"] .wr3-review-grid{grid-template-columns:1fr;}}
 @media(max-width:640px){.mass-intention-request-page [data-step="2"] .wr3-review-card{padding:16px;}.mass-intention-request-page [data-step="2"] .wr3-review-row{grid-template-columns:1fr;gap:4px;}.mass-intention-request-page [data-step="2"] .wr3-review-row strong{text-align:left;}.mass-intention-request-page [data-step="2"] .wr3-confirm-bar{flex-direction:column;align-items:flex-start;padding:16px;}}
+.mr-soul-fields { border:1px solid #e8dbca; border-radius:8px; padding:20px; margin:20px 0; }
+.mr-soul-fields legend { color:#571125; font-weight:600; padding:0 6px; }
+.mr-soul-fields>p { margin:0 0 16px; line-height:1.6; }
+#mrSoulFields[hidden],#mrSubjectFields[hidden] { display:none; }
+#mrTypeHint { margin:12px 0 20px; font-size:14px; line-height:1.6; }

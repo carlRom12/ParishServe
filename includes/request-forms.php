@@ -72,7 +72,7 @@ const PS_REQUEST_FORMS = [
             'brideMiddleName' => ['label' => "Bride's middle name", 'max' => 80],
             'brideLastName'   => ['label' => "Bride's last name", 'required' => true, 'max' => 80],
             'brideSuffix'     => ['label' => "Bride's suffix", 'options' => PS_NAME_SUFFIXES],
-            'weddingDate'     => ['label' => 'Preferred wedding date', 'type' => 'date', 'when' => 'future', 'required' => true],
+            'weddingDate'     => ['label' => 'Preferred wedding date', 'type' => 'date', 'when' => 'future', 'min_months_ahead' => 3, 'required' => true],
             'mobileNumber'    => ['label' => 'Mobile number', 'type' => 'mobile', 'required' => true],
             'emailAddress'    => ['label' => 'Email address', 'type' => 'email', 'required' => true],
             'seminarDate'     => ['label' => 'Preferred seminar date', 'type' => 'date', 'when' => 'future', 'required' => true],
@@ -99,7 +99,7 @@ const PS_REQUEST_FORMS = [
             'requestorName'     => ['label' => "Requestor's full name", 'required' => true, 'max' => 150],
             'requestorContact'  => ['label' => 'Contact number', 'type' => 'mobile', 'required' => true],
             'requestorEmail'    => ['label' => 'Email', 'type' => 'email'],
-            'baptismDate'       => ['label' => 'Preferred baptism date', 'type' => 'date', 'when' => 'future', 'required' => true],
+            'baptismDate'       => ['label' => 'Preferred baptism date', 'type' => 'date', 'when' => 'future', 'min_months_ahead' => 1, 'required' => true],
             'officeNotes'       => ['label' => 'Additional note', 'step' => 1, 'max' => 500],
         ],
     ],
@@ -162,8 +162,10 @@ const PS_REQUEST_FORMS = [
         // One page: its three steps are panels of the same form (mass-intention-request.js).
         'steps' => ['mass-intention-request.php'],
         'fields' => [
-            'intentionType'     => ['label' => 'Intention type', 'required' => true, 'options' => ['For the Deceased', 'For the Living', 'Thanksgiving', 'Milestones & Celebrations', 'Special Intention']],
-            'intentionSubject'  => ['label' => 'Name of person / family / intention subject', 'required' => true, 'max' => 150],
+            'intentionType'     => ['label' => 'Intention type', 'required' => true, 'options' => ['Thanksgiving Mass', 'Special Intention', 'Petition Mass', 'All Souls', 'For the Souls of']],
+            'intentionSubject'  => ['label' => 'Intention subject', 'max' => 150],
+            'soulName1' => ['label' => 'First deceased person', 'max' => 70],
+            'soulName2' => ['label' => 'Second deceased person', 'max' => 70],
             'occasion'          => ['label' => 'Occasion or purpose', 'max' => 150],
             'intentionDetails'  => ['label' => 'Intention details', 'required' => true, 'max' => 500],
             'requesterName'     => ['label' => "Requester's full name", 'required' => true, 'max' => 150],
@@ -279,6 +281,9 @@ function ps_validate_request_fields($flow, array $draft, array $post) {
                 $problem = "{$field['label']} can't be in the future.";
             } elseif (($field['when'] ?? '') === 'future' && $date <= $today) {
                 $problem = "{$field['label']} must be a future date.";
+            } elseif (isset($field['min_months_ahead']) && $date < $today->modify("+{$field['min_months_ahead']} months")) {
+                $months = $field['min_months_ahead'];
+                $problem = "{$field['label']} must be booked at least {$months} month" . ($months > 1 ? 's' : '') . ' in advance.';
             }
         }
 
@@ -286,6 +291,13 @@ function ps_validate_request_fields($flow, array $draft, array $post) {
             $errors[] = ps_form_error($step, $problem);
         } else {
             $values[$name] = $value;
+        }
+    }
+    if ($flow === 'massintention') {
+        foreach ($post as $key => $raw) {
+            if (strpos((string) $key, 'soulName') === 0 && (!in_array($key, ['soulName1', 'soulName2'], true) || !is_string($raw))) {
+                $errors[] = ps_form_error(0, 'Enter at most two souls, one name per field.');
+            }
         }
     }
     return [$values, $errors];
@@ -409,25 +421,50 @@ function ps_build_funeral(array $v) {
 }
 
 function ps_build_massintention(array $v) {
+    $errors = [];
+    $souls = [];
+    $subject = $v['intentionSubject'];
+    $amount = 100;
+    if ($v['intentionType'] === 'For the Souls of') {
+        foreach (['soulName1', 'soulName2'] as $key) {
+            $name = trim($v[$key] ?? '');
+            if ($name !== '') {
+                if (!preg_match("/^[\p{L}\p{M}][\p{L}\p{M} .'\x{2019}-]*$/u", $name)) {
+                    $errors[] = ps_form_error(0, 'Enter one name per field using letters, spaces, apostrophes, periods, or hyphens.');
+                }
+                $souls[] = $name;
+            }
+        }
+        if (trim($v['soulName1'] ?? '') === '') $errors[] = ps_form_error(0, "Enter the first deceased person's full name.");
+        if (count($souls) === 2 && strcasecmp($souls[0], $souls[1]) === 0) $errors[] = ps_form_error(0, 'The two names must be different.');
+        $subject = implode('; ', $souls);
+        $amount = count($souls) * 100;
+    } elseif ($v['intentionType'] === 'All Souls') {
+        $subject = 'All the faithful departed';
+    } elseif ($subject === '') {
+        $errors[] = ps_form_error(0, $v['intentionType'] === 'Thanksgiving Mass' ? 'Enter the blessing or occasion of thanksgiving.' : 'Enter the person or intention to pray for.');
+    }
     return [
         'columns' => [
             'contact_number' => $v['mobileNumber'],
             'contact_email'  => $v['emailAddress'],
             'requester_name' => $v['requesterName'],
             'intention_type' => $v['intentionType'],
-            'intention_for'  => $v['intentionSubject'],
+            'intention_for'  => $subject,
             'mass_date'      => $v['preferredDate'],
             'mass_time'      => ps_sql_time($v['preferredTime']),
         ],
         'details' => [
-            'Occasion or purpose' => $v['occasion'],
+            'Occasion or purpose' => in_array($v['intentionType'], ['All Souls', 'For the Souls of'], true) ? '' : $v['occasion'],
+            'Number of named souls' => (string) count($souls),
+            'Offering amount (PHP)' => number_format($amount, 2, '.', ''),
             'Intention details'   => $v['intentionDetails'],
             'Preferred Mass time' => $v['preferredTime'],
             'Mobile number'       => $v['mobileNumber'],
             'Email address'       => $v['emailAddress'],
             'Scheduling notes'    => $v['schedulingNotes'],
         ],
-        'errors' => [],
+        'errors' => $errors,
     ];
 }
 
@@ -584,6 +621,10 @@ function ps_submit_request_form($flow) {
     $table = $flow === 'donation' ? PS_DONATION_TABLE : PS_REQUEST_TYPES[$flow]['table'];
     $details = array_filter($built['details'], fn($value) => $value !== '');
     $columns = $built['columns'] + ['details' => json_encode($details, JSON_UNESCAPED_UNICODE)];
+    if ($flow === 'donation') {
+        require_once __DIR__ . '/donation-history.php';
+        $columns['user_id'] = ps_donation_account_id($conn);
+    }
     $moved = [];
 
     mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);

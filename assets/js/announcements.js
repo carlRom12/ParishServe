@@ -50,7 +50,17 @@
         const track = document.querySelector('[data-announcements-slides]');
         const dots = document.querySelector('[data-carousel-dots]');
         if (!card || !track) return;
-        card.hidden = featured.length === 0;
+        card.hidden = false;
+        if (!featured.length) {
+            const slide = el('div', 'ann-slide is-active');
+            const media = el('div', 'ann-slide-image'); media.append(image(FALLBACK_IMAGE));
+            const body = el('div', 'ann-slide-body');
+            body.append(el('span', 'ann-featured-badge', 'PARISH COMMUNITY'), el('h3', '', 'Stay connected with your parish'), el('p', '', 'Published parish news, reminders, and activities will appear here. Check back for the latest updates.'));
+            slide.append(media, body); track.replaceChildren(slide);
+            dots?.replaceChildren();
+            const nav = document.querySelector('.ann-carousel-nav'); if (nav) nav.hidden = true;
+            return;
+        }
         track.replaceChildren(...featured.map((item, index) => {
             const slide = el('div', 'ann-slide' + (index === 0 ? ' is-active' : ''));
             slide.dataset.slide = '';
@@ -62,7 +72,7 @@
             const read = el('a', 'ps-btn ps-btn-primary', 'Read full announcement');
             read.href = '#announcement-' + item.id;
             actions.append(read, el('span', 'ann-slide-date', item.dateLabel));
-            body.append(el('span', 'ann-featured-badge', 'FEATURED'), el('h3', '', item.title), el('p', '', excerpt(item.body, 220)), actions);
+            body.append(el('span', 'ann-featured-badge', item.featured ? 'FEATURED' : 'LATEST NEWS'), el('h3', '', item.title), el('p', '', excerpt(item.body, 220)), actions);
             slide.append(media, body);
             return slide;
         }));
@@ -88,7 +98,7 @@
             row.dataset.announcementRow = '';
             row.dataset.category = item.category;
             const main = el('div', 'ann-row-main');
-            if (item.imageUrl) main.append(image(item.imageUrl));
+            main.append(image(item.imageUrl || FALLBACK_IMAGE));
             const text = el('div', 'ann-row-text');
             text.append(el('strong', '', item.title), el('small', '', item.body));
             main.append(text);
@@ -146,7 +156,8 @@
 
     getJson('announcements-data.php').then((data) => {
         const announcements = data.announcements || [];
-        renderFeatured(announcements.filter((item) => item.featured));
+        const featured = announcements.filter((item) => item.featured);
+        renderFeatured(featured.length ? featured : announcements.slice(0, 3));
         renderRows(announcements);
         renderNotices(announcements.filter((item) => item.category === 'Notices'));
         document.dispatchEvent(new CustomEvent('ps:announcements-rendered'));

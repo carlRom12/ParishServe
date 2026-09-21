@@ -753,7 +753,7 @@ input[type="radio"], input[type="checkbox"] { accent-color: var(--maroon-700); }
    wraps it so the icon can sit inside the right edge */
 .ps-input-icon { position: relative; }
 .ps-input-icon input { padding-right: 40px; }
-.ps-input-icon svg { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; stroke: var(--text-body); pointer-events: none; }
+.ps-input-icon svg { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; stroke: var(--text-body); cursor: pointer; }
 
 /* =====================================================================
    Intro banner (art + heading + paragraph, optional button)
@@ -1158,7 +1158,11 @@ input[type="radio"], input[type="checkbox"] { accent-color: var(--maroon-700); }
 .ps-select.is-block { display: block; width: 100%; }
 .ps-input-icon { position: relative; }
 .ps-field .ps-input-icon input[type] { padding-right: 40px; }
-.ps-input-icon svg { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; stroke: var(--text-body); pointer-events: none; }
+/* clickable (not pointer-events:none) so frontend.js can open the native
+   picker on click -- the browser's own indicator is hidden below because
+   its real hit-region doesn't reliably line up with this icon's position,
+   which made clicking it feel like it did nothing. */
+.ps-input-icon svg { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; stroke: var(--text-body); cursor: pointer; }
 .ps-input-icon input[type="date"]::-webkit-calendar-picker-indicator {
     opacity: 0;
     cursor: pointer;
@@ -1226,49 +1230,82 @@ input[type="radio"], input[type="checkbox"] { accent-color: var(--maroon-700); }
 }
 .ps-datepicker-toggle:hover { background: var(--cream-deep); color: var(--maroon-700); }
 .ps-datepicker-toggle svg { width: 16px; height: 16px; }
+/* A small popup anchored near the field, not a full-screen modal.
+   position:fixed (viewport coordinates) rather than absolute (relative
+   to the field's own position in the page) so booking-calendar.js can
+   clamp it to stay fully on-screen and always paint above the rest of
+   the page, even when the field sits near the bottom of a long form --
+   top/left are set inline by JS once the panel's real size is known. */
 .ps-datepicker-panel {
-    position: absolute;
-    top: calc(100% + 8px);
-    left: 0;
-    z-index: 40;
-    width: 300px;
+    position: fixed;
+    z-index: 1000;
+    width: 340px;
+    max-width: calc(100vw - 24px);
+    max-height: calc(100vh - 24px);
+    overflow-y: auto;
     background: var(--card-bg);
     border: 1px solid var(--card-border);
     border-radius: var(--radius-md);
     box-shadow: var(--shadow-card-hover);
-    padding: 14px;
+    padding: 18px;
 }
 .ps-datepicker-panel[hidden] { display: none; }
-.ps-datepicker-panel.is-flipped { top: auto; bottom: calc(100% + 8px); }
-.ps-datepicker-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
-.ps-datepicker-head strong { font-size: 13.5px; color: var(--text-dark); font-family: 'Playfair Display', serif; }
+.ps-datepicker-panel-card { display: contents; }
+.ps-datepicker-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.ps-datepicker-head strong { font-size: 16px; color: var(--text-dark); font-family: 'Playfair Display', serif; }
 .ps-datepicker-nav {
-    width: 26px; height: 26px; border-radius: 7px;
+    width: 34px; height: 34px; border-radius: 9px;
     display: flex; align-items: center; justify-content: center;
     color: var(--text-body);
 }
-.ps-datepicker-nav svg { width: 14px; height: 14px; }
+.ps-datepicker-nav svg { width: 17px; height: 17px; }
 .ps-datepicker-nav:hover:not(:disabled) { background: var(--cream-deep); color: var(--maroon-700); }
 .ps-datepicker-nav:disabled { opacity: 0.3; cursor: not-allowed; }
-.ps-datepicker-weekdays, .ps-datepicker-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; text-align: center; }
-.ps-datepicker-weekdays span { font-size: 10.5px; font-weight: 600; color: var(--text-body); padding: 4px 0; }
+.ps-datepicker-weekdays, .ps-datepicker-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; }
+.ps-datepicker-weekdays span { font-size: 11.5px; font-weight: 700; color: var(--text-body); padding: 6px 0; }
 .ps-datepicker-day {
     width: 100%;
     aspect-ratio: 1;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 12.5px;
-    border-radius: 8px;
+    font-size: 15px;
+    border-radius: 9px;
     color: var(--text-dark);
     font: inherit;
+    transition: background 0.15s ease, color 0.15s ease;
 }
 .ps-datepicker-day.is-muted { visibility: hidden; }
-.ps-datepicker-day.is-disabled { color: #d8cdc4; cursor: not-allowed; }
-.ps-datepicker-day.is-selectable { cursor: pointer; font-weight: 600; }
-.ps-datepicker-day.is-selectable:hover { background: var(--cream-deep); }
-.ps-datepicker-day.is-selected { background: var(--maroon-700); color: #fff; }
+/* "greyed out" unavailable state -- covers past/out-of-range dates, dates
+   the calendar feed shows as already booked (calendar-events.php), and
+   (baptism) weekdays that don't fit the selected type. Each disabled cell
+   also carries a title= explaining which of those it is, on hover. */
+.ps-datepicker-day.is-disabled { background: #e4e0da; color: #9c9188; cursor: not-allowed; }
+.ps-datepicker-day.is-selectable { cursor: pointer; font-weight: 600; background: #fff; border: 1px solid var(--card-border); }
+.ps-datepicker-day.is-selectable:hover { background: var(--cream-deep); border-color: var(--gold); }
+.ps-datepicker-day.is-selected { background: var(--maroon-700); color: #fff; border-color: var(--maroon-700); }
 .ps-datepicker-day.is-today:not(.is-selected) { box-shadow: inset 0 0 0 1.5px var(--gold); }
+
+.ps-datepicker-legend {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid var(--card-border);
+    font-size: 12px;
+    color: var(--text-body);
+}
+.ps-datepicker-legend-item { display: flex; align-items: center; gap: 7px; }
+.ps-datepicker-swatch { width: 14px; height: 14px; border-radius: 5px; background: #fff; border: 1px solid var(--card-border); flex-shrink: 0; }
+.ps-datepicker-swatch.is-disabled { background: #e4e0da; border-color: #cfc7bd; }
+
+.ps-datepicker-loading { text-align: center; font-size: 12.5px; color: var(--text-body); padding: 30px 0; }
+
+@media (max-width: 480px) {
+    .ps-datepicker-panel { width: 300px; padding: 14px; }
+    .ps-datepicker-day { font-size: 13px; }
+}
 .wed-quicklinks {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
