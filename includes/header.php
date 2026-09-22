@@ -32,6 +32,9 @@ $pageCssFiles = isset($pageCss) ? (array) $pageCss : [];
 <link rel="stylesheet" href="assets/css/<?php echo htmlspecialchars($cssFile); ?>">
 <?php endforeach; ?>
 <link rel="stylesheet" href="assets/css/responsive.css?v=3">
+<link rel="stylesheet" href="assets/css/sidebar-refined.css?v=1">
+<link rel="stylesheet" href="assets/css/sidebar-hover.css?v=3">
+<link rel="stylesheet" href="assets/css/admin-sidebar.css?v=1">
 </head>
-<body>
+<body class="ps-hover-sidebar admin-portal">
 <div class="ps-shell">

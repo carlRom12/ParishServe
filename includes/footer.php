@@ -10,6 +10,6 @@
 </div>
 <script src="assets/js/frontend.js"></script>
 <script src="assets/js/main.js?v=3"></script>
-<script src="assets/js/responsive.js?v=1"></script>
+<script src="assets/js/responsive.js?v=2"></script>
 </body>
 </html>

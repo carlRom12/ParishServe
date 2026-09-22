@@ -1,0 +1,21 @@
+/* Admin routes use the shared parish rail, with room for longer staff labels. */
+body.admin-portal .ps-sidebar {
+    background: radial-gradient(ellipse at 0% 0%, #a54b3940, transparent 48%),
+        radial-gradient(ellipse at 100% 65%, #81283b33, transparent 55%),
+        linear-gradient(160deg, #601d2d, #421320 42%, #290c16);
+    animation: none;
+}
+body.admin-portal .ps-sidebar .ps-logo-crest { animation: none; display: block; }
+body.admin-portal .ps-sidebar .ps-nav-link.active {
+    background: linear-gradient(110deg, #ffd766, #e6ab40);
+    border-color: #ffe398;
+}
+body.admin-portal .ps-sidebar .ps-nav-section { color: #e9c575; letter-spacing: 1.3px; }
+body.admin-portal .ps-sidebar .ps-nav-link > span { white-space: normal; }
+body.admin-portal .ps-sidebar .ps-logout-btn:hover { transform: none; }
+body.admin-portal .ps-sidebar .ps-nav-link > svg { stroke-width: 1.7; }
+body.admin-portal .stat-card, body.admin-portal .stat-body { min-width: 0; }
+body.admin-portal .stat-label, body.admin-portal .stat-sub { overflow-wrap: anywhere; }
+@media (min-width: 761px) and (max-width: 1200px) {
+    body.admin-portal .db-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
