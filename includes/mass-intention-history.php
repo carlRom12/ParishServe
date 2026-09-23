@@ -18,12 +18,22 @@ function ps_mass_intention_account_contact(mysqli $conn): ?string {
     return $user && $user['mobile_number'] !== '' ? (string) $user['mobile_number'] : null;
 }
 
-function ps_mass_intention_history(mysqli $conn, string $contact, int $before = 0): array {
+/**
+ * The account's Mass Intentions, newest first, 20 per page ($before = the
+ * previous page's nextCursor). $status (a PS_STATUS_OPTIONS value, or ''
+ * for all) and $search (reference number, intention type or who it is
+ * offered for) narrow the list, as on mass-intention-request.php.
+ */
+function ps_mass_intention_history(mysqli $conn, string $contact, int $before = 0, string $status = '', string $search = ''): array {
+    $like = '%' . addcslashes($search, '%_\\') . '%';
     $stmt = $conn->prepare(
-        'SELECT id, reference_no, intention_type, intention_for, mass_date, mass_time, status, created_at
-         FROM mass_intentions WHERE contact_number = ? AND (? = 0 OR id < ?) ORDER BY id DESC LIMIT 21'
+        "SELECT id, reference_no, intention_type, intention_for, mass_date, mass_time, status, created_at
+           FROM mass_intentions
+          WHERE contact_number = ? AND (? = 0 OR id < ?) AND (? = '' OR status = ?)
+            AND (? = '' OR reference_no LIKE ? OR intention_type LIKE ? OR intention_for LIKE ?)
+          ORDER BY id DESC LIMIT 21"
     );
-    $stmt->bind_param('sii', $contact, $before, $before);
+    $stmt->bind_param('siissssss', $contact, $before, $before, $status, $status, $search, $like, $like, $like);
     $stmt->execute();
     $rows = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     $stmt->close();

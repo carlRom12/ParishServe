@@ -51,7 +51,7 @@ foreach (ps_fetch_requests($conn, ['contact' => $user['mobile_number'], 'limit' 
             . ($r['event_time'] ? ' · ' . date('g:i A', strtotime($r['event_time'])) : '');
     }
     $requests[] = [
-        'title'       => in_array($r['type'], ['massintention', 'facility'], true) ? $type['label'] : $type['label'] . ' Request',
+        'title'       => $r['type'] === 'massintention' ? $type['label'] : $type['label'] . ' Request',
         'iconSvg'     => $icon, // server-side constant markup from includes/icons.php
         'status'      => $r['status'],
         'statusLabel' => ps_status_label($r['status']),

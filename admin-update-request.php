@@ -9,13 +9,14 @@
  * Takes:  type        a PS_REQUEST_TYPES key, or 'donation'
  *         id          row id in that table
  *         status      new status -- must be the current one, the next step
- *                     of the pipeline, or 'rejected' (includes/request-types.php)
+ *                     of the pipeline, or 'rejected' (includes/request-types.php);
+ *                     a donation may be set to any of its three statuses
  *         remarks     optional internal note
  *         docs        sacrament types only: JSON list of booleans in
  *                     PS_DOCUMENT_CHECKLISTS order (what's been received)
  *         event_date, event_time, event_end
  *                     requests only, optional: the schedule (Y-m-d, HH:MM;
- *                     event_end only for facility reservations). Approved
+ *                     event_end only for types with an end time). Approved
  *                     and Scheduled need a date and time and may not
  *                     overlap another booking (ps_schedule_conflicts()), a
  *                     changed date can't be in the past, and a final
@@ -38,8 +39,13 @@ $type = (string) ($_POST['type'] ?? '');
 $typeInfo = PS_REQUEST_TYPES[$type] ?? null;
 if ($type === 'donation') {
     $table = PS_DONATION_TABLE;
+    // Donations are not a pipeline: any of the three statuses may be set at any time.
+    $statusOptions = PS_DONATION_STATUS_OPTIONS;
+    $nextStatuses = 'ps_donation_next_statuses';
 } elseif ($typeInfo) {
     $table = $typeInfo['table'];
+    $statusOptions = PS_STATUS_OPTIONS;
+    $nextStatuses = 'ps_next_statuses';
 } else {
     ps_json(422, ['ok' => false, 'error' => 'Unknown request type.']);
 }
@@ -50,7 +56,7 @@ if ($id === false) {
 }
 
 $status = (string) ($_POST['status'] ?? '');
-if (!in_array($status, PS_STATUS_OPTIONS, true)) {
+if (!in_array($status, $statusOptions, true)) {
     ps_json(422, ['ok' => false, 'error' => 'Please choose a valid status.']);
 }
 
@@ -105,7 +111,7 @@ try {
     $columns = $typeInfo
         ? "reference_no, status, contact_email, {$typeInfo['name']} AS name, " . ($typeInfo['subtype'] ?? 'NULL') . ' AS subtype,'
             . " {$typeInfo['date']} AS event_date, {$typeInfo['time']} AS event_time, " . ($typeInfo['end'] ?? 'NULL') . ' AS event_end'
-        : 'reference_no, status, contact_email, donor_name AS name';
+        : 'donation_no AS reference_no, status, contact_email, donor_name AS name';
     $stmt = $conn->prepare("SELECT {$columns} FROM {$table} WHERE id = ? FOR UPDATE");
     $stmt->bind_param('i', $id);
     $stmt->execute();
@@ -115,7 +121,7 @@ try {
     if (!$current) {
         $fail(404, ['error' => 'That record no longer exists. Please reload the page.']);
     }
-    if ($status !== $current['status'] && !in_array($status, ps_next_statuses($current['status']), true)) {
+    if ($status !== $current['status'] && !in_array($status, $nextStatuses($current['status']), true)) {
         $fail(409, ['error' => ps_transition_error($current['status']), 'currentStatus' => $current['status']]);
     }
 
@@ -141,7 +147,7 @@ try {
             $fail(422, ['error' => 'Set the date and time before saving this request as "' . ps_status_label($status) . '".']);
         }
         $conflicts = array_map('ps_booking_summary', ps_schedule_conflicts(
-            $conn, $type, $saved['date'], ps_booking_window($type, $saved['time'], $saved['end']), $current['subtype'], [$type, $id]
+            $conn, $type, $saved['date'], ps_booking_window($type, $saved['time'], $saved['end']), [$type, $id]
         ));
         if ($conflicts) {
             $list = implode('; ', array_map(fn($booking) => "{$booking['reference']} ({$booking['type']}, {$booking['time']})", $conflicts));
@@ -218,7 +224,7 @@ $row = [
     'data'        => [
         'status'          => $status,
         'remarks'         => $remarks,
-        'allowedStatuses' => implode(',', ps_next_statuses($status)),
+        'allowedStatuses' => implode(',', $nextStatuses($status)),
     ],
 ];
 if ($typeInfo) {
@@ -240,6 +246,6 @@ if (isset(PS_DOCUMENT_CHECKLISTS[$type])) {
 
 ps_json(200, [
     'ok'      => true,
-    'message' => $current['reference_no'] . ' saved as ' . ps_status_label($status) . '.' . $notice,
+    'message' => ($type === 'donation' ? 'Donation No. ' : '') . $current['reference_no'] . ' saved as ' . ps_status_label($status) . '.' . $notice,
     'row'     => $row,
 ]);

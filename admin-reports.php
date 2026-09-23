@@ -188,7 +188,7 @@ require __DIR__ . '/includes/admin-sidebar.php';
                 <tbody>
                     <?php foreach ($report['donations'] as $donation): ?>
                         <tr>
-                            <td><?php echo htmlspecialchars($donation['reference_no']); ?></td>
+                            <td><?php echo htmlspecialchars($donation['donation_no']); ?></td>
                             <td><?php echo htmlspecialchars($donation['donor_name']); ?></td>
                             <td><?php echo htmlspecialchars((string) $donation['purpose']); ?></td>
                             <td class="is-num"><?php echo htmlspecialchars(ps_peso($donation['amount'])); ?></td>

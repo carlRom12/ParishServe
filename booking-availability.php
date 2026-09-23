@@ -31,8 +31,7 @@ if (!isset(PS_REQUEST_TYPES[$type]) || !PS_REQUEST_TYPES[$type]['public'] || !$p
 }
 
 $blocks = [];
-$facility = isset($_GET['facility']) ? (string) $_GET['facility'] : null;
-foreach (ps_bookings_on($conn, $type, $date, $facility) as $booking) {
+foreach (ps_bookings_on($conn, $type, $date) as $booking) {
     $blocks[] = [
         'type'   => $booking['type'],
         'label'  => PS_REQUEST_TYPES[$booking['type']]['label'],

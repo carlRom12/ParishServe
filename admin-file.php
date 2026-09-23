@@ -19,7 +19,7 @@ if ($docId) {
     $stmt = $conn->prepare('SELECT file_path, original_name FROM request_documents WHERE id = ?');
     $stmt->bind_param('i', $docId);
 } elseif ($donationId) {
-    $stmt = $conn->prepare('SELECT proof_of_payment AS file_path, reference_no AS original_name FROM donations WHERE id = ?');
+    $stmt = $conn->prepare('SELECT proof_of_payment AS file_path, donation_no AS original_name FROM donations WHERE id = ?');
     $stmt->bind_param('i', $donationId);
 }
 if (isset($stmt)) {

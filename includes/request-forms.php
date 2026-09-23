@@ -19,7 +19,7 @@
  *   3. refuses a requested time that overlaps a booked request
  *      (ps_request_schedule_errors(); conflict rules in request-types.php)
  *   4. inserts one row with a server-generated <PREFIX>-<YEAR>-<NNNN>
- *      reference number and moves the staged documents
+ *      reference number (donations: DON-<NNNN>) and moves the staged documents
  *      (includes/uploads.php) into uploads/<type>/<reference>/, recording
  *      them in request_documents (or donations.proof_of_payment)
  *   5. redirects (303) to request-confirmation.php?ref=..., or back to the
@@ -56,6 +56,7 @@ const PS_DONATION_FUNDS = [
  *   fields       input name => rule. 'step' (default 0) indexes 'steps'.
  *                type: text (default) | email | mobile | date | time |
  *                checkbox | amount; dates can be 'when' => past|future.
+ *                'pattern' (+ 'pattern_hint') is a regex the value must match.
  * Keep these in sync with the pages' own attributes and scripts.
  */
 const PS_REQUEST_FORMS = [
@@ -184,6 +185,7 @@ const PS_REQUEST_FORMS = [
         'fields' => [
             'donationPurpose' => ['label' => 'Donation purpose', 'options' => ['general', 'building', 'outreach', 'sacraments']],
             'donationAmount'  => ['label' => 'Donation amount', 'type' => 'amount', 'required' => true],
+            'gcashReference'  => ['label' => 'GCash reference number', 'required' => true, 'pattern' => '/^\d{6,20}$/', 'pattern_hint' => 'enter numbers only (6 to 20 digits), as shown on your GCash receipt'],
             'donorName'       => ['label' => 'Full name', 'max' => 150],
             'donorEmail'      => ['label' => 'Email', 'type' => 'email'],
             'donorContact'    => ['label' => 'Contact number', 'type' => 'mobile'],
@@ -263,6 +265,8 @@ function ps_validate_request_fields($flow, array $draft, array $post) {
             }
         } elseif (isset($field['max']) && ps_text_length($value) > $field['max']) {
             $problem = "{$field['label']} must be {$field['max']} characters or fewer.";
+        } elseif (isset($field['pattern']) && !preg_match($field['pattern'], $value)) {
+            $problem = "{$field['label']}: {$field['pattern_hint']}.";
         } elseif (isset($field['options']) && !in_array($value, $field['options'], true)) {
             $problem = "Please choose one of the listed options for {$field['label']}.";
         } elseif ($type === 'email' && (strlen($value) > 150 || !filter_var($value, FILTER_VALIDATE_EMAIL))) {
@@ -470,6 +474,10 @@ function ps_build_massintention(array $v) {
 
 function ps_build_donation(array $v) {
     $errors = [];
+    // Anonymous donors give no name (main.js clears and locks it too).
+    if ($v['isAnonymous'] !== '') {
+        $v['donorName'] = '';
+    }
     if ($v['donorName'] === '' && $v['isAnonymous'] === '') {
         $errors[] = ps_form_error(0, 'Full name is required unless you choose to remain anonymous.');
     }
@@ -479,6 +487,7 @@ function ps_build_donation(array $v) {
             'contact_email'  => $v['donorEmail'] === '' ? null : $v['donorEmail'],
             'donor_name'     => $v['donorName'] === '' ? 'Anonymous' : $v['donorName'],
             'amount'         => $v['donationAmount'],
+            'gcash_reference' => $v['gcashReference'],
             'purpose'        => PS_DONATION_FUNDS[$v['donationPurpose'] === '' ? 'general' : $v['donationPurpose']],
         ],
         'details' => [
@@ -516,7 +525,7 @@ function ps_request_schedule_errors($flow, array $columns) {
     if (!$window) {
         return [];
     }
-    $conflicts = ps_schedule_conflicts($conn, $flow, $date, $window, $type['subtype'] ? ($columns[$type['subtype']] ?? null) : null);
+    $conflicts = ps_schedule_conflicts($conn, $flow, $date, $window);
     if (!$conflicts) {
         return [];
     }
@@ -527,34 +536,39 @@ function ps_request_schedule_errors($flow, array $columns) {
     )];
 }
 
-function ps_form_back($flow, array $errors) {
+/** $editId: the donation being edited, so donation-request.php reopens that Edit window. */
+function ps_form_back($flow, array $errors, $editId = null) {
     $form = PS_REQUEST_FORMS[$flow];
     $_SESSION['ps_form_errors'][$flow] = $errors;
+    $_SESSION['ps_form_edit'][$flow] = $editId;
     ps_redirect($form['steps'][count($form['steps']) - 1]);
 }
 
 /**
  * Inserts $columns into $table with the next <PREFIX>-<YEAR>-<NNNN>
- * reference number. Call inside a transaction: the SELECT ... FOR UPDATE
+ * reference number, or <PREFIX>-<NNNN> (one running sequence) when
+ * $withYear is false. Call inside a transaction: the SELECT ... FOR UPDATE
  * holds other submissions of the same type back, and a duplicate key
- * (should one slip through) is retried. Returns [reference, row id].
+ * (should one slip through) is retried. $referenceColumn names the
+ * number's column (donations use donation_no). Returns [reference, row id].
  */
-function ps_insert_with_reference(mysqli $conn, $table, $prefix, array $columns) {
-    $year = date('Y');
-    $pattern = "{$prefix}-{$year}-%";
-    $names = array_merge(['reference_no'], array_keys($columns));
+function ps_insert_with_reference(mysqli $conn, $table, $prefix, array $columns, $referenceColumn = 'reference_no', $withYear = true) {
+    $stem = $withYear ? $prefix . '-' . date('Y') : $prefix;
+    $pattern = "{$stem}-%";
+    $exact = '^' . $stem . '-[0-9]+$'; // skips older DON-<YEAR>-<NNNN> numbers when counting DON-<NNNN>
+    $names = array_merge([$referenceColumn], array_keys($columns));
     $insert = "INSERT INTO {$table} (" . implode(', ', $names) . ') VALUES (' . implode(', ', array_fill(0, count($names), '?')) . ')';
 
     for ($attempt = 1; ; $attempt++) {
-        $stmt = $conn->prepare("SELECT reference_no FROM {$table} WHERE reference_no LIKE ?
-                                 ORDER BY CAST(SUBSTRING_INDEX(reference_no, '-', -1) AS UNSIGNED) DESC LIMIT 1 FOR UPDATE");
-        $stmt->bind_param('s', $pattern);
+        $stmt = $conn->prepare("SELECT {$referenceColumn} FROM {$table} WHERE {$referenceColumn} LIKE ? AND {$referenceColumn} REGEXP ?
+                                 ORDER BY CAST(SUBSTRING_INDEX({$referenceColumn}, '-', -1) AS UNSIGNED) DESC LIMIT 1 FOR UPDATE");
+        $stmt->bind_param('ss', $pattern, $exact);
         $stmt->execute();
         $last = $stmt->get_result()->fetch_row()[0] ?? null;
         $stmt->close();
 
         $sequence = $last === null ? 1 : (int) substr($last, strrpos($last, '-') + 1) + 1;
-        $reference = sprintf('%s-%s-%04d', $prefix, $year, $sequence);
+        $reference = sprintf('%s-%04d', $stem, $sequence);
         $params = array_merge([$reference], array_values($columns));
         try {
             $stmt = $conn->prepare($insert);
@@ -578,45 +592,19 @@ function ps_submit_request_form($flow) {
     $token = is_string($_POST['ps_token'] ?? null) ? $_POST['ps_token'] : '';
     if ($token !== '' && isset($_SESSION['ps_form_done'][$token])) {
         // Already submitted (double-click, refresh, Back + submit): show that request.
-        ps_redirect('request-confirmation.php?ref=' . rawurlencode($_SESSION['ps_form_done'][$token]));
+        $done = $_SESSION['ps_form_done'][$token];
+        ps_redirect(strpos($done, 'edit:') === 0 ? 'donation-request.php' : 'request-confirmation.php?ref=' . rawurlencode($done));
     }
+    $editId = $flow === 'donation' ? (int) ($_POST['edit_id'] ?? 0) : 0;
     $tokenIndex = $token === '' ? false : array_search($token, $_SESSION['ps_form_tokens'][$flow] ?? [], true);
     if ($tokenIndex === false) {
-        ps_form_back($flow, [ps_form_error(null, 'This page was open too long, so nothing was submitted. Please check your details and submit again.')]);
+        ps_form_back($flow, [ps_form_error(null, 'This page was open too long, so nothing was submitted. Please check your details and submit again.')], $editId ?: null);
+    }
+    if ($editId > 0) {
+        ps_submit_donation_edit($editId, $token, $tokenIndex);
     }
 
-    $draft = json_decode(is_string($_POST['ps_draft'] ?? null) ? $_POST['ps_draft'] : '', true);
-    [$values, $errors] = ps_validate_request_fields($flow, is_array($draft) ? $draft : [], $_POST);
-
-    // A file posted with the form itself (the upload script didn't run) is staged like any other.
-    $failedUploads = [];
-    foreach (ps_upload_rules($flow) as $rule) {
-        $file = $_FILES[$rule['field']] ?? null;
-        if (is_array($file) && ($file['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_NO_FILE) {
-            $result = ps_stage_upload($flow, $rule['field'], $file);
-            if (!$result['ok']) {
-                $failedUploads[$rule['field']] = true;
-                $errors[] = ps_form_error($form['upload_step'], $result['error']);
-            }
-        }
-    }
-    $staged = ps_staged_uploads($flow);
-    foreach (ps_upload_rules($flow) as $rule) {
-        if ($rule['required'] && !isset($staged[$rule['field']]) && !isset($failedUploads[$rule['field']])) {
-            $errors[] = ps_form_error($form['upload_step'], "Please upload the {$rule['label']}.");
-        }
-    }
-
-    $built = $errors ? null : call_user_func('ps_build_' . $flow, $values);
-    if ($built && $built['errors']) {
-        $errors = $built['errors'];
-    }
-    if ($built && !$errors) {
-        $errors = ps_request_schedule_errors($flow, $built['columns']);
-    }
-    if ($errors) {
-        ps_form_back($flow, $errors);
-    }
+    [$built, $staged] = ps_check_request_submission($flow);
 
     $table = $flow === 'donation' ? PS_DONATION_TABLE : PS_REQUEST_TYPES[$flow]['table'];
     $details = array_filter($built['details'], fn($value) => $value !== '');
@@ -630,7 +618,9 @@ function ps_submit_request_form($flow) {
     mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
     try {
         $conn->begin_transaction();
-        [$reference, $id] = ps_insert_with_reference($conn, $table, $form['prefix'], $columns);
+        [$reference, $id] = $flow === 'donation'
+            ? ps_insert_with_reference($conn, $table, $form['prefix'], $columns, 'donation_no', false)
+            : ps_insert_with_reference($conn, $table, $form['prefix'], $columns);
 
         foreach (ps_upload_rules($flow) as $rule) {
             $entry = $staged[$rule['field']] ?? null;
@@ -661,12 +651,7 @@ function ps_submit_request_form($flow) {
             $conn->rollback();
         } catch (Throwable $ignored) {
         }
-        foreach ($moved as [$path, $stagedPath]) {
-            $absolute = ps_upload_abs($path);
-            if ($absolute) {
-                rename($absolute, __DIR__ . '/../' . $stagedPath); // keep the file for the retry
-            }
-        }
+        ps_unpromote_uploads($moved);
         error_log("ps_submit_request_form({$flow}) failed: " . $e->getMessage());
         ps_form_back($flow, [ps_form_error(null, 'Something went wrong while saving your request, so nothing was submitted. Please try again.')]);
     }
@@ -680,6 +665,126 @@ function ps_submit_request_form($flow) {
         'documents'    => count($moved),
     ]], -10, null, true);
     ps_redirect('request-confirmation.php?ref=' . rawurlencode($reference));
+}
+
+/** Moves promoted files back to staging after a failed save, so the retry still has them. */
+function ps_unpromote_uploads(array $moved) {
+    foreach ($moved as [$path, $stagedPath]) {
+        $absolute = ps_upload_abs($path);
+        if ($absolute) {
+            rename($absolute, __DIR__ . '/../' . $stagedPath);
+        }
+    }
+}
+
+/**
+ * Validates a submission (fields, staged documents, row rules, schedule)
+ * and returns [built row, staged uploads] -- or goes back to the form
+ * with the problems. $editId (a donation being edited) keeps its current
+ * proof of payment, so a new upload is optional.
+ */
+function ps_check_request_submission($flow, $editId = null) {
+    $form = PS_REQUEST_FORMS[$flow];
+    $draft = json_decode(is_string($_POST['ps_draft'] ?? null) ? $_POST['ps_draft'] : '', true);
+    [$values, $errors] = ps_validate_request_fields($flow, is_array($draft) ? $draft : [], $_POST);
+
+    // A file posted with the form itself (the upload script didn't run) is staged like any other.
+    $failedUploads = [];
+    foreach (ps_upload_rules($flow) as $rule) {
+        $file = $_FILES[$rule['field']] ?? null;
+        if (is_array($file) && ($file['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_NO_FILE) {
+            $result = ps_stage_upload($flow, $rule['field'], $file);
+            if (!$result['ok']) {
+                $failedUploads[$rule['field']] = true;
+                $errors[] = ps_form_error($form['upload_step'], $result['error']);
+            }
+        }
+    }
+    $staged = ps_staged_uploads($flow);
+    foreach (ps_upload_rules($flow) as $rule) {
+        if ($rule['required'] && !$editId && !isset($staged[$rule['field']]) && !isset($failedUploads[$rule['field']])) {
+            $errors[] = ps_form_error($form['upload_step'], "Please upload the {$rule['label']}.");
+        }
+    }
+
+    $built = $errors ? null : call_user_func('ps_build_' . $flow, $values);
+    if ($built && $built['errors']) {
+        $errors = $built['errors'];
+    }
+    if ($built && !$errors) {
+        $errors = ps_request_schedule_errors($flow, $built['columns']);
+    }
+    if ($errors) {
+        ps_form_back($flow, $errors, $editId);
+    }
+    return [$built, $staged];
+}
+
+/**
+ * Saves the edit of a donation from donation-request.php's Edit window
+ * (POST edit_id): only the signed-in donor's own donation, and only while
+ * staff haven't verified it (PS_DONATION_EDITABLE_STATUSES) -- checked
+ * again under a row lock, so a status change by staff wins. The reference
+ * number and account link never change; a newly uploaded proof of
+ * payment becomes the row's proof; the old file stays in the request's
+ * uploads folder, so staff can still compare it.
+ */
+function ps_submit_donation_edit($editId, $token, $tokenIndex) {
+    global $conn;
+    require_once __DIR__ . '/donation-history.php';
+    $locked = 'This donation can no longer be edited: only your own donations that are still awaiting verification can be changed.';
+
+    $userId = ps_donation_account_id($conn);
+    if (!$userId) {
+        ps_form_back('donation', [ps_form_error(null, 'Please sign in again to edit your donation.')]);
+    }
+    $row = ps_own_donation($conn, $userId, $editId);
+    if (!$row || !ps_donation_editable($row['status'])) {
+        ps_form_back('donation', [ps_form_error(null, $locked)]);
+    }
+
+    [$built, $staged] = ps_check_request_submission('donation', $editId);
+    $c = $built['columns'];
+    $details = json_encode(array_filter($built['details'], fn($value) => $value !== ''), JSON_UNESCAPED_UNICODE);
+    $entry = $staged[PS_DONATION_PROOF['field']] ?? null;
+    $moved = [];
+
+    mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+    try {
+        $conn->begin_transaction();
+        $row = ps_own_donation($conn, $userId, $editId, true);
+        if (!$row || !ps_donation_editable($row['status'])) {
+            $conn->rollback();
+            ps_form_back('donation', [ps_form_error(null, $locked)]);
+        }
+        $proof = null;
+        if ($entry) {
+            $proof = ps_promote_upload($entry, 'donation', $row['donation_no'], PS_DONATION_PROOF['field']);
+            if ($proof === null) {
+                throw new RuntimeException('Could not move the staged proofOfPayment file.');
+            }
+            $moved[] = [$proof, $entry['path']];
+        }
+        $stmt = $conn->prepare('UPDATE donations SET contact_number = ?, contact_email = ?, donor_name = ?, amount = ?, gcash_reference = ?, purpose = ?, details = ?,
+                                       proof_of_payment = COALESCE(?, proof_of_payment) WHERE id = ? AND user_id = ?');
+        $stmt->bind_param('ssssssssii', $c['contact_number'], $c['contact_email'], $c['donor_name'], $c['amount'], $c['gcash_reference'], $c['purpose'], $details, $proof, $editId, $userId);
+        $stmt->execute();
+        $stmt->close();
+        $conn->commit();
+    } catch (Throwable $e) {
+        try {
+            $conn->rollback();
+        } catch (Throwable $ignored) {
+        }
+        ps_unpromote_uploads($moved);
+        error_log('ps_submit_donation_edit failed: ' . $e->getMessage());
+        ps_form_back('donation', [ps_form_error(null, 'Something went wrong while saving your changes, so nothing was changed. Please try again.')], $editId);
+    }
+
+    unset($_SESSION['ps_form_tokens']['donation'][$tokenIndex], $_SESSION['ps_staged']['donation']);
+    $_SESSION['ps_form_done'] = array_slice(($_SESSION['ps_form_done'] ?? []) + [$token => 'edit:' . $row['donation_no']], -20, null, true);
+    $_SESSION['ps_donation_updated'] = $row['donation_no'];
+    ps_redirect('donation-request.php');
 }
 
 /**
@@ -702,10 +807,26 @@ function ps_handle_request_form($flow) {
     }
 
     $errors = $_SESSION['ps_form_errors'][$flow] ?? [];
-    unset($_SESSION['ps_form_errors'][$flow]);
+    $editId = $errors ? ($_SESSION['ps_form_edit'][$flow] ?? null) : null;
+    unset($_SESSION['ps_form_errors'][$flow], $_SESSION['ps_form_edit'][$flow]);
     $token = bin2hex(random_bytes(16));
     $_SESSION['ps_form_tokens'][$flow] = array_slice(array_merge($_SESSION['ps_form_tokens'][$flow] ?? [], [$token]), -5);
-    $psRequestForm = ['flow' => $flow, 'token' => $token, 'errors' => $errors];
+    $psRequestForm = ['flow' => $flow, 'token' => $token, 'errors' => $errors, 'edit' => $editId];
+}
+
+/**
+ * The signed-in parishioner's full name (active, verified accounts only),
+ * or '' for visitors -- the default for a form's own-name field, which
+ * stays editable. Printed as an HTML attribute value, already escaped.
+ */
+function ps_account_full_name_attr() {
+    global $conn;
+    $id = (int) ($_SESSION['user_id'] ?? 0);
+    if ($id < 1) {
+        return '';
+    }
+    $rows = ps_query_all($conn, "SELECT TRIM(CONCAT(firstname, ' ', lastname)) AS name FROM users WHERE id = ? AND status = 'Active' AND email_verified = 1", [(string) $id]);
+    return htmlspecialchars($rows[0]['name'] ?? '', ENT_QUOTES);
 }
 
 /** Prints the submit token and, after a failed attempt, the list of problems. Call right inside the <form>. */
@@ -715,6 +836,10 @@ function ps_request_form_fields() {
     $pageStep = count($form['steps']) - 1;
 
     echo '<input type="hidden" name="ps_token" value="' . htmlspecialchars($psRequestForm['token']) . '">';
+    if ($psRequestForm['flow'] === 'donation') {
+        // The donation being edited (donation-request.php's Edit window); empty for a new one.
+        echo '<input type="hidden" name="edit_id" value="' . ($psRequestForm['edit'] ? (int) $psRequestForm['edit'] : '') . '" data-edit-id>';
+    }
     if (!$psRequestForm['errors']) {
         return;
     }

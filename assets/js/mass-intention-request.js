@@ -164,6 +164,9 @@
         HTMLFormElement.prototype.submit.call(form);
     });
 
+    // Closed and reopened (mass-intention-modal.js resets the form): start again at step 1.
+    form.addEventListener("reset", () => { step = 0; setTimeout(render); });
+
     // Back from the confirmation page (bfcache): the form is usable again.
     window.addEventListener('pageshow', event => {
         if (!event.persisted) return;

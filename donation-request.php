@@ -1,6 +1,50 @@
 <?php
 require_once __DIR__ . '/includes/request-forms.php';
+require_once __DIR__ . '/includes/donation-history.php';
 ps_handle_request_form('donation');
+
+// The page shows the signed-in account's own donations; "Give Now" and
+// each still-editable row's "Edit" open the form in #donationModal
+// (donation-modal.js). Guests can still give, but have no history.
+$historyUserId = ps_donation_account_id($conn);
+$historyBefore = filter_input(INPUT_GET, 'before', FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]) ?: 0;
+// The search bar and status filter: Under Review until another status (or "all") is chosen.
+$historyStatus = is_string($_GET['status'] ?? null) ? $_GET['status'] : 'under_review';
+if ($historyStatus !== 'all' && !in_array($historyStatus, PS_DONATION_STATUS_OPTIONS, true)) {
+    $historyStatus = 'under_review';
+}
+$historySearch = is_string($_GET['q'] ?? null) ? mb_substr(trim($_GET['q']), 0, 50) : '';
+$historyFiltered = $historyStatus !== 'all' || $historySearch !== '';
+$history = $historyUserId
+    ? ps_donation_history($conn, $historyUserId, $historyBefore, true, $historyStatus === 'all' ? '' : $historyStatus, $historySearch)
+    : ['donations' => [], 'nextCursor' => null];
+/** A history page link that keeps the current search and filter. */
+function ps_donation_history_url(array $params) {
+    global $historyStatus, $historySearch;
+    $query = http_build_query(array_filter(['status' => $historyStatus, 'q' => $historySearch] + $params, fn($value) => $value !== '' && $value !== null));
+    return 'donation-request.php?' . $query . '#donation-history';
+}
+$updatedReference = $_SESSION['ps_donation_updated'] ?? null;
+unset($_SESSION['ps_donation_updated']);
+
+/** What the Edit window is filled with (donation-modal.js). */
+function ps_donation_edit_data(array $row) {
+    $details = json_decode((string) $row['details'], true) ?: [];
+    $anonymous = ($details['Remain anonymous'] ?? 'No') === 'Yes';
+    return [
+        'id'              => (int) $row['id'],
+        'reference'       => $row['donation_no'],
+        'donationPurpose' => array_search($row['purpose'], PS_DONATION_FUNDS, true) ?: 'general',
+        'donationAmount'  => $row['amount'],
+        'gcashReference'  => (string) $row['gcash_reference'],
+        'donorName'       => $anonymous ? '' : $row['donor_name'],
+        'donorEmail'      => (string) $row['contact_email'],
+        'donorContact'    => (string) $row['contact_number'],
+        'donationNote'    => $details['Note / prayer intention'] ?? '',
+        'isAnonymous'     => $anonymous ? 'on' : '',
+        'proofUrl'        => $row['has_proof'] ? 'donation-proof.php?id=' . (int) $row['id'] : '',
+    ];
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -29,7 +73,7 @@ ps_handle_request_form('donation');
 <link rel="stylesheet" href="assets/css/upload-preview.css?v=1">
 <link rel="stylesheet" href="assets/css/sidebar-refined.css?v=2">
 <link rel="stylesheet" href="assets/css/sidebar-hover.css?v=3">
-<link rel="stylesheet" href="assets/css/donation-history.css?v=4">
+<link rel="stylesheet" href="assets/css/donation-history.css?v=10">
 </head>
 <body class="funeral-page mass-intention-page donation-page donation-about-page donation-request-page ps-hover-sidebar">
 <div class="ps-shell">
@@ -152,7 +196,120 @@ ps_handle_request_form('donation');
     </div>
 
 
-<section class="co-hero" aria-labelledby="donation-title"><img src="assets/images/donation-hero.png" alt="A wooden donation box with a cross beside a candle in a warmly lit church"><div class="co-hero-copy"><span class="co-eyebrow">Parish Services</span><h1 id="donation-title">Give Now</h1><p>Support our parish mission. Share your offering and donation details with the parish.</p><blockquote>&ldquo;God loves a cheerful giver.&rdquo;<cite>&mdash; 2 Corinthians 9:7</cite></blockquote></div></section><nav class="ca-tabs" aria-label="Donation sections"><a href="donation-about.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v16M12 5C9 3 5 3 2 5v16c3-2 7-2 10 0 3-2 7-2 10 0V5c-3-2-7-2-10 0Z"/></svg>About Donations</a><a href="donation-guidelines.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H5v20h14V7l-5-5Zm0 0v6h5M8 12h8M8 16h8"/></svg>Guidelines</a><a href="donation-how.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H5v20h14V7l-5-5Zm0 0v6h5M8 12h8M8 16h8"/></svg>How to Donate</a><a href="donation-request.php" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21S2 15 2 8a5 5 0 0 1 10-1A5 5 0 0 1 22 8c0 7-10 13-10 13Z"/></svg>Give Now</a></nav><div class="dn-alert"><span>The official parish GCash QR is not available on this page yet. Please contact the parish office before sending a donation.</span><button type="button" aria-label="Dismiss notice" id="dnDismiss">&times;</button></div><form action="donation-request.php" method="post" enctype="multipart/form-data" data-wizard-step-form data-upload-flow="donation" novalidate><?php ps_request_form_fields(); ?><div class="dn-checkout"><div class="dn-left"><div class="ps-card wr-section">
+<section class="co-hero" aria-labelledby="donation-title"><img src="assets/images/donation-hero.png" alt="A wooden donation box with a cross beside a candle in a warmly lit church"><div class="co-hero-copy"><span class="co-eyebrow">Parish Services</span><h1 id="donation-title">Give Now</h1><p>Support our parish mission. Share your offering and donation details with the parish.</p><blockquote>&ldquo;God loves a cheerful giver.&rdquo;<cite>&mdash; 2 Corinthians 9:7</cite></blockquote></div></section><nav class="ca-tabs" aria-label="Donation sections"><a href="donation-about.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v16M12 5C9 3 5 3 2 5v16c3-2 7-2 10 0 3-2 7-2 10 0V5c-3-2-7-2-10 0Z"/></svg>About Donations</a><a href="donation-guidelines.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H5v20h14V7l-5-5Zm0 0v6h5M8 12h8M8 16h8"/></svg>Guidelines</a><a href="donation-how.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H5v20h14V7l-5-5Zm0 0v6h5M8 12h8M8 16h8"/></svg>How to Donate</a><a href="donation-request.php" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21S2 15 2 8a5 5 0 0 1 10-1A5 5 0 0 1 22 8c0 7-10 13-10 13Z"/></svg>Give Now</a></nav><div class="dn-alert"><span>The official parish GCash QR is not available on this page yet. Please contact the parish office before sending a donation.</span><button type="button" aria-label="Dismiss notice" id="dnDismiss">&times;</button></div>
+
+<section class="ps-card dh-history dh-table-card" id="donation-history" aria-labelledby="donation-history-title">
+    <div class="dh-head">
+        <div>
+            <h2 id="donation-history-title">My Donation History</h2>
+            <p>Donations you submitted while signed in, and where each one is in the parish review. You can edit a donation until the parish office verifies it.</p>
+        </div>
+        <div class="dh-actions">
+<?php if ($historyUserId): ?>
+            <form class="dh-filters" action="donation-request.php#donation-history" method="get" role="search" data-no-draft>
+                <span class="ps-search">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+                    <input type="search" name="q" value="<?php echo htmlspecialchars($historySearch); ?>" maxlength="50" placeholder="Search your donations" title="Search by donation no., donor name, GCash no. or purpose" aria-label="Search your donations">
+                </span>
+                <span class="ps-select">
+                    <select name="status" aria-label="Filter by status" data-auto-submit>
+                        <option value="all"<?php echo $historyStatus === 'all' ? ' selected' : ''; ?>>All statuses</option>
+<?php foreach (PS_DONATION_STATUS_OPTIONS as $s): ?>
+                        <option value="<?php echo $s; ?>"<?php echo $historyStatus === $s ? ' selected' : ''; ?>><?php echo htmlspecialchars(ps_status_label($s)); ?></option>
+<?php endforeach; ?>
+                    </select>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+                </span>
+            </form>
+<?php endif; ?>
+            <button type="button" class="ps-btn ps-btn-primary" data-donation-open>Give Now</button>
+        </div>
+    </div>
+<?php if ($updatedReference): ?>
+    <p class="dh-flash" role="status" data-clear-draft="parishserve-draft-donations">Your changes to Donation No. <?php echo htmlspecialchars($updatedReference); ?> were saved.</p>
+<?php endif; ?>
+<?php if (!$historyUserId): ?>
+    <div class="dh-empty">
+        <p>Sign in to see the donations submitted through your account. You can still give without signing in.</p>
+        <a class="ps-btn ps-btn-outline" href="login.html">Sign in</a>
+    </div>
+<?php elseif (!$history['donations']): ?>
+    <div class="dh-empty">
+        <p><?php
+            if ($historyBefore) {
+                echo 'There are no older donations.';
+            } elseif ($historySearch !== '') {
+                echo 'No donations match &ldquo;' . htmlspecialchars($historySearch) . '&rdquo;' . ($historyStatus !== 'all' ? ' among those ' . htmlspecialchars(strtolower(ps_status_label($historyStatus))) : '') . '.';
+            } elseif ($historyStatus !== 'all') {
+                echo 'You have no donations that are ' . htmlspecialchars(strtolower(ps_status_label($historyStatus))) . '.';
+            } else {
+                echo 'No donations are linked to your account yet. Choose Give Now to send your first one.';
+            }
+        ?></p>
+<?php if ($historyFiltered): ?>
+        <a class="ps-btn ps-btn-outline" href="donation-request.php?status=all#donation-history">Show all donations</a>
+<?php endif; ?>
+    </div>
+<?php else: ?>
+    <div class="dh-table-wrap">
+        <table class="dh-table">
+            <caption>Your donations, newest first</caption>
+            <thead>
+                <tr>
+                    <th scope="col">Donation Number</th>
+                    <th scope="col">Donor Name</th>
+                    <th scope="col">Date Submitted</th>
+                    <th scope="col">Donation Purpose</th>
+                    <th scope="col">Amount</th>
+                    <th scope="col">GCash Reference Number</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+<?php foreach ($history['donations'] as $row):
+    $gcash = (string) $row['gcash_reference'];
+?>
+                <tr>
+                    <td class="dh-number"><?php echo htmlspecialchars($row['donation_no']); ?></td>
+                    <td><?php echo htmlspecialchars($row['donor_name']); ?></td>
+                    <td><?php echo htmlspecialchars(date('M j, Y', strtotime($row['created_at']))); ?></td>
+                    <td><?php echo htmlspecialchars($row['purpose'] ?: PS_DONATION_FUNDS['general']); ?></td>
+                    <td class="dh-amount">&#8369;<?php echo number_format((float) $row['amount'], 2); ?></td>
+                    <td><?php echo $gcash === '' ? '<span class="dh-muted">&mdash;</span>' : htmlspecialchars($gcash); ?></td>
+                    <td><span class="dh-status is-<?php echo htmlspecialchars($row['status']); ?>"><?php echo htmlspecialchars(ps_status_label($row['status'])); ?></span></td>
+                    <td>
+<?php if (ps_donation_editable($row['status'])): ?>
+                        <button type="button" class="ps-btn ps-btn-outline dh-edit" data-donation-edit="<?php echo htmlspecialchars(json_encode(ps_donation_edit_data($row), JSON_UNESCAPED_UNICODE)); ?>" aria-label="Edit donation <?php echo htmlspecialchars($row['donation_no']); ?>">Edit</button>
+<?php else: ?>
+                        <span class="dh-muted" aria-label="Not editable">&mdash;</span>
+<?php endif; ?>
+                    </td>
+                </tr>
+<?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+<?php endif; ?>
+<?php if ($historyBefore || $history['nextCursor']): ?>
+    <nav class="dh-pager" aria-label="Donation history pages">
+<?php if ($historyBefore): ?>
+        <a class="ps-btn ps-btn-outline" href="<?php echo htmlspecialchars(ps_donation_history_url([])); ?>">&larr; Newest donations</a>
+<?php endif; ?>
+<?php if ($history['nextCursor']): ?>
+        <a class="ps-btn ps-btn-outline" href="<?php echo htmlspecialchars(ps_donation_history_url(['before' => (int) $history['nextCursor']])); ?>">Older donations &rarr;</a>
+<?php endif; ?>
+    </nav>
+<?php endif; ?>
+    <p class="dh-footnote">Older donations submitted without an account link may not appear here. Contact the parish office if you need help locating a previous donation.</p>
+</section>
+
+<dialog class="dn-modal" id="donationModal" aria-labelledby="donationModalTitle">
+<div class="dn-modal-head">
+    <h2 id="donationModalTitle" data-donation-modal-title>Give Now</h2>
+    <button type="button" class="dn-modal-close" aria-label="Close" data-donation-cancel>&times;</button>
+</div>
+<form class="dn-modal-body" action="donation-request.php" method="post" enctype="multipart/form-data" data-wizard-step-form data-upload-flow="donation" novalidate><?php ps_request_form_fields(); ?><div class="dn-checkout"><div class="dn-left"><div class="ps-card wr-section">
                     <h2 class="wr-section-heading"><span class="dn-heading-icon" aria-hidden="true">&#9825;</span>Donation Details</h2>
 
                     <div class="ps-form-row-2">
@@ -189,6 +346,21 @@ ps_handle_request_form('donation');
                             <span class="ps-dropzone-filename" data-dropzone-filename>No file chosen</span>
                         </span>
                         <small class="wr-file-error" id="proofOfPaymentError" data-file-error hidden></small>
+                        <section class="service-upload-preview dn-current-proof" data-current-proof hidden>
+                            <div class="service-upload-header"><strong>Your submitted proof of payment</strong><button type="button" class="ps-btn ps-btn-outline" data-current-proof-replace>Replace File</button></div>
+                            <img src="" alt="Proof of payment you submitted" data-current-proof-image>
+                            <a href="#" target="_blank" rel="noopener" data-current-proof-link>Open full preview</a>
+                            <p>This is the screenshot you sent with this donation. Replace it only if you need to send a different one.</p>
+                        </section>
+                    </div>
+
+                    <div class="ps-field dn-gcash-ref">
+                        <label for="gcashReference">GCash Reference Number</label>
+                        <input type="text" id="gcashReference" name="gcashReference" required
+                               inputmode="numeric" pattern="[0-9]{6,20}" minlength="6" maxlength="20" autocomplete="off"
+                               placeholder="Enter your GCash reference number"
+                               title="Numbers only (6 to 20 digits), as shown on your GCash receipt">
+                        <small class="ps-form-hint">Numbers only &mdash; shown as &ldquo;Ref No.&rdquo; on your GCash receipt. The parish office uses it to verify your donation.</small>
                     </div>
                 </div><div class="ps-card wr-section">
             <h2 class="wr-section-heading"><span class="dn-heading-icon" aria-hidden="true">&#9825;</span>Your Information</h2>
@@ -197,7 +369,7 @@ ps_handle_request_form('donation');
             <div class="ps-form-row-3">
                 <div class="ps-field">
                     <label for="donorName">Full Name</label>
-                    <input type="text" id="donorName" name="donorName" placeholder="Enter your full name">
+                    <input type="text" id="donorName" name="donorName" placeholder="Enter your full name" value="<?php echo ps_account_full_name_attr(); ?>">
                 </div>
                 <div class="ps-field">
                     <label for="donorEmail">Email <span class="wr-optional">(Optional)</span></label>
@@ -217,8 +389,8 @@ ps_handle_request_form('donation');
                     <small>We will not display your name in any public listing.</small>
                 </label>
             </div>
-        </div><div class="dn-actions"><a class="ps-btn ps-btn-outline" href="donations.html">Cancel</a><button type="submit" class="ps-btn ps-btn-primary">Send Donation Details &rarr;</button></div></div><aside class="dn-right"><section class="ps-card wr-section dn-payment"><h2 class="wr-section-heading"><span class="dn-heading-icon" aria-hidden="true">&#9825;</span>Payment Method</h2><p>We currently accept donations through GCash.</p><div class="don-qr-block">
-                        <img src="assets/images/gcash-qr-placeholder.svg" alt="Placeholder only - not an official payment QR">
+        </div><div class="dn-actions"><button type="button" class="ps-btn ps-btn-outline" data-donation-cancel>Cancel</button><button type="submit" class="ps-btn ps-btn-primary" data-donation-submit>Send Donation Details &rarr;</button></div></div><aside class="dn-right"><section class="ps-card wr-section dn-payment"><h2 class="wr-section-heading"><span class="dn-heading-icon" aria-hidden="true">&#9825;</span>Payment Method</h2><p>We currently accept donations through GCash.</p><div class="don-qr-block">
+                        <img src="assets/images/ellana_qrcode.jpg" alt="Placeholder only - not an official payment QR">
                         <p class="don-qr-placeholder-label">Preview only &mdash; official QR pending</p><div class="don-qr-name">Our Lady of the Gate Parish</div>
                     </div></section><section class="ps-card wr-section"><div class="don-howto">
                             <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5"/><path d="M12 7.8h.01"/></svg> How to donate using GCash</h4>
@@ -252,6 +424,8 @@ ps_handle_request_form('donation');
                                                                     <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>After sending, please upload your proof of payment.</li>
                                                                     <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>Your donation will be verified by our parish staff.</li>
                                                             </ul>
-                        </div></section><section class="ps-card wr-section dn-help"><div><h3>Need Assistance?</h3><p>For questions or concerns, contact the parish office.</p></div><a class="ps-btn ps-btn-outline" href="dashboard.html#parish-contacts">Contact Parish Office</a></section><section class="ps-card wr-section dn-help"><div><h3>My Donation History</h3><p>View the donations you submitted and their parish review status.</p></div><a class="ps-btn ps-btn-outline" href="#donation-history">View History</a></section></aside></div></form><section class="ps-card dh-history" id="donation-history" data-donation-history aria-labelledby="donation-history-title"><h2 id="donation-history-title">My Donation History</h2><p>View the donations you submitted while signed in and their parish review status.</p><p role="status" aria-live="polite">Loading your donations...</p><div class="dh-list" data-history-list></div><button type="button" class="ps-btn ps-btn-outline" hidden>Load more donations</button><p>Older donations submitted without an account link may not appear here. Contact the parish office if you need help locating a previous donation.</p></section></main></div><script src="assets/js/frontend.js"></script><script src="assets/js/main.js"></script><script src="assets/js/session-user.js"></script>
-<script src="assets/js/responsive.js?v=1"></script><script src="assets/js/donation-checkout.js?v=1"></script><script src="assets/js/request-uploads.js"></script>
-<script src="assets/js/upload-preview.js?v=2"></script><script src="assets/js/donation-history.js?v=1"></script></body></html>
+                        </div></section><section class="ps-card wr-section dn-help"><div><h3>Need Assistance?</h3><p>For questions or concerns, contact the parish office.</p></div><a class="ps-btn ps-btn-outline" href="dashboard.html#parish-contacts">Contact Parish Office</a></section></aside></div></form>
+</dialog>
+</main></div><script src="assets/js/frontend.js?v=2"></script><script src="assets/js/main.js?v=5"></script><script src="assets/js/donation-checkout.js?v=1"></script><script src="assets/js/request-uploads.js"></script>
+<script src="assets/js/upload-preview.js?v=2"></script><script src="assets/js/donation-modal.js?v=4"></script><script src="assets/js/session-user.js"></script>
+<script src="assets/js/responsive.js?v=1"></script></body></html>

@@ -50,7 +50,7 @@ function ps_build_report(mysqli $conn, $from, $to, $basis) {
     ksort($intentions);
 
     $donations = ps_fetch_donations($conn, ['from' => $from, 'to' => $to]);
-    usort($donations, fn($a, $b) => [$a['created_at'], $a['reference_no']] <=> [$b['created_at'], $b['reference_no']]);
+    usort($donations, fn($a, $b) => [$a['created_at'], $a['donation_no']] <=> [$b['created_at'], $b['donation_no']]);
     $emptyFund = ['count' => 0, 'received' => 0.0, 'verified' => 0.0, 'rejected' => 0];
     $funds = [];
     $donationTotals = $emptyFund;
@@ -173,9 +173,9 @@ function ps_report_csv(array $report) {
     $put();
 
     $put(['Donation records']);
-    $put(['Reference', 'Donor', 'Fund', 'Amount (PHP)', 'Status', 'Submitted']);
+    $put(['Donation number', 'GCash reference number', 'Donor', 'Fund', 'Amount (PHP)', 'Status', 'Submitted']);
     foreach ($report['donations'] as $donation) {
-        $put([$donation['reference_no'], $donation['donor_name'], (string) $donation['purpose'], number_format((float) $donation['amount'], 2, '.', ''),
+        $put([$donation['donation_no'], (string) $donation['gcash_reference'], $donation['donor_name'], (string) $donation['purpose'], number_format((float) $donation['amount'], 2, '.', ''),
             ps_status_label($donation['status']), date('M j, Y', strtotime($donation['created_at']))]);
     }
     fclose($out);
@@ -224,9 +224,9 @@ function ps_report_pdf(array $report) {
 
     $pdf->heading('Donation records');
     $pdf->table(
-        [['Reference', 1.3, 'L'], ['Donor', 2.2, 'L'], ['Fund', 2.2, 'L'], ['Amount', 1.2, 'R'], ['Status', 1.0, 'L'], ['Submitted', 1.1, 'L']],
+        [['Donation no.', 1.3, 'L'], ['GCash ref. no.', 1.6, 'L'], ['Donor', 1.8, 'L'], ['Fund', 1.8, 'L'], ['Amount', 1.2, 'R'], ['Status', 1.0, 'L'], ['Submitted', 1.1, 'L']],
         array_map(fn($donation) => [
-            $donation['reference_no'], $donation['donor_name'], (string) $donation['purpose'], ps_peso($donation['amount'], 'PHP '),
+            $donation['donation_no'], (string) $donation['gcash_reference'], $donation['donor_name'], (string) $donation['purpose'], ps_peso($donation['amount'], 'PHP '),
             ps_status_label($donation['status']), date('M j, Y', strtotime($donation['created_at'])),
         ], $report['donations'])
     );

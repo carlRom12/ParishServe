@@ -29,7 +29,7 @@ $userRole = $_SESSION['user_role'] ?? 'Visitor';
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title><?php echo $receipt ? 'Request Submitted' : 'Confirmation Not Found'; ?> · ParishServe</title>
+<title><?php echo $receipt ? ($isDonation ? 'Donation Submitted' : 'Request Submitted') : 'Confirmation Not Found'; ?> · ParishServe</title>
 <link rel="stylesheet" href="assets/css/style.css">
 <link rel="stylesheet" href="assets/css/request-confirmation.css">
 <link rel="stylesheet" href="assets/css/responsive.css?v=3">
@@ -86,7 +86,7 @@ $userRole = $_SESSION['user_role'] ?? 'Visitor';
                 <?php ps_icon('chevron-down', 'ps-user-chevron'); ?>
             </div>
         </div>
-        <h1><?php echo $receipt ? 'Request Submitted' : 'Confirmation'; ?></h1>
+        <h1><?php echo $receipt ? ($isDonation ? 'Donation Submitted' : 'Request Submitted') : 'Confirmation'; ?></h1>
         <?php if ($form): ?>
             <nav class="ps-breadcrumb">
                 <a href="<?php echo htmlspecialchars($form['nav']); ?>"><?php echo htmlspecialchars($form['label']); ?></a>
@@ -99,20 +99,22 @@ $userRole = $_SESSION['user_role'] ?? 'Visitor';
     <?php if ($receipt): ?>
         <div class="ps-card rc-card">
             <div class="rc-icon"><?php ps_icon('check-circle'); ?></div>
-            <h2><?php echo $isDonation ? 'Thank you for your donation!' : 'Thank you! Your request has been received.'; ?></h2>
+            <h2><?php echo $isDonation ? 'Thank you for your generous gift!' : 'Thank you! Your request has been received.'; ?></h2>
             <p class="rc-lead">
                 <?php if ($isDonation): ?>
-                    Please keep your reference number. Our parish staff will use it to match your proof of payment with your GCash transaction.
+                    Your donation has been received and is now under review. May God bless you for supporting the mission of Our Lady of the Gate Parish.
                 <?php else: ?>
                     Please keep your reference number. The parish office uses it, together with your contact number, to find your request when you follow up.
                 <?php endif; ?>
             </p>
 
-            <div class="rc-reference">
-                <span class="rc-reference-label">Reference number</span>
-                <strong class="rc-reference-value"><?php echo htmlspecialchars($reference); ?></strong>
-                <button type="button" class="ps-btn ps-btn-outline" data-copy-text="<?php echo htmlspecialchars($reference); ?>">Copy</button>
-            </div>
+            <?php if (!$isDonation): ?>
+                <div class="rc-reference">
+                    <span class="rc-reference-label">Reference number</span>
+                    <strong class="rc-reference-value"><?php echo htmlspecialchars($reference); ?></strong>
+                    <button type="button" class="ps-btn ps-btn-outline" data-copy-text="<?php echo htmlspecialchars($reference); ?>">Copy</button>
+                </div>
+            <?php endif; ?>
 
             <dl class="rc-summary">
                 <div><dt><?php echo $isDonation ? 'Type' : 'Request'; ?></dt><dd><?php echo htmlspecialchars($form['label']); ?></dd></div>
@@ -121,15 +123,17 @@ $userRole = $_SESSION['user_role'] ?? 'Visitor';
                 <?php if ($hasDocuments): ?>
                     <div><dt>Documents uploaded</dt><dd><?php echo (int) $receipt['documents']; ?></dd></div>
                 <?php endif; ?>
-                <div><dt>Status</dt><dd><span class="ps-status is-submitted"><?php echo htmlspecialchars(ps_status_label('submitted')); ?></span></dd></div>
+                <?php $initialStatus = $isDonation ? 'under_review' : 'submitted'; ?>
+                <div><dt>Status</dt><dd><span class="ps-status is-<?php echo $initialStatus; ?>"><?php echo htmlspecialchars(ps_status_label($initialStatus)); ?></span></dd></div>
             </dl>
 
             <div class="rc-next">
                 <h3>What happens next?</h3>
                 <ol>
                     <?php if ($isDonation): ?>
-                        <li>Our parish staff verify your proof of payment against the GCash transaction.</li>
-                        <li>Once verified, your donation is recorded for the fund you chose.</li>
+                        <li>Our parish staff check your proof of payment against your GCash transaction.</li>
+                        <li>Once it is verified, your donation is marked Approved and recorded for the fund you chose.</li>
+                        <li>If you gave while signed in, you can follow it under My Donation History on the Give Now page.</li>
                         <?php if ($contact !== ''): ?><li>If anything doesn't match, we'll contact you at <?php echo htmlspecialchars($contact); ?>.</li><?php endif; ?>
                     <?php else: ?>
                         <li>The parish office reviews your details<?php echo $hasDocuments ? ' and uploaded documents' : ''; ?>.</li>
