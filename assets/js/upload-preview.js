@@ -1,6 +1,7 @@
 (function () {
     document.querySelectorAll('input[type="file"]').forEach(input => {
-        if (input.dataset.previewReady || input.closest('[data-baptism-upload]')) return;
+        // baptism-upload.js previews the birth certificate itself; its unnamed payment screenshot still gets one here.
+        if (input.dataset.previewReady || (input.name && input.closest('[data-baptism-upload]'))) return;
         const zone = input.closest('[data-dropzone]');
         if (!zone) return;
         input.dataset.previewReady = 'true';
@@ -31,7 +32,8 @@
             else if (/\.pdf$/i.test(file.name)) { const frame = document.createElement('iframe'); frame.src = url; frame.title = 'Selected PDF preview'; preview.append(frame); }
             const open = document.createElement('a'); open.href = url; open.target = '_blank'; open.rel = 'noopener'; open.textContent = 'Open full preview';
             // Forms with data-upload-flow send the file right away (request-uploads.js).
-            const sent = input.form && input.form.dataset.uploadFlow;
+            // ...but only named inputs; an unnamed one (e.g. the wedding payment screenshot) is never sent.
+            const sent = input.form && input.form.dataset.uploadFlow && input.name;
             const note = document.createElement('p'); note.textContent = (sent ? 'This is the file you chose; it is uploaded to the parish office right away.' : 'Local preview only. Your file has not been sent.') + ' If the preview does not display, use Open full preview.'; preview.append(open,note);
         }
         input.addEventListener('change', update);

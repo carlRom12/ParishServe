@@ -20,8 +20,9 @@
 <link rel="stylesheet" href="assets/css/service-back.css?v=2">
 <link rel="stylesheet" href="assets/css/wedding-request-step2.css?v=2">
 <link rel="stylesheet" href="assets/css/upload-preview.css?v=1">
+<link rel="stylesheet" href="assets/css/service-payment.css?v=1">
 <link rel="stylesheet" href="assets/css/sidebar-refined.css?v=2">
-<link rel="stylesheet" href="assets/css/sidebar-hover.css?v=3">
+<link rel="stylesheet" href="assets/css/sidebar-hover.css?v=4">
 </head>
 <body class="funeral-page mass-intention-page wedding-about-page ps-hover-sidebar">
 <div class="ps-shell">
@@ -311,6 +312,51 @@
                         </div>
                                     </div>
 
+                <section class="wr-payment" data-service-payment aria-labelledby="wrPaymentTitle">
+                    <h3 id="wrPaymentTitle">Reservation &amp; Payment</h3>
+                    <p class="wr-form-sub">Choose how you'd like to pay, send it through GCash using the QR code, then attach a screenshot of your payment.</p>
+
+                    <div class="wr-pay-grid">
+                        <div>
+                            <fieldset class="wr-pay-options">
+                                <legend>Payment option <span class="wr-required">*</span></legend>
+                                <label class="wr-pay-option">
+                                    <input type="radio" name="paymentOption" value="reservation" data-amount="₱2,000.00" required>
+                                    <span><strong>Reservation / Down payment</strong><small>Secures your wedding date. Non-refundable if the wedding is cancelled or moved to another date.</small></span>
+                                    <b>₱2,000.00</b>
+                                </label>
+                                <label class="wr-pay-option">
+                                    <input type="radio" name="paymentOption" value="full" data-amount="₱20,000.00" required>
+                                    <span><strong>Full payment</strong><small>Pay the full wedding fee now.</small></span>
+                                    <b>₱20,000.00</b>
+                                </label>
+                            </fieldset>
+
+                            <p class="wr-pay-due">Amount to send <strong data-pay-amount>Choose an option</strong></p>
+
+                            <ol class="wr-pay-steps">
+                                <li>Open your GCash app and tap "Scan QR".</li>
+                                <li>Scan the parish QR code shown here.</li>
+                                <li>Enter the exact amount for the option you chose.</li>
+                                <li>Tap "Send" and take a screenshot of the confirmation.</li>
+                            </ol>
+                        </div>
+
+                        <div class="wr-pay-qr">
+                            <img src="assets/images/gcash-qr-placeholder.svg" alt="Placeholder only - not an official payment QR">
+                            <p class="wr-pay-qr-label">Preview only &mdash; official QR pending</p>
+                            <strong>Our Lady of the Gate Parish</strong>
+                        </div>
+                    </div>
+
+                    <div class="wr-pay-proof">
+                        <label for="paymentProof">Screenshot of your GCash payment <span class="wr-optional">(optional)</span></label>
+                        <div class="wr-document-dropzone" data-dropzone><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M7 18H5a4 4 0 0 1-1-8 8 8 0 0 1 15-1 5 5 0 0 1 0 9h-2M12 21V11m-4 4 4-4 4 4"/></svg><p>Drag and drop your screenshot here</p><span>or</span><label class="ps-btn ps-btn-outline" for="paymentProof">Choose File</label><input type="file" class="wr-document-input" id="paymentProof" accept=".jpg,.jpeg,.png" data-max-size-mb="5"><small>No file chosen</small></div>
+                        <small class="ps-form-hint">Accepted: JPG, PNG (Max 5MB)</small>
+                        <p class="wr-pay-notice">Online sending of payment screenshots isn't connected yet, so this file stays on your device. Please keep your screenshot and present it to the parish office to confirm your payment.</p>
+                    </div>
+                </section>
+
                 <div class="ps-field wr-notes-field">
                     <label for="officeNotes">Anything the office should know? <span class="wr-optional">(optional)</span></label>
                     <textarea id="officeNotes" name="officeNotes" rows="3" maxlength="500" placeholder="e.g. We would prefer an afternoon ceremony."></textarea>
@@ -354,7 +400,8 @@
 </div>
 <script src="assets/js/frontend.js"></script>
 <script src="assets/js/main.js"></script>
+<script src="assets/js/service-payment.js?v=1"></script>
 <script src="assets/js/session-user.js"></script>
 <script src="assets/js/responsive.js?v=1"></script>
-<script src="assets/js/upload-preview.js?v=2"></script><script src="assets/js/request-uploads.js"></script></body>
+<script src="assets/js/upload-preview.js?v=4"></script><script src="assets/js/request-uploads.js"></script></body>
 </html>

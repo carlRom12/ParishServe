@@ -28,7 +28,7 @@ ps_handle_request_form('donation');
 <link rel="stylesheet" href="assets/css/service-back.css?v=2">
 <link rel="stylesheet" href="assets/css/upload-preview.css?v=1">
 <link rel="stylesheet" href="assets/css/sidebar-refined.css?v=2">
-<link rel="stylesheet" href="assets/css/sidebar-hover.css?v=3">
+<link rel="stylesheet" href="assets/css/sidebar-hover.css?v=4">
 <link rel="stylesheet" href="assets/css/donation-history.css?v=4">
 </head>
 <body class="funeral-page mass-intention-page donation-page donation-about-page donation-request-page ps-hover-sidebar">
@@ -254,4 +254,4 @@ ps_handle_request_form('donation');
                                                             </ul>
                         </div></section><section class="ps-card wr-section dn-help"><div><h3>Need Assistance?</h3><p>For questions or concerns, contact the parish office.</p></div><a class="ps-btn ps-btn-outline" href="dashboard.html#parish-contacts">Contact Parish Office</a></section><section class="ps-card wr-section dn-help"><div><h3>My Donation History</h3><p>View the donations you submitted and their parish review status.</p></div><a class="ps-btn ps-btn-outline" href="#donation-history">View History</a></section></aside></div></form><section class="ps-card dh-history" id="donation-history" data-donation-history aria-labelledby="donation-history-title"><h2 id="donation-history-title">My Donation History</h2><p>View the donations you submitted while signed in and their parish review status.</p><p role="status" aria-live="polite">Loading your donations...</p><div class="dh-list" data-history-list></div><button type="button" class="ps-btn ps-btn-outline" hidden>Load more donations</button><p>Older donations submitted without an account link may not appear here. Contact the parish office if you need help locating a previous donation.</p></section></main></div><script src="assets/js/frontend.js"></script><script src="assets/js/main.js"></script><script src="assets/js/session-user.js"></script>
 <script src="assets/js/responsive.js?v=1"></script><script src="assets/js/donation-checkout.js?v=1"></script><script src="assets/js/request-uploads.js"></script>
-<script src="assets/js/upload-preview.js?v=2"></script><script src="assets/js/donation-history.js?v=1"></script></body></html>
+<script src="assets/js/upload-preview.js?v=4"></script><script src="assets/js/donation-history.js?v=1"></script></body></html>

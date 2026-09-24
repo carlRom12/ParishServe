@@ -25,8 +25,8 @@ ps_handle_request_form('massintention');
 <link rel="stylesheet" href="assets/css/service-back.css?v=2">
 <link rel="stylesheet" href="assets/css/service-review.css?v=2">
 <link rel="stylesheet" href="assets/css/sidebar-refined.css?v=2">
-<link rel="stylesheet" href="assets/css/sidebar-hover.css?v=3">
-</head>
+<link rel="stylesheet" href="assets/css/sidebar-hover.css?v=4">
+<?php require_once __DIR__ . '/includes/mass-schedule.php'; ?><script type="application/json" id="mass-schedule-data"><?php echo json_encode(['sunday' => ps_regular_mass_times('2026-09-20'), 'weekday' => ps_regular_mass_times('2026-09-21')]); ?></script></head>
 <body class="funeral-page mass-intention-page mass-intention-request-page ps-hover-sidebar">
 <div class="ps-shell">
 <aside class="ps-sidebar">
@@ -279,18 +279,9 @@ ps_handle_request_form('massintention');
             <div class="ps-field">
                 <label for="preferredTime">Preferred Mass Time <span class="wr-required">*</span></label>
                 
-                    <select id="preferredTime" name="preferredTime" required>
-                        <option value="" selected>Select preferred time</option>
-                                                    <option value="6:00 AM">6:00 AM</option>
-                                                    <option value="7:00 AM">7:00 AM</option>
-                                                    <option value="8:30 AM">8:30 AM</option>
-                                                    <option value="10:00 AM (Family Mass)">10:00 AM (Family Mass)</option>
-                                                    <option value="12:00 PM (Noon Mass)">12:00 PM (Noon Mass)</option>
-                                                    <option value="5:00 PM (Anticipated Mass — Saturday only)">5:00 PM (Anticipated Mass — Saturday only)</option>
-                                                    <option value="6:00 PM">6:00 PM</option>
-                                            </select>
+                    <select id="preferredTime" name="preferredTime" required><option value="">Choose a Mass date first</option></select>
                     
-                <small class="ps-form-hint">Choose the time most convenient for you.</small>
+                <small class="ps-form-hint">Times follow the parish Mass schedule. Choose a date to see its available Masses.</small>
             </div>
         </div>
 
@@ -411,5 +402,5 @@ ps_handle_request_form('massintention');
 <script src="assets/js/mass-intention-request.js?v=3"></script>
 <script src="assets/js/session-user.js"></script>
 <script src="assets/js/responsive.js?v=1"></script>
-</body>
+<script src="assets/js/mass-schedule.js?v=1"></script></body>
 </html>

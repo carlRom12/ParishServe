@@ -25,7 +25,7 @@ ps_handle_request_form('wedding');
 <link rel="stylesheet" href="assets/css/wedding-request.css">
 <link rel="stylesheet" href="assets/css/wedding-request-step3.css">
 <link rel="stylesheet" href="assets/css/service-review.css?v=2"><link rel="stylesheet" href="assets/css/sidebar-refined.css?v=2">
-<link rel="stylesheet" href="assets/css/sidebar-hover.css?v=3">
+<link rel="stylesheet" href="assets/css/sidebar-hover.css?v=4">
 </head>
 <body class="funeral-page mass-intention-page wedding-about-page ps-hover-sidebar">
 <div class="ps-shell">
@@ -180,4 +180,4 @@ ps_handle_request_form('wedding');
 <script src="assets/js/responsive.js?v=1"></script><script src="assets/js/frontend.js"></script>
 <script src="assets/js/main.js"></script>
 <script src="assets/js/request-uploads.js"></script>
-<script src="assets/js/wedding-review.js?v=2"></script></body></html>
+<script src="assets/js/wedding-review.js?v=21"></script></body></html>

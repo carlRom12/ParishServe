@@ -19,7 +19,7 @@ ps_handle_request_form('funeral');
 <link rel="stylesheet" href="assets/css/service-back.css?v=2">
 <link rel="stylesheet" href="assets/css/service-review.css?v=2">
 <link rel="stylesheet" href="assets/css/sidebar-refined.css?v=2">
-<link rel="stylesheet" href="assets/css/sidebar-hover.css?v=3">
+<link rel="stylesheet" href="assets/css/sidebar-hover.css?v=4">
 </head><body class="funeral-page funeral-requirements-page funeral-request-page ps-hover-sidebar"><div class="ps-shell">
 <aside class="ps-sidebar">
 

@@ -32,15 +32,18 @@ if (!isset(PS_REQUEST_TYPES[$type]) || !PS_REQUEST_TYPES[$type]['public'] || !$p
 
 $blocks = [];
 $facility = isset($_GET['facility']) ? (string) $_GET['facility'] : null;
-foreach (ps_bookings_on($conn, $type, $date, $facility) as $booking) {
+$bookings = ps_bookings_on($conn, $type, $date, $facility);
+foreach ($bookings as $booking) {
     $blocks[] = [
         'type'   => $booking['type'],
-        'label'  => PS_REQUEST_TYPES[$booking['type']]['label'],
+        'label'  => $booking['type'] === 'regular_mass' ? 'Mass starts' : PS_REQUEST_TYPES[$booking['type']]['label'],
+        'startOnly' => $booking['type'] === 'regular_mass',
         'start'  => $booking['window'][0] ?? null,
         'end'    => $booking['window'][1] ?? null,
-        'time'   => ps_window_label($booking['window']),
+        'time'   => $booking['type'] === 'regular_mass' ? ps_minutes_label($booking['window'][0]) : ps_window_label($booking['window']),
         'shared' => $booking['type'] === $type && PS_REQUEST_TYPES[$type]['group'],
     ];
 }
 
-echo json_encode(['minutes' => PS_REQUEST_TYPES[$type]['minutes'], 'blocks' => $blocks]);
+echo json_encode(['minutes' => PS_REQUEST_TYPES[$type]['minutes'], 'blocks' => $blocks,
+    'slots' => PS_REQUEST_TYPES[$type]['resource'] === 'church' ? ps_service_slots($type, $bookings) : []]);

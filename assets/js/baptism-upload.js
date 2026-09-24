@@ -187,7 +187,7 @@
             ['Contact Number', value('requestorContact')], ['Email Address', value('requestorEmail')]
         ], grid);
         review.append(grid);
-        card('3. Preferred Schedule', [['Baptism Type', value('baptismType')], ['Preferred Date', value('baptismDate')], ['Additional Note', form.elements.officeNotes.value]], review);
+        card('3. Preferred Schedule', [['Baptism Type', value('baptismType')], ['Preferred Date', value('baptismDate')], ['Preferred Time', value('baptismTime')], ['Additional Note', form.elements.officeNotes.value]], review);
         const documentCard = document.createElement('section'); documentCard.className = 'br-review-card';
         const documentHeading = document.createElement('h3'); documentHeading.textContent = '4. Uploaded Document';
         const documentRow = document.createElement('div'); documentRow.className = 'br-document';
@@ -198,6 +198,8 @@
             documentRow.append(view);
         }
         documentCard.append(documentHeading, documentRow); review.append(documentCard);
+        const fee = { regular: ['Regular Baptism', '₱500.00'], special: ['Special Baptism', '₱3,000.00'] }[value('baptismType')];
+        card('5. Baptism Fee & Payment', [['Fee', fee && fee[0]], ['Amount to send via GCash', fee && fee[1]], ['Payment screenshot', 'Present it at the parish office']], review);
         const reminder = document.createElement('p'); reminder.className = 'br-reminder';
         reminder.textContent = 'Your request is subject to parish review and schedule availability. The parish office will confirm the final schedule.'; review.append(reminder);
         const label = document.createElement('label'); label.className = 'br-confirm service-confirm';

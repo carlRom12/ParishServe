@@ -19,7 +19,7 @@ ps_handle_request_form('confirmation');
 <link rel="stylesheet" href="assets/css/service-back.css?v=2">
 <link rel="stylesheet" href="assets/css/service-review.css?v=2">
 <link rel="stylesheet" href="assets/css/sidebar-refined.css?v=2">
-<link rel="stylesheet" href="assets/css/sidebar-hover.css?v=3">
+<link rel="stylesheet" href="assets/css/sidebar-hover.css?v=4">
 </head>
 <body class="confirmation-page ps-hover-sidebar">
 <div class="ps-shell">
@@ -287,7 +287,7 @@ ps_handle_request_form('confirmation');
 
         
 
-    </form>
+    <section class="ps-card"><h3>Preferred Confirmation Schedule</h3><p>Date: <strong data-review="confirmationDate" data-review-format="date"></strong></p><p>Time: <strong data-review="confirmationTime"></strong></p><p>Subject to parish confirmation.</p></section></form>
 
 </main>
 </div>

@@ -19,7 +19,12 @@
     const name = (prefix) => ['FirstName', 'MiddleName', 'LastName', 'Suffix'].map((key) => draft[prefix + key]).filter(Boolean).join(' ');
     const groups = [
         ['1. The Couple', [['Groom', name('groom')], ['Bride', name('bride')], ['Contact mobile number', draft.mobileNumber], ['Contact email address', draft.emailAddress]]],
-        ['2. Preferred Schedule', [['Wedding date', date(draft.weddingDate)], ['Seminar date', date(draft.seminarDate)], ['Seminar time', draft.seminarTime], ['Seminar location', draft.seminarLocation]]],
+        ['2. Preferred Schedule', [['Wedding date', date(draft.weddingDate)], ['Wedding time', draft.weddingTime], ['Seminar date', date(draft.seminarDate)], ['Seminar time', draft.seminarTime], ['Seminar location', draft.seminarLocation]]],
+        ['3. Reservation & Payment', [
+            ['Payment option', { reservation: 'Reservation / Down payment', full: 'Full payment' }[draft.paymentOption]],
+            ['Amount to send via GCash', { reservation: '₱2,000.00', full: '₱20,000.00' }[draft.paymentOption]],
+            ['Payment screenshot', 'Present it at the parish office'],
+        ]],
     ];
 
     for (const [title, rows] of groups) {

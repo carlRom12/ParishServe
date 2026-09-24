@@ -163,7 +163,7 @@
                 const wrongWeekday = regularOnly && date.getDay() !== regularWeekday;
                 const isBooked = booked.has(iso);
 
-                if (tooSoon || wrongWeekday || isBooked) {
+                if (tooSoon || wrongWeekday) {
                     cell.classList.add('is-disabled');
                     cell.disabled = true;
                     // Tells a hovering mouse *why* -- the grey look alone
@@ -175,7 +175,7 @@
                         ? `Must be booked at least ${minMonths} month${minMonths > 1 ? 's' : ''} in advance`
                         : 'This date has already passed';
                 } else {
-                    cell.classList.add('is-selectable');
+                    cell.classList.add('is-selectable'); cell.title = isBooked ? 'Existing ceremony — select to check remaining times' : 'Select date to check times'; cell.setAttribute('aria-label', date.toLocaleDateString() + '. ' + cell.title);
                     cell.addEventListener('click', () => {
                         input.value = iso;
                         input.dispatchEvent(new Event('input', { bubbles: true }));
@@ -196,7 +196,7 @@
                 const legend = document.createElement('div');
                 legend.className = 'ps-datepicker-legend';
                 legend.innerHTML =
-                    '<span class="ps-datepicker-legend-item"><i class="ps-datepicker-swatch"></i>Available</span>' +
+                    '<span class="ps-datepicker-legend-item"><i class="ps-datepicker-swatch"></i>Choose date to check times</span>' +
                     '<span class="ps-datepicker-legend-item"><i class="ps-datepicker-swatch is-disabled"></i>Not available</span>';
                 card.append(legend);
             }

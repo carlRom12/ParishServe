@@ -73,6 +73,7 @@ const PS_REQUEST_FORMS = [
             'brideLastName'   => ['label' => "Bride's last name", 'required' => true, 'max' => 80],
             'brideSuffix'     => ['label' => "Bride's suffix", 'options' => PS_NAME_SUFFIXES],
             'weddingDate'     => ['label' => 'Preferred wedding date', 'type' => 'date', 'when' => 'future', 'min_months_ahead' => 3, 'required' => true],
+            'weddingTime' => ['label' => 'Preferred service time', 'type' => 'time', 'required' => true],
             'mobileNumber'    => ['label' => 'Mobile number', 'type' => 'mobile', 'required' => true],
             'emailAddress'    => ['label' => 'Email address', 'type' => 'email', 'required' => true],
             'seminarDate'     => ['label' => 'Preferred seminar date', 'type' => 'date', 'when' => 'future', 'required' => true],
@@ -100,6 +101,7 @@ const PS_REQUEST_FORMS = [
             'requestorContact'  => ['label' => 'Contact number', 'type' => 'mobile', 'required' => true],
             'requestorEmail'    => ['label' => 'Email', 'type' => 'email'],
             'baptismDate'       => ['label' => 'Preferred baptism date', 'type' => 'date', 'when' => 'future', 'min_months_ahead' => 1, 'required' => true],
+            'baptismTime' => ['label' => 'Preferred service time', 'type' => 'time', 'required' => true],
             'officeNotes'       => ['label' => 'Additional note', 'step' => 1, 'max' => 500],
         ],
     ],
@@ -112,6 +114,8 @@ const PS_REQUEST_FORMS = [
             'candidateLastName'    => ['label' => 'Last name', 'required' => true, 'max' => 80],
             'candidateMiddleName'  => ['label' => 'Middle name', 'max' => 80],
             'candidateSuffix'      => ['label' => 'Suffix', 'options' => PS_NAME_SUFFIXES],
+            'confirmationDate' => ['label' => 'Preferred confirmation date', 'type' => 'date', 'when' => 'future', 'required' => true],
+            'confirmationTime' => ['label' => 'Preferred confirmation time', 'type' => 'time', 'required' => true],
             'candidateDob'         => ['label' => 'Date of birth', 'type' => 'date', 'when' => 'past', 'required' => true],
             'candidateAddress'     => ['label' => 'Complete address', 'required' => true, 'max' => 255],
             'candidateMobile'      => ['label' => 'Mobile number', 'type' => 'mobile', 'required' => true],
@@ -172,7 +176,7 @@ const PS_REQUEST_FORMS = [
             'mobileNumber'      => ['label' => 'Mobile number', 'type' => 'mobile', 'required' => true],
             'emailAddress'      => ['label' => 'Email address', 'type' => 'email', 'required' => true],
             'preferredDate'     => ['label' => 'Preferred Mass date', 'type' => 'date', 'when' => 'future', 'required' => true],
-            'preferredTime'     => ['label' => 'Preferred Mass time', 'required' => true, 'options' => ['6:00 AM', '7:00 AM', '8:30 AM', '10:00 AM (Family Mass)', '12:00 PM (Noon Mass)', '5:00 PM (Anticipated Mass — Saturday only)', '6:00 PM']],
+            'preferredTime'     => ['label' => 'Preferred Mass time', 'required' => true, 'options' => ['5:00 AM', '6:15 AM', '6:30 AM', '8:00 AM', '9:30 AM', '11:00 AM', '2:30 PM', '4:00 PM', '5:30 PM', '7:00 PM']],
             'schedulingNotes'   => ['label' => 'Scheduling notes', 'max' => 500],
             'confirmRespectful' => ['label' => 'Confirmation', 'type' => 'checkbox', 'required' => true],
         ],
@@ -317,6 +321,7 @@ function ps_build_wedding(array $v) {
             'bride_name'     => ps_clip($bride, 150),
             'groom_name'     => ps_clip($groom, 150),
             'preferred_date' => $v['weddingDate'],
+            'preferred_time' => ps_sql_time($v['weddingTime']),
         ],
         'details' => [
             'Groom'                       => $groom,
@@ -344,6 +349,7 @@ function ps_build_baptism(array $v) {
             'contact_email'  => $v['requestorEmail'] === '' ? null : $v['requestorEmail'],
             'child_name'     => ps_clip($child, 150),
             'preferred_date' => $v['baptismDate'],
+            'preferred_time' => ps_sql_time($v['baptismTime']),
         ],
         'details' => [
             'Baptism type'          => $v['baptismType'] === 'special' ? 'Special Baptism' : 'Regular Baptism (Saturday)',
@@ -366,6 +372,8 @@ function ps_build_confirmation(array $v) {
             'contact_number' => $v['candidateMobile'],
             'contact_email'  => $v['candidateEmail'],
             'applicant_name' => ps_clip($name, 150),
+            'preferred_date' => $v['confirmationDate'],
+            'preferred_time' => ps_sql_time($v['confirmationTime']),
         ],
         'details' => [
             'Date of birth'              => ps_long_date($v['candidateDob']),
@@ -422,6 +430,11 @@ function ps_build_funeral(array $v) {
 
 function ps_build_massintention(array $v) {
     $errors = [];
+    require_once __DIR__ . '/mass-schedule.php';
+    $allowedTimes = ps_regular_mass_times($v['preferredDate']);
+    if (!in_array(substr((string) ps_sql_time($v['preferredTime']), 0, 5), $allowedTimes, true)) {
+        $errors[] = ps_form_error(1, 'Choose a Mass time listed for your selected day.');
+    }
     $souls = [];
     $subject = $v['intentionSubject'];
     $amount = 100;
@@ -516,14 +529,23 @@ function ps_request_schedule_errors($flow, array $columns) {
     if (!$window) {
         return [];
     }
+    if ($type['resource'] === 'church') {
+        $time = substr($columns[$type['time']], 0, 5);
+        $slots = ps_service_slots($flow, ps_bookings_on($conn, $flow, $date));
+        $chosen = array_values(array_filter($slots, fn($slot) => $slot['value'] === $time));
+        if (!$chosen || !$chosen[0]['available']) {
+            return [ps_form_error(PS_REQUEST_FORMS[$flow]['schedule_step'] ?? 0,
+                'Choose a listed time without a Mass or ceremony conflict. Separate ceremonies require a provisional two-hour preparation gap.')];
+        }
+    }
     $conflicts = ps_schedule_conflicts($conn, $flow, $date, $window, $type['subtype'] ? ($columns[$type['subtype']] ?? null) : null);
     if (!$conflicts) {
         return [];
     }
-    $taken = implode(', ', array_map(fn($booking) => ps_window_label($booking['window']), $conflicts));
+    $taken = implode(', ', array_map(fn($booking) => $booking['type'] === 'regular_mass' ? 'Mass starts at ' . ps_minutes_label($booking['window'][0]) : ps_window_label($booking['window']), $conflicts));
     return [ps_form_error(
         PS_REQUEST_FORMS[$flow]['schedule_step'] ?? null,
-        'The parish is already booked on ' . ps_long_date($date) . " from {$taken}. Please choose a different date or time."
+        'The parish is already booked on ' . ps_long_date($date) . " ({$taken}). Please choose a different date or time."
     )];
 }
 

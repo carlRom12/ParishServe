@@ -33,7 +33,7 @@ $userRole = $_SESSION['user_role'] ?? 'Visitor';
 <link rel="stylesheet" href="assets/css/style.css">
 <link rel="stylesheet" href="assets/css/request-confirmation.css">
 <link rel="stylesheet" href="assets/css/responsive.css?v=3">
-<link rel="stylesheet" href="assets/css/sidebar-hover.css?v=3">
+<link rel="stylesheet" href="assets/css/sidebar-hover.css?v=4">
 </head>
 <body class="ps-hover-sidebar">
 <div class="ps-shell">

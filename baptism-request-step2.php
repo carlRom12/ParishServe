@@ -26,8 +26,10 @@ ps_handle_request_form('baptism');
 <link rel="stylesheet" href="assets/css/baptism-request-step2.css">
 <link rel="stylesheet" href="assets/css/baptism-request-layout.css?v=6">
 <link rel="stylesheet" href="assets/css/service-review.css?v=2">
+<link rel="stylesheet" href="assets/css/upload-preview.css?v=1">
+<link rel="stylesheet" href="assets/css/service-payment.css?v=1">
 <link rel="stylesheet" href="assets/css/sidebar-refined.css?v=2">
-<link rel="stylesheet" href="assets/css/sidebar-hover.css?v=3">
+<link rel="stylesheet" href="assets/css/sidebar-hover.css?v=4">
 </head>
 <body class="funeral-page mass-intention-page baptism-home-page baptism-about-page ps-hover-sidebar">
 <div class="ps-shell">
@@ -209,6 +211,45 @@ ps_handle_request_form('baptism');
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h7l4 4v14a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M14 3v4h4"/><path d="M9 13h6M9 16.5h6M9 9.5h3"/></svg>            <span>Allowed file types: PDF, JPG, PNG</span>
         </div>
 
+        <section class="wr-payment" data-service-payment data-amount-from="parishserve-draft-baptism:baptismType" data-amount-map='{"regular":{"label":"Regular Baptism","amount":"₱500.00"},"special":{"label":"Special Baptism","amount":"₱3,000.00"}}' aria-labelledby="bapPaymentTitle">
+            <h3 id="bapPaymentTitle">Baptism Fee &amp; Payment</h3>
+            <p class="wr-form-sub">Pay the baptism fee upfront through GCash using the QR code, then attach a screenshot of your payment.</p>
+
+            <div class="wr-pay-grid">
+                <div>
+                    <p class="wr-pay-due"><span>Amount to send <small data-pay-label></small></span> <strong data-pay-amount>Choose a type in Step 1</strong></p>
+                    <small class="ps-form-hint">Regular Baptism: ₱500.00 &middot; Special Baptism: ₱3,000.00 &mdash; based on the type you chose in Step 1.</small>
+
+                    <ol class="wr-pay-steps">
+                        <li>Open your GCash app and tap "Scan QR".</li>
+                        <li>Scan the parish QR code shown here.</li>
+                        <li>Enter the exact amount for your baptism type.</li>
+                        <li>Tap "Send" and take a screenshot of the confirmation.</li>
+                    </ol>
+                </div>
+
+                <div class="wr-pay-qr">
+                    <img src="assets/images/gcash-qr-placeholder.svg" alt="Placeholder only - not an official payment QR">
+                    <p class="wr-pay-qr-label">Preview only &mdash; official QR pending</p>
+                    <strong>Our Lady of the Gate Parish</strong>
+                </div>
+            </div>
+
+            <div class="wr-pay-proof">
+                <label for="paymentProof">Screenshot of your GCash payment <span class="wr-optional">(optional)</span></label>
+                <span class="ps-dropzone" data-dropzone>
+                    <input type="file" id="paymentProof" accept=".jpg,.jpeg,.png" data-max-size-mb="5">
+                    <span class="ps-dropzone-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17a4.5 4.5 0 0 1-1-8.9A5.5 5.5 0 0 1 16.5 8H17a4 4 0 0 1 1 7.9"/><path d="M12 12v7"/><path d="M9 15l3-3 3 3"/></svg></span>
+                    <span class="ps-dropzone-text">Drag and drop your screenshot here</span>
+                    <span class="ps-dropzone-or">or</span>
+                    <span class="ps-dropzone-btn">Choose File</span>
+                    <span class="ps-dropzone-filename">No file chosen</span>
+                </span>
+                <small class="ps-form-hint">Accepted: JPG, PNG (Max 5MB)</small>
+                <p class="wr-pay-notice">Online sending of payment screenshots isn't connected yet, so this file stays on your device. Please keep your screenshot and present it to the parish office to confirm your payment.</p>
+            </div>
+        </section>
+
         <div class="ps-field wr-notes-field">
             <label for="officeNotes">Additional note <span class="wr-optional">(optional)</span></label>
             <textarea id="officeNotes" name="officeNotes" rows="3" maxlength="500" placeholder="Add any details the parish office should know..."></textarea>
@@ -231,5 +272,5 @@ ps_handle_request_form('baptism');
 <script src="assets/js/session-user.js"></script>
 <script src="assets/js/responsive.js?v=1"></script>
 <script src="assets/js/baptism-request-tab.js?v=1"></script><script src="assets/js/request-uploads.js"></script>
-<script src="assets/js/baptism-upload.js?v=6"></script></body>
+<script src="assets/js/baptism-upload.js?v=21"></script><script src="assets/js/service-payment.js?v=1"></script><script src="assets/js/upload-preview.js?v=4"></script></body>
 </html>

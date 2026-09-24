@@ -451,10 +451,43 @@ function ps_bookings_overlap($typeA, $windowA, $typeB, $windowB) {
     if (!$windowA || !$windowB) {
         return false;
     }
-    if ($typeA === $typeB && PS_REQUEST_TYPES[$typeA]['group']) {
+    // Only Mass starts are confirmed; no invented Mass end time.
+    if ($typeB === 'regular_mass') return $windowA[0] <= $windowB[0] && $windowB[0] < $windowA[1];
+    if ($typeA === 'regular_mass') return $windowB[0] <= $windowA[0] && $windowA[0] < $windowB[1];
+    if ($typeA === $typeB && PS_REQUEST_TYPES[$typeA]['group'] && $windowA[0] === $windowB[0]) {
         return false;
     }
+    // Provisional cleanup/decorating gap between separate church ceremonies.
+    if (PS_REQUEST_TYPES[$typeA]['resource'] === 'church' && PS_REQUEST_TYPES[$typeB]['resource'] === 'church') {
+        return $windowA[0] < $windowB[1] + 120 && $windowB[0] < $windowA[1] + 120;
+    }
     return $windowA[0] < $windowB[1] && $windowB[0] < $windowA[1];
+}
+
+/** Preferred service start times: 7 AM through 6 PM, in half-hour steps. */
+function ps_service_time_choices(): array {
+    $times = [];
+    for ($minute = 7 * 60; $minute <= 18 * 60; $minute += 30) {
+        $times[] = sprintf('%02d:%02d', intdiv($minute, 60), $minute % 60);
+    }
+    return $times;
+}
+
+function ps_service_slots($type, array $bookings): array {
+    $slots = [];
+    foreach (ps_service_time_choices() as $time) {
+        $window = ps_booking_window($type, $time);
+        $reason = $window[1] > 1440 ? 'Service extends into the next day' : '';
+        foreach ($bookings as $booking) {
+            if (!$booking['window']) { $reason = 'Parish confirmation needed'; break; }
+            if (ps_bookings_overlap($type, $window, $booking['type'], $booking['window'])) {
+                $reason = $booking['type'] === 'regular_mass' ? 'Mass schedule' : 'Booked / 2-hour preparation gap';
+                break;
+            }
+        }
+        $slots[] = ['value' => $time, 'label' => ps_minutes_label($window[0]), 'available' => $reason === '', 'reason' => $reason];
+    }
+    return $slots;
 }
 
 /**
@@ -470,15 +503,26 @@ function ps_bookings_on(mysqli $conn, $type, $date, $subtype = null, ?array $exc
     }
     $booked = "'" . implode("', '", PS_BOOKED_STATUSES) . "'";
     $bookings = [];
+    if ($resource === 'church') {
+        require_once __DIR__ . '/mass-schedule.php';
+        foreach (ps_regular_mass_times($date) as $time) {
+            $start = ps_time_minutes($time);
+            $bookings[] = ['type' => 'regular_mass', 'window' => [$start, $start],
+                'reference_no' => 'Regular Mass', 'name' => 'Parish Mass', 'status' => 'scheduled'];
+        }
+    }
     foreach (PS_REQUEST_TYPES as $key => $other) {
         if ($other['resource'] !== $resource) {
             continue;
         }
         $subtypeSql = $other['subtype'] ?? 'NULL';
         $end = $other['end'] ?? 'NULL';
-        $sql = "SELECT id, reference_no, {$other['name']} AS name, {$subtypeSql} AS subtype, {$other['time']} AS event_time, {$end} AS event_end, status"
-            . " FROM {$other['table']} WHERE {$other['date']} = ? AND status IN ({$booked})";
-        $params = [$date];
+        $sql = "SELECT id, reference_no, {$other['name']} AS name, {$subtypeSql} AS subtype, {$other['date']} AS booking_date, {$other['time']} AS event_time, {$end} AS event_end, status"
+            . " FROM {$other['table']} WHERE {$other['date']} BETWEEN ? AND ? AND status IN ({$booked})";
+        $day = new DateTimeImmutable($date);
+        $params = $resource === 'church'
+            ? [$day->modify('-1 day')->format('Y-m-d'), $day->modify('+1 day')->format('Y-m-d')]
+            : [$date, $date];
         if ($resource === 'facility') {
             $sql .= " AND {$other['subtype']} = ?";
             $params[] = (string) $subtype;
@@ -489,6 +533,11 @@ function ps_bookings_on(mysqli $conn, $type, $date, $subtype = null, ?array $exc
             }
             $row['type'] = $key;
             $row['window'] = ps_booking_window($key, $row['event_time'], $row['event_end']);
+            if ($row['booking_date'] !== $date) {
+                if (!$row['window']) continue;
+                $offset = $row['booking_date'] < $date ? -1440 : 1440;
+                $row['window'] = [$row['window'][0] + $offset, $row['window'][1] + $offset];
+            }
             $bookings[] = $row;
         }
     }
@@ -506,6 +555,9 @@ function ps_schedule_conflicts(mysqli $conn, $type, $date, array $window, $subty
 
 /** A booking as staff see it in conflict lists, linked to its admin page. */
 function ps_booking_summary(array $booking) {
+    if ($booking['type'] === 'regular_mass') return [
+        'reference' => 'Regular Mass', 'type' => 'Mass', 'name' => 'Parish Mass',
+        'time' => ps_minutes_label($booking['window'][0]), 'status' => 'Scheduled', 'url' => 'admin-calendar.php'];
     return [
         'reference' => $booking['reference_no'],
         'type'      => PS_REQUEST_TYPES[$booking['type']]['label'],
