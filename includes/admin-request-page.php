@@ -32,12 +32,10 @@ $requests  = ps_fetch_requests($conn, ['type' => $requestType]);
 $hasDocs   = isset(PS_DOCUMENT_CHECKLISTS[$requestType]);
 $documents = $hasDocs ? ps_fetch_documents($conn, $requestType) : [];
 $search    = trim((string) ($_GET['ref'] ?? ''));
-$noun      = $typeInfo['resource'] === 'facility' ? 'facility reservations' : strtolower($typeInfo['label']) . ' requests';
+$noun      = strtolower($typeInfo['label']) . ' requests';
 
 if ($typeInfo['resource'] === null) {
     $scheduleHint = 'Needed before approving. Mass intentions are offered at a regular Mass, so they never conflict with other bookings.';
-} elseif ($typeInfo['end']) {
-    $scheduleHint = "Needed before approving. It can't overlap another booking of the same facility.";
 } else {
     $minutes = $typeInfo['minutes'];
     $length = $minutes % 60 === 0 ? ($minutes / 60) . ' hour' . ($minutes > 60 ? 's' : '') : "{$minutes} minutes";
@@ -78,7 +76,7 @@ require __DIR__ . '/admin-sidebar.php';
 
         <div class="admin-table" style="--admin-cols: 130px 1fr 170px <?php echo $hasDocs ? '100px ' : ''; ?>120px 100px;">
             <div class="admin-table-head">
-                <span>Reference</span><span><?php echo $typeInfo['resource'] === 'facility' ? 'Requester / Facility' : 'Name'; ?></span><span>Schedule</span><?php echo $hasDocs ? '<span>Documents</span>' : ''; ?><span>Status</span><span></span>
+                <span>Reference</span><span>Name</span><span>Schedule</span><?php echo $hasDocs ? '<span>Documents</span>' : ''; ?><span>Status</span><span></span>
             </div>
             <?php foreach ($requests as $r): ?>
                 <?php

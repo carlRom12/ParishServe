@@ -30,3 +30,58 @@
 .sh-help-history .dh-entry>strong { font-size:17px; margin:6px 0; }
 .sh-help-history .dh-entry p { font-size:13px; margin:4px 0; }
 .sh-help-history button { width:100%; margin-top:6px; }
+
+/* donation-request.php: the history table the page opens on, and the
+   <dialog> the donation form now lives in (donation-modal.js). */
+.dh-table-card { margin-top:0; }
+.dh-head { display:flex; align-items:flex-start; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+.dh-head h2 { font-size:24px; }
+.dh-head p { font-size:14px; line-height:1.6; margin:8px 0 0; max-width:640px; }
+.dh-head .ps-btn { min-height:44px; padding:10px 26px; border-radius:6px; flex-shrink:0; }
+.dh-actions { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+.dh-filters { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+.dh-filters .ps-search { width:240px; max-width:100%; }
+.dh-filters .ps-search input { width:100%; }
+.dh-filters .ps-select { padding:0; border:0; background:none; } /* the select itself is the box (style.css .ps-select.ps-select select) */
+.dh-flash { margin:16px 0 0; padding:12px 16px; border-radius:7px; background:var(--status-approved-bg); color:var(--status-approved-text); font-size:14px; }
+.dh-empty { display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; margin:20px 0; padding:20px; border:1px dashed #e3d7cb; border-radius:8px; }
+.dh-empty p { margin:0; font-size:14px; line-height:1.6; }
+.dh-table-wrap { margin:20px 0 8px; }
+.dh-table { width:100%; border-collapse:collapse; font-size:14px; }
+.dh-table caption { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+.dh-table th { text-align:left; font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.04em; color:#7c7378; padding:10px 12px; border-bottom:1px solid #eee8e4; white-space:nowrap; }
+.dh-table td { padding:12px; border-bottom:1px solid #f3ede8; vertical-align:middle; }
+.dh-table td small { display:block; margin-top:2px; font-size:12px; color:#7c7378; }
+.dh-table tbody tr:hover { background:#fcf8f4; }
+.dh-amount { font-weight:600; color:#571125; white-space:nowrap; }
+.dh-muted { color:#a39a9e; }
+.dh-table .dh-status { margin:0; padding:4px 12px; font-size:12px; white-space:nowrap; }
+.dh-status.is-submitted, .dh-status.is-under_review { background:var(--status-pending-bg); color:var(--status-pending-text); }
+.dh-status.is-approved { background:var(--status-approved-bg); color:var(--status-approved-text); }
+.dh-status.is-scheduled { background:var(--status-scheduled-bg); color:var(--status-scheduled-text); }
+.dh-status.is-completed { background:var(--status-completed-bg); color:var(--status-completed-text); }
+.dh-status.is-rejected { background:var(--status-rejected-bg); color:var(--status-rejected-text); }
+.dh-table .dh-edit { min-height:34px; padding:6px 16px; font-size:13px; border-radius:6px; }
+.dh-pager { display:flex; gap:12px; flex-wrap:wrap; margin:12px 0; }
+.dh-footnote { font-size:13px!important; color:#7c7378; }
+
+.dn-modal { margin:auto; width:min(1180px, calc(100vw - 32px)); max-width:none; max-height:calc(100vh - 32px); padding:0; border:0; border-radius:12px; background:#fbf8f6; box-shadow:0 24px 60px rgba(40,12,20,.28); overflow:auto; }
+.ps-main > .dn-modal { animation:none; } /* not the page-load rise (style.css): it would replay, from transparent, on every open */
+.dn-modal::backdrop { background:rgba(40,12,20,.55); }
+.dn-modal-head { position:sticky; top:0; z-index:3; display:flex; align-items:center; justify-content:space-between; gap:16px; padding:14px 20px; background:#fff; border-bottom:1px solid #eee8e4; }
+.dn-modal-head h2 { font:600 22px/1.3 'Playfair Display', Georgia, serif; color:#760d2c; }
+.dn-modal-close { border:0; background:none; font-size:28px; line-height:1; color:#7c7378; cursor:pointer; padding:4px 8px; border-radius:6px; }
+.dn-modal-close:hover, .dn-modal-close:focus-visible { background:#f6eedf; color:#571125; }
+.dn-modal-body { padding:18px 20px 22px; }
+.dn-modal .wr-form-errors { margin-bottom:16px; }
+body.dn-modal-open { overflow:hidden; }
+.dn-gcash-ref { margin-top:16px; }
+.dn-current-proof { margin-top:4px; }
+.is-showing-current-proof [data-dropzone] { display:none; }
+@media(max-width:640px) {
+    .dn-modal { width:100vw; max-height:100vh; height:100vh; border-radius:0; }
+    .dn-modal-body { padding:14px 16px 20px; }
+    .dh-head .ps-btn { width:100%; }
+    .dh-actions, .dh-filters, .dh-filters .ps-search, .dh-filters .ps-select { width:100%; }
+}
+.dh-number { font-weight:600; white-space:nowrap; }

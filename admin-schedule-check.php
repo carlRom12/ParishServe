@@ -5,7 +5,7 @@
  * GET JSON for the Schedule fields in the request Update window
  * (initAdminModals() in main.js): what else is booked on ?date= in the
  * same place as request ?type=&id=, and which of those bookings the time
- * ?time= (and ?end= for facility reservations) would overlap. Staff only.
+ * ?time= (and ?end= for types with an end time) would overlap. Staff only.
  * The same check runs again when the change is saved
  * (admin-update-request.php), so this is the early warning, not the rule.
  * Answers: { ok, bookings: [...], conflicts: [...] } -- ps_booking_summary() items
@@ -24,14 +24,7 @@ if (!isset(PS_REQUEST_TYPES[$type]) || $id === false || !$parsed || $parsed->for
 }
 $typeInfo = PS_REQUEST_TYPES[$type];
 
-// A facility reservation only competes with bookings of the same facility.
-$subtype = null;
-if ($typeInfo['resource'] === 'facility') {
-    $rows = ps_query_all($conn, "SELECT {$typeInfo['subtype']} AS subtype FROM {$typeInfo['table']} WHERE id = ?", [(string) $id]);
-    $subtype = $rows[0]['subtype'] ?? null;
-}
-
-$bookings = ps_bookings_on($conn, $type, $date, $subtype, [$type, $id]);
+$bookings = ps_bookings_on($conn, $type, $date, [$type, $id]);
 $window = ps_booking_window($type, (string) ($_GET['time'] ?? ''), (string) ($_GET['end'] ?? ''));
 $conflicts = $window
     ? array_filter($bookings, fn($booking) => ps_bookings_overlap($type, $window, $booking['type'], $booking['window']))

@@ -8,7 +8,7 @@ try {
     for ($i=0;$i<23;$i++) {
         $owner=$i<21 ? $mine : ($i===21 ? $other : null);
         $ref='TEST-'.bin2hex(random_bytes(5));
-        $stmt=$conn->prepare("INSERT INTO donations (reference_no,contact_number,donor_name,amount,purpose,user_id) VALUES (?,'09123456789','Same Name',100,'Test',?)");
+        $stmt=$conn->prepare("INSERT INTO donations (donation_no,contact_number,donor_name,amount,purpose,user_id) VALUES (?,'09123456789','Same Name',100,'Test',?)");
         $stmt->bind_param('si',$ref,$owner);$stmt->execute();
     }
     $page=ps_donation_history($conn,$mine);

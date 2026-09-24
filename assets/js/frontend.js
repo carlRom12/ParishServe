@@ -13,7 +13,8 @@
     const isoDate = date => `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
     let draft = {};
     try { draft = JSON.parse(sessionStorage.getItem(key) || '{}'); } catch (_) { /* Storage may be disabled. */ }
-    const form = document.querySelector('form:not([data-login-form]):not([data-register-form]):not([data-otp-form])');
+    // data-no-draft: a page's other forms (donation-request.php's history search).
+    const form = document.querySelector('form:not([data-login-form]):not([data-register-form]):not([data-otp-form]):not([data-no-draft])');
     if (flow && form) {
         // ps_* fields (the submit token, the injected draft) belong to a single page load.
         const skip = input => !input.name || input.name.startsWith('ps_') || input.type === 'file' || input.tagName === 'BUTTON';

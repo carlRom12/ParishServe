@@ -1,6 +1,29 @@
 <?php
 require_once __DIR__ . '/includes/request-forms.php';
+require_once __DIR__ . '/includes/mass-intention-history.php';
 ps_handle_request_form('massintention');
+
+// Like donation-request.php, the page opens on the signed-in account's own
+// history; "Request a Mass Intention" opens the 3-step form in #massIntentionModal
+// (mass-intention-modal.js). Guests can still request, but have no history.
+$historyContact = ps_mass_intention_account_contact($conn);
+$historyBefore = filter_input(INPUT_GET, 'before', FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]) ?: 0;
+// The search bar and status filter: Under Review until another status (or "all") is chosen.
+$historyStatus = is_string($_GET['status'] ?? null) ? $_GET['status'] : 'under_review';
+if ($historyStatus !== 'all' && !in_array($historyStatus, PS_STATUS_OPTIONS, true)) {
+    $historyStatus = 'under_review';
+}
+$historySearch = is_string($_GET['q'] ?? null) ? mb_substr(trim($_GET['q']), 0, 50) : '';
+$historyFiltered = $historyStatus !== 'all' || $historySearch !== '';
+$history = $historyContact
+    ? ps_mass_intention_history($conn, $historyContact, $historyBefore, $historyStatus === 'all' ? '' : $historyStatus, $historySearch)
+    : ['intentions' => [], 'nextCursor' => null];
+/** A history page link that keeps the current search and filter. */
+function ps_mi_history_url(array $params) {
+    global $historyStatus, $historySearch;
+    $query = http_build_query(array_filter(['status' => $historyStatus, 'q' => $historySearch] + $params, fn($value) => $value !== '' && $value !== null));
+    return 'mass-intention-request.php?' . $query . '#mass-intention-history';
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -26,7 +49,9 @@ ps_handle_request_form('massintention');
 <link rel="stylesheet" href="assets/css/service-review.css?v=2">
 <link rel="stylesheet" href="assets/css/sidebar-refined.css?v=2">
 <link rel="stylesheet" href="assets/css/sidebar-hover.css?v=4">
-<?php require_once __DIR__ . '/includes/mass-schedule.php'; ?><script type="application/json" id="mass-schedule-data"><?php echo json_encode(['sunday' => ps_regular_mass_times('2026-09-20'), 'weekday' => ps_regular_mass_times('2026-09-21')]); ?></script></head>
+<link rel="stylesheet" href="assets/css/donation-history.css?v=10">
+<?php require_once __DIR__ . '/includes/mass-schedule.php'; ?><script type="application/json" id="mass-schedule-data"><?php echo json_encode(['sunday' => ps_regular_mass_times('2026-09-20'), 'weekday' => ps_regular_mass_times('2026-09-21')]); ?></script>
+</head>
 <body class="funeral-page mass-intention-page mass-intention-request-page ps-hover-sidebar">
 <div class="ps-shell">
 <aside class="ps-sidebar">
@@ -154,6 +179,108 @@ ps_handle_request_form('massintention');
 
 <nav class="ca-tabs" aria-label="Mass Intention sections"><a href="mass-intention-about.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v16M12 5C9 3 5 3 2 5v16c3-2 7-2 10 0 3-2 7-2 10 0V5c-3-2-7-2-10 0Z"/></svg>About Mass Intentions</a><a href="mass-intention-guidelines.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H5v20h14V7l-5-5Zm0 0v6h5M8 12h8M8 16h8"/></svg>Guidelines</a><a href="mass-intention-types.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3h9l9 9-9 9-9-9V3Z"/><circle cx="8" cy="8" r="1"/></svg>Types of Intentions</a><a href="mass-intention-request.php" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 3 6 6-12 12H3v-6L15 3Zm-2 2 6 6"/></svg>Request</a></nav>
 
+<section class="ps-card dh-history dh-table-card" id="mass-intention-history" aria-labelledby="mass-intention-history-title">
+    <div class="dh-head">
+        <div>
+            <h2 id="mass-intention-history-title">My Mass Intention History</h2>
+            <p>Mass Intentions you requested while signed in, and where each one is in the parish review.</p>
+        </div>
+        <div class="dh-actions">
+<?php if ($historyContact): ?>
+            <form class="dh-filters" action="mass-intention-request.php#mass-intention-history" method="get" role="search" data-no-draft>
+                <span class="ps-search">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+                    <input type="search" name="q" value="<?php echo htmlspecialchars($historySearch); ?>" maxlength="50" placeholder="Search your intentions" title="Search by reference number, intention type or who it is offered for" aria-label="Search your Mass Intentions">
+                </span>
+                <span class="ps-select">
+                    <select name="status" aria-label="Filter by status" data-auto-submit>
+                        <option value="all"<?php echo $historyStatus === 'all' ? ' selected' : ''; ?>>All statuses</option>
+<?php foreach (PS_STATUS_OPTIONS as $s): ?>
+                        <option value="<?php echo $s; ?>"<?php echo $historyStatus === $s ? ' selected' : ''; ?>><?php echo htmlspecialchars(ps_status_label($s)); ?></option>
+<?php endforeach; ?>
+                    </select>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+                </span>
+            </form>
+<?php endif; ?>
+            <button type="button" class="ps-btn ps-btn-primary" data-mi-open>Request a Mass Intention</button>
+        </div>
+    </div>
+<?php if (!$historyContact): ?>
+    <div class="dh-empty">
+        <p>Sign in to see the Mass Intentions requested through your account. You can still request one without signing in.</p>
+        <a class="ps-btn ps-btn-outline" href="login.html">Sign in</a>
+    </div>
+<?php elseif (!$history['intentions']): ?>
+    <div class="dh-empty">
+        <p><?php
+            if ($historyBefore) {
+                echo 'There are no older Mass Intentions.';
+            } elseif ($historySearch !== '') {
+                echo 'No Mass Intentions match &ldquo;' . htmlspecialchars($historySearch) . '&rdquo;' . ($historyStatus !== 'all' ? ' among those ' . htmlspecialchars(strtolower(ps_status_label($historyStatus))) : '') . '.';
+            } elseif ($historyStatus !== 'all') {
+                echo 'You have no Mass Intentions that are ' . htmlspecialchars(strtolower(ps_status_label($historyStatus))) . '.';
+            } else {
+                echo 'No Mass Intentions are linked to your account yet. Choose Request a Mass Intention to send your first one.';
+            }
+        ?></p>
+<?php if ($historyFiltered): ?>
+        <a class="ps-btn ps-btn-outline" href="mass-intention-request.php?status=all#mass-intention-history">Show all Mass Intentions</a>
+<?php endif; ?>
+    </div>
+<?php else: ?>
+    <div class="dh-table-wrap">
+        <table class="dh-table">
+            <caption>Your Mass Intentions, newest first</caption>
+            <thead>
+                <tr>
+                    <th scope="col">Reference Number</th>
+                    <th scope="col">Date Requested</th>
+                    <th scope="col">Intention Type</th>
+                    <th scope="col">Offered For</th>
+                    <th scope="col">Mass Schedule</th>
+                    <th scope="col">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+<?php foreach ($history['intentions'] as $row):
+    $schedule = $row['mass_date']
+        ? date('M j, Y', strtotime($row['mass_date'])) . ($row['mass_time'] ? ' &middot; ' . date('g:i A', strtotime($row['mass_time'])) : '')
+        : '';
+?>
+                <tr>
+                    <td class="dh-number"><?php echo htmlspecialchars($row['reference_no']); ?></td>
+                    <td><?php echo htmlspecialchars(date('M j, Y', strtotime($row['created_at']))); ?></td>
+                    <td><?php echo htmlspecialchars((string) $row['intention_type']); ?></td>
+                    <td><?php echo (string) $row['intention_for'] !== '' ? htmlspecialchars($row['intention_for']) : '<span class="dh-muted">&mdash;</span>'; ?></td>
+                    <td><?php echo $schedule !== '' ? $schedule : '<span class="dh-muted">Not scheduled yet</span>'; ?></td>
+                    <td><span class="dh-status is-<?php echo htmlspecialchars($row['status']); ?>"><?php echo htmlspecialchars(ps_status_label($row['status'])); ?></span></td>
+                </tr>
+<?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+<?php endif; ?>
+<?php if ($historyBefore || $history['nextCursor']): ?>
+    <nav class="dh-pager" aria-label="Mass Intention history pages">
+<?php if ($historyBefore): ?>
+        <a class="ps-btn ps-btn-outline" href="<?php echo htmlspecialchars(ps_mi_history_url([])); ?>">&larr; Newest intentions</a>
+<?php endif; ?>
+<?php if ($history['nextCursor']): ?>
+        <a class="ps-btn ps-btn-outline" href="<?php echo htmlspecialchars(ps_mi_history_url(['before' => (int) $history['nextCursor']])); ?>">Older intentions &rarr;</a>
+<?php endif; ?>
+    </nav>
+<?php endif; ?>
+    <p class="dh-footnote">Mass Intentions are matched to your account by the mobile number on your profile. Contact the parish office if an intention is missing.</p>
+</section>
+
+<dialog class="dn-modal" id="massIntentionModal" aria-labelledby="massIntentionModalTitle">
+<div class="dn-modal-head">
+    <h2 id="massIntentionModalTitle">Request a Mass Intention</h2>
+    <button type="button" class="dn-modal-close" aria-label="Close" data-mi-cancel>&times;</button>
+</div>
+<div class="dn-modal-body">
+
     <div class="ps-card wr-stepbar">
                     <div class="wr-step is-current" data-step-item="0">
             <span class="wr-step-num" data-step-num>1</span>
@@ -241,7 +368,7 @@ ps_handle_request_form('massintention');
         <div class="ps-form-row-3">
             <div class="ps-field">
                 <label for="requesterName">Requester's full name <span class="wr-required">*</span></label>
-                <input type="text" id="requesterName" name="requesterName" placeholder="Enter your full name" required>
+                <input type="text" id="requesterName" name="requesterName" placeholder="Enter your full name" value="<?php echo ps_account_full_name_attr(); ?>" required>
             </div>
             <div class="ps-field">
                 <label for="mobileNumber">Mobile number <span class="wr-required">*</span></label>
@@ -348,7 +475,7 @@ ps_handle_request_form('massintention');
         </section>
 
         <div class="wr-actions">
-            <a href="mass-intention.html" class="ps-btn wr-cancel" id="mrCancel">Cancel</a>
+            <button type="button" class="ps-btn wr-cancel" id="mrCancel" data-mi-cancel>Cancel</button>
             <button type="button" class="ps-btn wr-cancel" id="mrBack" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="M11 18l-6-6 6-6"/></svg> Back</button>
             <button type="submit" class="ps-btn ps-btn-primary wr-submit" id="mrNext">Save and Continue <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg></button>
         </div>
@@ -394,12 +521,15 @@ ps_handle_request_form('massintention');
         </aside>
 
     </div>
+</div>
+</dialog>
 
 </main>
 </div>
 <script src="assets/js/frontend.js"></script>
 <script src="assets/js/booking-calendar.js?v=7"></script>
-<script src="assets/js/mass-intention-request.js?v=3"></script>
+<script src="assets/js/mass-intention-request.js?v=4"></script>
+<script src="assets/js/mass-intention-modal.js?v=1"></script>
 <script src="assets/js/session-user.js"></script>
 <script src="assets/js/responsive.js?v=1"></script>
 <script src="assets/js/mass-schedule.js?v=1"></script></body>

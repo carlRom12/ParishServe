@@ -315,7 +315,6 @@ body.ps-modal-open { overflow: hidden; }
 .admin-type-funeral       { --type-color: #5d5552; }
 .admin-type-counseling    { --type-color: #2f8a6b; }
 .admin-type-massintention { --type-color: #a3812f; }
-.admin-type-facility      { --type-color: #c46a2b; }
 
 .admin-cal .cal-toolbar { align-items: flex-start; }
 .admin-cal-month { min-width: 170px; margin: 0; font-size: 20px; text-align: center; color: var(--text-dark); }
@@ -389,3 +388,27 @@ body.ps-modal-open { overflow: hidden; }
     from { background: var(--status-approved-bg); }
     to   { background: transparent; }
 }
+
+/* admin-donations.php: the donor's GCash reference number, matched against the proof of payment. */
+.admin-gcash-ref { font-variant-numeric: tabular-nums; letter-spacing: .02em; overflow-wrap: anywhere; }
+
+/* admin-donations.php: a real table laid out like the donor's own
+   My Donation History (donation-history.css .dh-table), scrolling
+   sideways on narrow screens. Rows use data-admin-row (main.js filters). */
+.admin-dn-table-wrap { overflow-x: auto; }
+.admin-dn-table { width: 100%; min-width: 820px; border-collapse: collapse; font-size: 13px; }
+.admin-dn-table caption { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.admin-dn-table th { text-align: left; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; color: var(--text-body); padding: 10px 8px; border-bottom: 1px solid var(--card-border); vertical-align: bottom; font-size: 11px; }
+.admin-dn-table td { padding: 12px 8px; border-bottom: 1px solid var(--card-border); vertical-align: middle; color: var(--text-dark); }
+.admin-dn-table tbody tr { transition: background .2s ease; }
+.admin-dn-table tbody tr:hover { background: var(--cream); }
+.admin-dn-table tr.is-hidden { display: none; }
+.admin-dn-table tr.is-updated { animation: admin-row-saved 1.6s ease; }
+.admin-dn-table .ps-status { white-space: nowrap; }
+.admin-dn-number { font-weight: 600; white-space: nowrap; }
+.admin-dn-nowrap { white-space: nowrap; }
+.admin-dn-amount { font-weight: 600; color: var(--maroon-700); white-space: nowrap; }
+.admin-dn-table .admin-gcash-ref { white-space: nowrap; }
+.admin-dn-muted { color: #a39a9e; }
+.admin-dn-update { min-height: 34px; padding: 6px 14px; font-size: 13px; }
+.admin-dn-status { padding: 0; border: 0; background: none; } /* the select itself is the box (style.css .ps-select.ps-select select) */

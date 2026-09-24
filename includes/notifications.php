@@ -32,8 +32,6 @@ const PS_STATUS_EMAIL_LINES = [
     'donation' => [
         'under_review' => 'The parish office is checking your proof of payment.',
         'approved'     => 'Your donation has been verified. Thank you for your generosity.',
-        'scheduled'    => 'Your donation has been recorded by the parish office.',
-        'completed'    => 'Your donation has been fully processed. Thank you for supporting the parish.',
         'rejected'     => 'The parish office could not verify your donation. Please contact the parish office for more information.',
     ],
 ];
@@ -59,7 +57,7 @@ function ps_request_update_email(array $update) {
         $line = 'The parish office has updated the schedule of your request.';
     }
 
-    $rows = [['Reference number', $update['reference']]];
+    $rows = [[$isDonation ? 'Donation number' : 'Reference number', $update['reference']]];
     if (!$isDonation) {
         $rows[] = ['Request', $typeInfo['label'] . ' for ' . $update['name']];
     }
@@ -73,7 +71,7 @@ function ps_request_update_email(array $update) {
         }
         $rows[] = ['Schedule', $schedule];
     }
-    $closing = 'If you have any questions, please contact the parish office and mention your reference number.';
+    $closing = 'If you have any questions, please contact the parish office and mention your ' . ($isDonation ? 'donation' : 'reference') . ' number.';
 
     $html = '<p>Hello,</p><p>' . htmlspecialchars($line) . '</p><table cellpadding="6" style="border-collapse:collapse;">';
     foreach ($rows as [$label, $value]) {

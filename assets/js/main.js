@@ -696,7 +696,8 @@ window.addEventListener('pageshow', (e) => {
     if (searchInput) searchInput.addEventListener('input', applyFilters);
     if (statusSelect) statusSelect.addEventListener('change', applyFilters);
     document.addEventListener('ps:admin-rows-changed', applyFilters);
-    if (searchInput && searchInput.value) applyFilters();
+    // A search pre-filled from ?ref=, or a status filter that starts selected (admin-donations.php: Under Review).
+    if ((searchInput && searchInput.value) || (statusSelect && statusSelect.value)) applyFilters();
 })();
 
 
@@ -842,7 +843,8 @@ window.addEventListener('pageshow', (e) => {
     }
 
     // Strict pipeline: only the current status, the next step and
-    // Rejected stay selectable. admin-update-request.php enforces the same.
+    // Rejected stay selectable -- unless data-allowed-statuses lists more,
+    // as donations do (all three, always). admin-update-request.php enforces the same.
     function syncStatusOptions(modal) {
         const select = modal.querySelector('select[data-modal-field="status"]');
         const hint = modal.querySelector('[data-modal-status-hint]');
@@ -856,8 +858,11 @@ window.addEventListener('pageshow', (e) => {
             const next = Array.from(select.options)
                 .filter((option) => !option.disabled && option.value !== current)
                 .map((option) => option.textContent.trim());
+            // data-modal-status-hint="free": every status stays selectable (donations).
             hint.textContent = next.length
-                ? `Status moves one step at a time. Next: ${next.join(' or ')}.`
+                ? (hint.dataset.modalStatusHint === 'free'
+                    ? `Any status can be set: ${next.join(' or ')}.`
+                    : `Status moves one step at a time. Next: ${next.join(' or ')}.`)
                 : 'This is a final status. You can still update the remarks.';
         }
     }
@@ -1293,8 +1298,9 @@ window.addEventListener('pageshow', (e) => {
 /**
  * donation-request.php: the Donation Purpose picker, if present (a trigger button + a panel of
  * [data-fund-option]s that write the hidden [data-fund-input]) and the
- * "remain anonymous" box, which makes Full Name optional -- the same rule
- * as ps_build_donation() in includes/request-forms.php.
+ * "remain anonymous" box, which clears and locks Full Name (unticking
+ * brings it back) -- the same rule as ps_build_donation() in
+ * includes/request-forms.php.
  */
 (function initDonationForm() {
     const picker = document.querySelector('[data-fund-picker]');
@@ -1340,7 +1346,18 @@ window.addEventListener('pageshow', (e) => {
     const anonymous = document.getElementById('isAnonymous');
     const donorName = document.getElementById('donorName');
     if (anonymous && donorName) {
-        const sync = () => { donorName.required = !anonymous.checked; };
+        let kept = '';
+        const sync = () => {
+            if (anonymous.checked && !donorName.disabled) {
+                kept = donorName.value;
+                donorName.value = '';
+            } else if (!anonymous.checked && donorName.disabled) {
+                // What they had before ticking, else the page default (the account's name).
+                donorName.value = kept || donorName.defaultValue;
+            }
+            donorName.disabled = anonymous.checked; // disabled fields aren't submitted or saved to the draft
+            donorName.required = !anonymous.checked;
+        };
         anonymous.addEventListener('change', sync);
         sync();
     }

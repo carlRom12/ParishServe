@@ -9,7 +9,7 @@ $base = [
     'mobileNumber' => '09123456789', 'emailAddress' => 'test@example.test',
     'preferredDate' => (new DateTimeImmutable('+2 months'))->format('Y-m-d'),
     'preferredTime' => '6:00 AM', 'schedulingNotes' => '', 'confirmRespectful' => 'on',
-];
+];  
 function check_case($post, $expectedAmount, $expectedSubject = null) {
     [$v, $errors] = ps_validate_request_fields('massintention', [], $post);
     $built = $errors ? null : ps_build_massintention($v);

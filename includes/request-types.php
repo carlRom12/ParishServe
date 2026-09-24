@@ -5,7 +5,7 @@
  * One place for everything the parish request tables share, so the
  * admin pages, the write endpoint, both dashboards, both calendars, the
  * reports and the public forms don't each keep their own copy:
- *   - the 7 request types (+ donations) and which table/columns hold them
+ *   - the 6 request types (+ donations) and which table/columns hold them
  *   - the shared status pipeline and its labels
  *   - the required-document checklist per sacrament
  *   - booking windows and schedule conflicts
@@ -19,9 +19,9 @@
  * Schedule conflicts: two booked requests (PS_BOOKED_STATUSES) clash when
  * their time windows overlap on the same date and they need the same
  * place -- the church (weddings, baptisms, confirmations, funerals), the
- * counseling office, or the same facility. A window runs from the
- * request's time for its type's usual length ('minutes'), or to its end
- * time where the table has one (facility reservations). Baptisms and
+ * counseling office. A window runs from the request's time for its
+ * type's usual length ('minutes'), or to its end time where a type has
+ * one. Baptisms and
  * Confirmations are group ceremonies, so two of the same type share a
  * slot instead of clashing; Mass Intentions are offered at a regular Mass
  * and never clash. The public forms (includes/request-forms.php), their
@@ -38,6 +38,12 @@ const PS_STATUS_LABELS   = [
     'scheduled' => 'Scheduled', 'completed' => 'Completed', 'rejected' => 'Rejected',
 ];
 
+// Donations only need their proof of payment checked: Under Review (a new
+// donation), Approved or Rejected (database/migrations/011). Unlike requests
+// these are not a one-way pipeline -- staff may correct a donation to any of
+// the three at any time, so none of them is final.
+const PS_DONATION_STATUS_OPTIONS = ['under_review', 'approved', 'rejected'];
+
 // Statuses that mean "this date is taken" on the calendars and in conflict checks.
 const PS_BOOKED_STATUSES = ['approved', 'scheduled', 'completed'];
 
@@ -50,11 +56,11 @@ const PS_SCHEDULE_STATUSES = ['approved', 'scheduled'];
 //   page            the type's admin page
 //   name, date, time, end, subtype
 //                   SQL expressions -- trusted constants, never built from
-//                   user input. 'end' (end time) and 'subtype' (facility,
-//                   intention type, concern) are null where a table has none.
+//                   user input. 'end' (end time) and 'subtype' (intention
+//                   type, concern) are null where a table has none.
 //   category        calendar.html's category filter
 //   public          shown (anonymously) on the public calendar; counseling stays private
-//   resource        what a booking occupies: church | counseling | facility | null (never clashes)
+//   resource        what a booking occupies: church | counseling | null (never clashes)
 //   minutes         usual length of a booking, for types without an end time
 //   group           same-type bookings share a slot (group ceremonies)
 //   date_optional   the table's date may be empty (the parish sets Confirmation dates)
@@ -95,13 +101,6 @@ const PS_REQUEST_TYPES = [
         'name' => "COALESCE(NULLIF(intention_for, ''), requester_name)", 'date' => 'mass_date', 'time' => 'mass_time', 'end' => null, 'subtype' => 'intention_type',
         'resource' => null, 'minutes' => 60, 'group' => false, 'date_optional' => false,
     ],
-    'facility' => [
-        'label' => 'Facility Reservation', 'plural' => 'Facility Reservations', 'page' => 'admin-facility-reservations.php',
-        'table' => 'facility_reservations', 'icon' => 'building', 'category' => 'event', 'public' => true,
-        'name' => 'requester_name', 'date' => 'reservation_date', 'time' => 'start_time', 'end' => 'end_time', 'subtype' => 'facility_name',
-        'calendar_label' => "CONCAT(facility_name, ' reserved')",
-        'resource' => 'facility', 'minutes' => 60, 'group' => false, 'date_optional' => false,
-    ],
 ];
 
 const PS_DONATION_TABLE = 'donations';
@@ -112,7 +111,7 @@ const PS_DONATION_TABLE = 'donations';
 // Limitations, final verification still happens on-site: the admin
 // checklist only tracks what has come in. Received flags and files are
 // stored per request in request_documents, keyed by 'label'.
-// Counseling/Mass Intention/Facility Reservation carry no documents.
+// Counseling/Mass Intention carry no documents.
 const PS_DOCUMENT_CHECKLISTS = [
     'wedding' => [
         ['field' => 'doc1', 'label' => 'Certificate of No Marriage (CENOMAR)', 'required' => true],
@@ -136,18 +135,21 @@ function ps_status_label($status) {
     return PS_STATUS_LABELS[$status] ?? ucwords(str_replace('_', ' ', (string) $status));
 }
 
-/** Statuses a record at $current may move to next (staying put is always allowed). */
-function ps_next_statuses($current) {
-    $step = array_search($current, PS_STATUS_PIPELINE, true);
-    if ($step === false || !isset(PS_STATUS_PIPELINE[$step + 1])) {
-        return []; // rejected or completed: final
+/**
+ * Statuses a record at $current may move to next (staying put is always
+ * allowed). Donations use ps_donation_next_statuses() instead.
+ */
+function ps_next_statuses($current, array $pipeline = PS_STATUS_PIPELINE) {
+    $step = array_search($current, $pipeline, true);
+    if ($step === false || !isset($pipeline[$step + 1])) {
+        return []; // rejected or the last step: final
     }
-    return [PS_STATUS_PIPELINE[$step + 1], 'rejected'];
+    return [$pipeline[$step + 1], 'rejected'];
 }
 
 /** Why a status change was refused, in words staff can act on. */
-function ps_transition_error($current) {
-    $next = ps_next_statuses($current);
+function ps_transition_error($current, array $pipeline = PS_STATUS_PIPELINE) {
+    $next = ps_next_statuses($current, $pipeline);
     if (!$next) {
         return '"' . ps_status_label($current) . '" is a final status and can no longer be changed.';
     }
@@ -242,6 +244,11 @@ function ps_fetch_requests(mysqli $conn, array $filters = []) {
     return ps_query_all($conn, $sql, $params);
 }
 
+/** The statuses a donation may be changed to: every one but the one it already has. */
+function ps_donation_next_statuses($current) {
+    return array_values(array_diff(PS_DONATION_STATUS_OPTIONS, [$current]));
+}
+
 /** status => count across the 7 request tables (every status present, 0 if none). */
 function ps_count_requests_by_status(mysqli $conn, $contactNumber = null) {
     [$where, $params] = ps_request_where($contactNumber === null ? [] : ['contact' => $contactNumber]);
@@ -265,7 +272,7 @@ function ps_dashboard_stats(array $counts) {
 
 /**
  * What's waiting on staff: requests (per type in byType, and in total) +
- * donations still submitted/under review -- the topbar bell and the
+ * donations still under review -- the topbar bell and the
  * dashboard's Waiting for Review card.
  */
 function ps_pending_counts(mysqli $conn) {
@@ -274,15 +281,19 @@ function ps_pending_counts(mysqli $conn) {
     foreach (ps_query_all($conn, $sql) as $row) {
         $byType[$row['type']] = (int) $row['total'];
     }
-    $row = $conn->query("SELECT COUNT(*) AS total FROM " . PS_DONATION_TABLE . " WHERE status IN ('submitted', 'under_review')")->fetch_assoc();
+    $row = $conn->query("SELECT COUNT(*) AS total FROM " . PS_DONATION_TABLE . " WHERE status = 'under_review'")->fetch_assoc();
     $requests = array_sum($byType);
     $donations = (int) $row['total'];
     return ['requests' => $requests, 'donations' => $donations, 'total' => $requests + $donations, 'byType' => $byType];
 }
 
-/** Donations newest first, optionally only those submitted from/to (Y-m-d, inclusive). */
+/**
+ * Donations newest first -- or oldest first (the admin queue) with
+ * $filters['order'] = 'queue' -- optionally only those submitted
+ * from/to (Y-m-d, inclusive).
+ */
 function ps_fetch_donations(mysqli $conn, array $filters = []) {
-    $sql = 'SELECT id, reference_no, contact_number, contact_email, donor_name, amount, purpose, proof_of_payment, status, remarks, details, created_at'
+    $sql = 'SELECT id, donation_no, contact_number, contact_email, donor_name, amount, gcash_reference, purpose, proof_of_payment, status, remarks, details, created_at'
         . ' FROM ' . PS_DONATION_TABLE;
     $clauses = [];
     $params = [];
@@ -297,7 +308,8 @@ function ps_fetch_donations(mysqli $conn, array $filters = []) {
     if ($clauses) {
         $sql .= ' WHERE ' . implode(' AND ', $clauses);
     }
-    return ps_query_all($conn, $sql . ' ORDER BY created_at DESC, id DESC', $params);
+    $order = ($filters['order'] ?? '') === 'queue' ? ' ORDER BY id ASC' : ' ORDER BY created_at DESC, id DESC';
+    return ps_query_all($conn, $sql . $order, $params);
 }
 
 /** request_documents as [type][request id][label] => ['id', 'received', 'file', 'name']; optionally for one type, or one request. */
@@ -440,10 +452,9 @@ function ps_schedule_labels($type, $date, $time, $end = null) {
     ];
 }
 
-/** Which schedule a booking takes a slot in: 'church', 'counseling', 'facility:<name>', or null (never clashes). */
-function ps_booking_resource($type, $subtype = null) {
-    $resource = PS_REQUEST_TYPES[$type]['resource'];
-    return $resource === 'facility' ? 'facility:' . $subtype : $resource;
+/** Which schedule a booking takes a slot in: 'church', 'counseling', or null (never clashes). */
+function ps_booking_resource($type) {
+    return PS_REQUEST_TYPES[$type]['resource'];
 }
 
 /** Whether two bookings in the same place on the same date clash. */
@@ -491,12 +502,11 @@ function ps_service_slots($type, array $bookings): array {
 }
 
 /**
- * Booked requests on $date in the same place as a $type request (for a
- * facility, the facility named $subtype), earliest first, each with its
- * 'type' and time 'window'. $exclude = [type, id] leaves out the request
+ * Booked requests on $date in the same place as a $type request,
+ * earliest first, each with its 'type' and time 'window'. $exclude = [type, id] leaves out the request
  * being edited.
  */
-function ps_bookings_on(mysqli $conn, $type, $date, $subtype = null, ?array $exclude = null) {
+function ps_bookings_on(mysqli $conn, $type, $date, ?array $exclude = null) {
     $resource = PS_REQUEST_TYPES[$type]['resource'];
     if ($resource === null) {
         return [];
@@ -523,10 +533,6 @@ function ps_bookings_on(mysqli $conn, $type, $date, $subtype = null, ?array $exc
         $params = $resource === 'church'
             ? [$day->modify('-1 day')->format('Y-m-d'), $day->modify('+1 day')->format('Y-m-d')]
             : [$date, $date];
-        if ($resource === 'facility') {
-            $sql .= " AND {$other['subtype']} = ?";
-            $params[] = (string) $subtype;
-        }
         foreach (ps_query_all($conn, $sql, $params) as $row) {
             if ($exclude !== null && $exclude[0] === $key && (int) $exclude[1] === (int) $row['id']) {
                 continue;
@@ -546,9 +552,9 @@ function ps_bookings_on(mysqli $conn, $type, $date, $subtype = null, ?array $exc
 }
 
 /** The bookings on $date that a $type request at $window would clash with. */
-function ps_schedule_conflicts(mysqli $conn, $type, $date, array $window, $subtype = null, ?array $exclude = null) {
+function ps_schedule_conflicts(mysqli $conn, $type, $date, array $window, ?array $exclude = null) {
     return array_values(array_filter(
-        ps_bookings_on($conn, $type, $date, $subtype, $exclude),
+        ps_bookings_on($conn, $type, $date, $exclude),
         fn($booking) => ps_bookings_overlap($type, $window, $booking['type'], $booking['window'])
     ));
 }
@@ -584,14 +590,14 @@ function ps_mark_conflicts(array $rows) {
     $count = count($rows);
     for ($i = 0; $i < $count; $i++) {
         $a = $rows[$i];
-        $resource = ps_booking_resource($a['type'], $a['subtype']);
+        $resource = ps_booking_resource($a['type']);
         if ($resource === null || !in_array($a['status'], PS_BOOKED_STATUSES, true)) {
             continue;
         }
         for ($j = $i + 1; $j < $count; $j++) {
             $b = $rows[$j];
             if ($b['event_date'] !== $a['event_date'] || !in_array($b['status'], PS_BOOKED_STATUSES, true)
-                || ps_booking_resource($b['type'], $b['subtype']) !== $resource) {
+                || ps_booking_resource($b['type']) !== $resource) {
                 continue;
             }
             if (ps_bookings_overlap($a['type'], $a['window'], $b['type'], $b['window'])) {
